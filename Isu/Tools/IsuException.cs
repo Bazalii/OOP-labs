@@ -9,15 +9,18 @@ namespace Isu.Tools
         {
         }
 
-        public IsuException(string message) : base(message)
+        public IsuException(string message)
+            : base(message)
         {
         }
 
-        public IsuException(string message, Exception innerException) : base(message, innerException)
+        public IsuException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
 
-        protected IsuException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected IsuException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }
