@@ -5,13 +5,13 @@ namespace Isu.Services
 {
     public class CourseNumber
     {
-        private int courseNumber;
+        private int _courseNumber;
         public CourseNumber(int inputCourseNumber)
         {
             if (inputCourseNumber > 4)
                 throw new IsuException("Course should be a number in range of 1..4");
 
-            courseNumber = inputCourseNumber;
+            _courseNumber = inputCourseNumber;
         }
 
         public List<Group> Groups { get; private set; } = new List<Group>();

@@ -35,10 +35,9 @@ namespace Isu.Tests
             _isuService.AddStudent(_isuService.FindGroup("M3204"), "Maxim");
             _isuService.AddStudent(_isuService.FindGroup("M3204"), "Elena");
             _isuService.AddStudent(_isuService.FindGroup("M3204"), "Tatiana");
-            Console.WriteLine(_isuService.FindGroup("M3204").Students);
             Assert.Catch<IsuException>(() =>
             {
-                _isuService.AddStudent(_isuService.FindGroup("M3204"), "Tatiana");
+                _isuService.AddStudent(_isuService.FindGroup("M3204"), "Ksenia");
             });
         }
 
