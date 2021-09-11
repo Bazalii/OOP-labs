@@ -1,20 +1,32 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using Isu.Tools;
 
 namespace Isu.Services
 {
     public class Group
     {
+        private readonly int maxStudents = 5;
         public Group(string name)
         {
+            if (name[0] != 'M' || name[1] != '3' || name[2] - '0' < 1 || name[2] - '0' > 4 || name[3] - '0' < 0 ||
+                name[3] - '0' > 9 || name[4] - '0' < 0 || name[4] - '0' > 9)
+            {
+                throw new IsuException("Incorrect group name");
+            }
+
             Name = name;
         }
 
-        public List<Student> Students { get; private set; }
+        public List<Student> Students { get; private set; } = new List<Student>();
         public string Name { get; private set; }
 
         public void AddStudent(Student student)
         {
+            if (Students.Count == maxStudents)
+            {
+                throw new IsuException($"Maximum number({maxStudents}) of students per group is reached");
+            }
+
             Students.Add(student);
         }
 

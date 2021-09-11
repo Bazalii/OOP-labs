@@ -19,14 +19,14 @@ namespace Isu.Services
         public Group AddGroup(string name)
         {
             var newGroup = new Group(name);
-            char courseNumber = name[2];
+            int courseNumber = name[2] - '0';
             _courseNumbers[courseNumber].Groups.Add(newGroup);
             return newGroup;
         }
 
         public Student AddStudent(Group @group, string name)
         {
-            var newStudent = new Student(studentIds += 1, name);
+            var newStudent = new Student(studentIds += 1, name, group.Name);
             group.AddStudent(newStudent);
             return newStudent;
         }
@@ -110,15 +110,13 @@ namespace Isu.Services
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            foreach (CourseNumber courseNumber in _courseNumbers)
+            CourseNumber courseNumber = _courseNumbers[student.CurrentGroup[2] - '0'];
+            foreach (Group group in courseNumber.Groups)
             {
-                foreach (Group group in courseNumber.Groups)
+                if (group.Students.Contains(student))
                 {
-                    if (group.Students.Contains(student))
-                    {
-                        group.Students.Remove(student);
-                        newGroup.Students.Add(student);
-                    }
+                    group.Students.Remove(student);
+                    newGroup.Students.Add(student);
                 }
             }
         }
