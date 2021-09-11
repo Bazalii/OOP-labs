@@ -1,17 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Isu.Tools;
 
 namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
         private int studentIds = 0;
-        private List<Group> _groups = new List<Group>();
 
+        private List<CourseNumber> _courseNumbers = new List<CourseNumber>()
+        {
+            new (1),
+            new (2),
+            new (3),
+            new (4),
+        };
         public Group AddGroup(string name)
         {
             var newGroup = new Group(name);
-            _groups.Add(newGroup);
+            char courseNumber = name[2];
+            _courseNumbers[courseNumber].Groups.Add(newGroup);
             return newGroup;
         }
 
@@ -24,29 +33,31 @@ namespace Isu.Services
 
         public Student GetStudent(int id)
         {
-            foreach (var group in _groups)
+            foreach (CourseNumber course in _courseNumbers)
             {
-                foreach (var student in group.Students)
+                foreach (Group group in course.Groups)
                 {
-                    if (student.Id == id)
+                    Student wantedStudent = group.GetStudent(id);
+                    if (wantedStudent != null)
                     {
-                        return student;
+                        return wantedStudent;
                     }
                 }
             }
 
-            return null;
+            throw new IsuException($"Student with id:{id} doesn't exist");
         }
 
         public Student FindStudent(string name)
         {
-            foreach (var group in _groups)
+            foreach (CourseNumber course in _courseNumbers)
             {
-                foreach (var student in group.Students)
+                foreach (Group group in course.Groups)
                 {
-                    if (student.Name == name)
+                    Student wantedStudent = group.GetStudent(name);
+                    if (wantedStudent != null)
                     {
-                        return student;
+                        return wantedStudent;
                     }
                 }
             }
@@ -56,27 +67,60 @@ namespace Isu.Services
 
         public List<Student> FindStudents(string groupName)
         {
-            throw new System.NotImplementedException();
+            Group wantedGroup = FindGroup(groupName);
+            if (wantedGroup != null)
+            {
+                return FindGroup(groupName).Students;
+            }
+
+            return new List<Student>();
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
-            throw new System.NotImplementedException();
+            List<Group> wantedGroups = FindGroups(courseNumber);
+            if (!wantedGroups.Any())
+            {
+                return new List<Student>();
+            }
+
+            return wantedGroups.SelectMany(gr => gr.Students).ToList();
         }
 
         public Group FindGroup(string groupName)
         {
-            throw new System.NotImplementedException();
+            foreach (CourseNumber course in _courseNumbers)
+            {
+                foreach (Group group in course.Groups)
+                {
+                    if (group.Name == groupName)
+                    {
+                        return group;
+                    }
+                }
+            }
+
+            return null;
         }
 
         public List<Group> FindGroups(CourseNumber courseNumber)
         {
-            throw new System.NotImplementedException();
+            return courseNumber.Groups;
         }
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            throw new System.NotImplementedException();
+            foreach (CourseNumber courseNumber in _courseNumbers)
+            {
+                foreach (Group group in courseNumber.Groups)
+                {
+                    if (group.Students.Contains(student))
+                    {
+                        group.Students.Remove(student);
+                        newGroup.Students.Add(student);
+                    }
+                }
+            }
         }
     }
 }

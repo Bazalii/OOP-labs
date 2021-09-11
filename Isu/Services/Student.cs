@@ -4,18 +4,12 @@
     {
         public Student(int id, string name)
         {
-            this.Id = id;
+            Id = id;
             Name = name;
         }
 
-        public int Id
-        {
-            get;
-        }
+        public int Id { get; private set; }
 
-        public string Name
-        {
-            get;
-        }
+        public string Name { get; private set; }
     }
 }

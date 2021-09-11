@@ -1,17 +1,19 @@
-﻿using Isu.Tools;
+﻿using System.Collections.Generic;
+using Isu.Tools;
 
 namespace Isu.Services
 {
     public class CourseNumber
     {
-        private int courseNumber = 0;
-
+        private int courseNumber;
         public CourseNumber(int inputCourseNumber)
         {
             if (inputCourseNumber > 4)
                 throw new IsuException("Course should be a number in range of 1..4");
 
-            this.courseNumber = inputCourseNumber;
+            courseNumber = inputCourseNumber;
         }
+
+        public List<Group> Groups { get; private set; } = new List<Group>();
     }
 }
