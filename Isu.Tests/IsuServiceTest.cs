@@ -34,7 +34,7 @@ namespace Isu.Tests
             _isuService.AddStudent(_isuService.FindGroup("M3204"), "Maxim");
             _isuService.AddStudent(_isuService.FindGroup("M3204"), "Elena");
             _isuService.AddStudent(_isuService.FindGroup("M3204"), "Tatiana");
-            Assert.Catch<IsuException>(() =>
+            Assert.Catch<MaxStudentsPerGroupException>(() =>
             {
                 _isuService.AddStudent(_isuService.FindGroup("M3204"), "Ksenia");
             });
@@ -43,7 +43,7 @@ namespace Isu.Tests
         [Test]
         public void CreateGroupWithInvalidName_ThrowException()
         {
-            Assert.Catch<IsuException>(() =>
+            Assert.Catch<InvalidGroupNameException>(() =>
             {
                 _isuService.AddGroup("R3207");
             });
