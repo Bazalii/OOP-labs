@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Isu.Tools;
 
@@ -7,7 +6,7 @@ namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
-        private int studentIds = 0;
+        private int _studentIds;
 
         private List<CourseNumber> _courseNumbers = new List<CourseNumber>()
         {
@@ -26,7 +25,7 @@ namespace Isu.Services
 
         public Student AddStudent(Group @group, string name)
         {
-            var newStudent = new Student(studentIds += 1, name, group.Name);
+            var newStudent = new Student(_studentIds += 1, name, group.Name);
             group.AddStudent(newStudent);
             return newStudent;
         }

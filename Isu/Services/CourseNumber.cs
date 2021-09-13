@@ -9,7 +9,7 @@ namespace Isu.Services
         public CourseNumber(int inputCourseNumber)
         {
             if (inputCourseNumber > 4)
-                throw new IsuException("Course should be a number in range of 1..4");
+                throw new InvalidCourseNumberException("Course should be a number in range of 1..4");
 
             _courseNumber = inputCourseNumber;
         }

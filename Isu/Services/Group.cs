@@ -12,7 +12,7 @@ namespace Isu.Services
             if (name[0] != 'M' || name[1] != '3' || name[2] - '0' < 1 || name[2] - '0' > 4 || name[3] - '0' < 0 ||
                 name[3] - '0' > 9 || name[4] - '0' < 0 || name[4] - '0' > 9)
             {
-                throw new IsuException("Incorrect group name");
+                throw new InvalidGroupNameException("Incorrect group name");
             }
 
             Name = name;
@@ -25,7 +25,7 @@ namespace Isu.Services
         {
             if (Students.Count == MaxStudents)
             {
-                throw new IsuException($"Maximum number({MaxStudents}) of students per group is reached");
+                throw new MaxStudentsPerGroupException($"Maximum number({MaxStudents}) of students per group is reached");
             }
 
             Students.Add(student);
