@@ -4,10 +4,12 @@
     {
         public Person(string name, int money)
         {
+            Name = name;
+            Money = money;
         }
 
-        public int Name { get; private set; }
+        public string Name { get; private set; }
 
-        public int Money { get; private set; }
+        public int Money { get; set; }
     }
 }
