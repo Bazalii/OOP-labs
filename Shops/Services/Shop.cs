@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Shops.Tools;
 
 namespace Shops.Services
 {
@@ -22,27 +24,42 @@ namespace Shops.Services
 
         public List<Box> Boxes { get; private set; } = new List<Box>();
 
-        public void DeliveryOfProducts(List<Tuple<string, int, int>> delivery)
+        public void DeliveryOfProducts(ShopManger shopManager, List<Tuple<string, int, int>> delivery)
         {
+            List<string> notAddedProducts = new List<string>();
+            string reason = string.Empty;
             foreach (Tuple<string, int, int> tuple in delivery)
             {
-                Box wantedBox = ContainsProduct(tuple.Item1);
-                if (wantedBox == null)
+                try
                 {
-                    Boxes.Add(new Box(tuple.Item1, tuple.Item2, tuple.Item3));
+                    Box wantedBox = BoxWithProduct(shopManager.GetProductId(tuple.Item1));
+                    if (wantedBox == null)
+                    {
+                        Boxes.Add(new Box(shopManager.GetProductId(tuple.Item1), tuple.Item2, tuple.Item3));
+                    }
+                    else
+                    {
+                        wantedBox.Quantity += tuple.Item3;
+                    }
                 }
-                else
+                catch (NotInBaseException e)
                 {
-                    wantedBox.Quantity += tuple.Item3;
+                    notAddedProducts.Add(tuple.Item1);
+                    reason = e.Message;
+                }
+
+                if (notAddedProducts.Any())
+                {
+                    Console.WriteLine($"These products weren't added: {notAddedProducts}, because {reason}");
                 }
             }
         }
 
-        private Box ContainsProduct(string productName)
+        private Box BoxWithProduct(int productId)
         {
             foreach (var box in Boxes)
             {
-                if (box.ProductName == productName)
+                if (box.ProductId == productId)
                 {
                     return box;
                 }

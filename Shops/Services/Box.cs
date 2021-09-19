@@ -2,14 +2,18 @@
 {
     public class Box
     {
-        public Box(string productName, int productPrice, int quantity)
+        public Box()
         {
-            ProductName = productName;
+        }
+
+        public Box(int productId, int productPrice, int quantity)
+        {
+            ProductId = productId;
             ProductPrice = productPrice;
             Quantity = quantity;
         }
 
-        public string ProductName { get; private set; }
+        public int ProductId { get; private set; }
 
         public int Quantity { get; set; }
 

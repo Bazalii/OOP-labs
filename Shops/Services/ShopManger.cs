@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using Shops.Tools;
 
 namespace Shops.Services
@@ -28,65 +28,91 @@ namespace Shops.Services
             Products.Add(new Product(_productIds += 1, name));
         }
 
-        public void Buy(Person person, string productName, int wantedQuantity)
-        {
-            if (EnoughProduct(productName, wantedQuantity))
-            {
-                int currentQuantity = 0;
-                int price = 0;
-                while (currentQuantity != wantedQuantity)
-                {
-                    int minimalPrice = int.MaxValue;
-                    int cheapestProductQuantity = 0;
-                    foreach (Shop shop in Shops)
-                    {
-                        foreach (Box box in shop.Boxes)
-                        {
-                            if (box.ProductName != productName) continue;
-                            if (box.ProductPrice < minimalPrice)
-                            {
-                                minimalPrice = box.ProductPrice;
-                                cheapestProductQuantity = box.Quantity;
-                                shop.Boxes.Remove(box);
-                            }
-                        }
-                    }
-
-                    if (currentQuantity + cheapestProductQuantity >= wantedQuantity)
-                    {
-                        currentQuantity = wantedQuantity;
-                        price += (wantedQuantity - currentQuantity) * minimalPrice;
-                    }
-                    else
-                    {
-                        currentQuantity += cheapestProductQuantity;
-                        price += cheapestProductQuantity * currentQuantity;
-                    }
-                }
-
-                if (person.Money - price < 0)
-                {
-                    throw new NotEnoughMoneyException(
-                        $"You don't have enough money to buy {wantedQuantity} pieces of {productName}");
-                }
-
-                person.Money -= price;
-            }
-        }
-
-        public bool EnoughProduct(string productName, int wantedQuantity)
+        public int GetProductId(string productName)
         {
             foreach (Product product in Products)
             {
                 if (product.Name == productName)
                 {
-                    if (product.TotalQuantity >= wantedQuantity)
-                    {
-                        return true;
-                    }
-
-                    throw new NotEnoughProductException($"$You can buy only {product.TotalQuantity} pieces of this product");
+                    return product.Id;
                 }
+            }
+
+            throw new NotInBaseException("The product that you want to buy doesn't exist");
+        }
+
+        public void Buy(Person person, string productName, int wantedQuantity)
+        {
+            int productId = GetProductId(productName);
+            if (!EnoughProduct(productId, wantedQuantity)) return;
+            int currentQuantity = 0;
+            int price = 0;
+            Shop shopWithCheapestProduct = Shops[0];
+            var boxWithCheapestProduct = new Box();
+            var proceeds = new List<Tuple<Shop, int>>();
+            while (currentQuantity != wantedQuantity)
+            {
+                int minimalPrice = int.MaxValue;
+                int cheapestProductQuantity = 0;
+                foreach (Shop shop in Shops)
+                {
+                    foreach (Box box in shop.Boxes
+                        .Where(box => box.ProductId == productId)
+                        .Where(box => box.ProductPrice < minimalPrice && box.Quantity > 0))
+                    {
+                        minimalPrice = box.ProductPrice;
+                        cheapestProductQuantity = box.Quantity;
+                        shopWithCheapestProduct = shop;
+                        boxWithCheapestProduct = box;
+                    }
+                }
+
+                int currentPrice;
+                if (currentQuantity + cheapestProductQuantity >= wantedQuantity)
+                {
+                    currentQuantity = wantedQuantity;
+                    currentPrice = (wantedQuantity - currentQuantity) * minimalPrice;
+                    price += currentPrice;
+                    proceeds.Add(new Tuple<Shop, int>(
+                        shopWithCheapestProduct,
+                        currentPrice));
+                    boxWithCheapestProduct.Quantity -= wantedQuantity - currentQuantity;
+                }
+                else
+                {
+                    currentQuantity += cheapestProductQuantity;
+                    currentPrice = cheapestProductQuantity * currentQuantity;
+                    price += currentPrice;
+                    proceeds.Add(new Tuple<Shop, int>(
+                        shopWithCheapestProduct,
+                        currentPrice));
+                    boxWithCheapestProduct.Quantity = 0;
+                }
+            }
+
+            if (person.Money - price < 0)
+            {
+                throw new NotEnoughMoneyException(
+                    $"You don't have enough money to buy {wantedQuantity} pieces of {productName}");
+            }
+
+            person.Money -= price;
+            foreach (Tuple<Shop, int> proceed in proceeds)
+            {
+                proceed.Item1.Proceeds += proceed.Item2;
+            }
+        }
+
+        private bool EnoughProduct(int productId, int wantedQuantity)
+        {
+            foreach (Product product in Products.Where(product => product.Id == productId))
+            {
+                if (product.TotalQuantity >= wantedQuantity)
+                {
+                    return true;
+                }
+
+                throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product");
             }
 
             return false;
