@@ -7,65 +7,72 @@ namespace Shops.Services
 {
     public class Shop
     {
+        private string _address;
         public Shop(int id, string name, string address)
         {
             Id = id;
             Name = name;
-            Address = address;
+            _address = address;
         }
 
         public int Id { get; private set; }
 
         public string Name { get; private set; }
 
-        public string Address { get; private set; }
-
-        public int Proceeds { get; set; } = 0;
+        public int Proceeds { get; set; }
 
         public List<Box> Boxes { get; private set; } = new List<Box>();
 
-        public void DeliveryOfProducts(ShopManger shopManager, List<Tuple<string, int, int>> delivery)
+        public string DeliveryOfProducts(ShopManager shopManager, List<Tuple<string, int, int>> delivery)
         {
-            List<string> notAddedProducts = new List<string>();
+            var notAddedProducts = new List<string>();
             string reason = string.Empty;
-            foreach (Tuple<string, int, int> tuple in delivery)
+            foreach ((string productName, int productPrice, int quantity) in delivery)
             {
                 try
                 {
-                    Box wantedBox = BoxWithProduct(shopManager.GetProductId(tuple.Item1));
+                    int productId = shopManager.GetProductId(productName);
+                    Box wantedBox = BoxWithProduct(productId);
                     if (wantedBox == null)
                     {
-                        Boxes.Add(new Box(shopManager.GetProductId(tuple.Item1), tuple.Item2, tuple.Item3));
+                        Boxes.Add(new Box(productId, productPrice, quantity));
                     }
                     else
                     {
-                        wantedBox.Quantity += tuple.Item3;
+                        wantedBox.ProductPrice = productPrice;
+                        wantedBox.Quantity += quantity;
                     }
+
+                    Product product = shopManager.Products.Find(product => product.Id == productId);
+                    product.TotalQuantity += quantity;
                 }
                 catch (NotInBaseException e)
                 {
-                    notAddedProducts.Add(tuple.Item1);
+                    notAddedProducts.Add(productName);
                     reason = e.Message;
                 }
+            }
 
-                if (notAddedProducts.Any())
-                {
-                    Console.WriteLine($"These products weren't added: {notAddedProducts}, because {reason}");
-                }
+            if (!notAddedProducts.Any()) return "Delivery is successful!";
+            string notAddedProductsString =
+                notAddedProducts.Aggregate(string.Empty, (current, product) => current + (product + ", "));
+
+            notAddedProductsString = notAddedProductsString.Remove(notAddedProductsString.Length - 1);
+            return $"These products weren't added: {notAddedProductsString} because {reason.ToLower()}";
+        }
+
+        public void ChangeProductPrice(ShopManager shopManager, string productName, int newPrice)
+        {
+            int productId = shopManager.GetProductId(productName);
+            foreach (Box box in Boxes.Where(box => box.ProductId == productId))
+            {
+                box.ProductPrice = newPrice;
             }
         }
 
         private Box BoxWithProduct(int productId)
         {
-            foreach (var box in Boxes)
-            {
-                if (box.ProductId == productId)
-                {
-                    return box;
-                }
-            }
-
-            return null;
+            return Boxes.FirstOrDefault(box => box.ProductId == productId);
         }
     }
 }

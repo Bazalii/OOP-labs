@@ -17,6 +17,6 @@
 
         public int Quantity { get; set; }
 
-        public int ProductPrice { get; private set; }
+        public int ProductPrice { get; set; }
     }
 }

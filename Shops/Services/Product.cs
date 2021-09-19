@@ -12,6 +12,6 @@
 
         public string Name { get; private set; }
 
-        public int TotalQuantity { get; private set; }
+        public int TotalQuantity { get; set; }
     }
 }
