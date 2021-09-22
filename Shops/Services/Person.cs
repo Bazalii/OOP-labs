@@ -8,7 +8,7 @@
             Money = money;
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public int Money { get; set; }
     }

@@ -15,13 +15,13 @@ namespace Shops.Services
             _address = address;
         }
 
-        public int Id { get; private set; }
+        public int Id { get; }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public int Proceeds { get; set; }
 
-        public List<Box> Boxes { get; private set; } = new List<Box>();
+        public List<Box> Boxes { get; } = new ();
 
         public string DeliveryOfProducts(ShopManager shopManager, List<Tuple<string, int, int>> delivery)
         {
@@ -64,10 +64,8 @@ namespace Shops.Services
         public void ChangeProductPrice(ShopManager shopManager, string productName, int newPrice)
         {
             int productId = shopManager.GetProductId(productName);
-            foreach (Box box in Boxes.Where(box => box.ProductId == productId))
-            {
-                box.ProductPrice = newPrice;
-            }
+            Box wantedBox = Boxes.Find(box => box.ProductId == productId);
+            wantedBox.ProductPrice = newPrice;
         }
 
         private Box BoxWithProduct(int productId)

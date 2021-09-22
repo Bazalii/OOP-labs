@@ -14,9 +14,9 @@ namespace Shops.Services
         {
         }
 
-        public List<Product> Products { get; private set; } = new List<Product>();
+        public List<Product> Products { get; private set; } = new ();
 
-        private List<Shop> Shops { get; set; } = new List<Shop>();
+        private List<Shop> Shops { get; } = new ();
 
         public void AddNewShop(string shopName, string shopAddress)
         {
@@ -36,12 +36,8 @@ namespace Shops.Services
 
         public int GetProductId(string productName)
         {
-            foreach (Product product in Products.Where(product => product.Name == productName))
-            {
-                return product.Id;
-            }
-
-            throw new NotInBaseException("The product that you want to buy doesn't exist");
+            Product wantedProduct = Products.Find(product => product.Name == productName);
+            return wantedProduct?.Id ?? throw new NotInBaseException("The product that you want to buy doesn't exist");
         }
 
         /*
@@ -116,12 +112,8 @@ namespace Shops.Services
 
         private int GetShopId(string shopName)
         {
-            foreach (Shop shop in Shops.Where(shop => shop.Name == shopName))
-            {
-                return shop.Id;
-            }
-
-            throw new NotInBaseException("The product that you want to buy doesn't exist");
+            Shop wantedShop = Shops.Find(shop => shop.Name == shopName);
+            return wantedShop?.Id ?? throw new NotInBaseException("The product that you want to buy doesn't exist");
         }
 
         private bool EnoughProduct(int productId, int wantedQuantity)

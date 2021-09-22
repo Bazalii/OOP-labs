@@ -13,7 +13,7 @@
             Quantity = quantity;
         }
 
-        public int ProductId { get; private set; }
+        public int ProductId { get; }
 
         public int Quantity { get; set; }
 
