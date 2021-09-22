@@ -27,20 +27,18 @@ namespace Shops.Tests
         
         
         [Test]
-        public void DeliveryOfProducts_DeliverNotRegisteredProductsToTheShop_ReceiveMessage()
+        public void DeliveryOfProducts_DeliverNotRegisteredProductsToTheShop_ThrowException()
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
-            string deliveryOutput = shopToTest.DeliveryOfProducts(_shopManager, new List<Tuple<string, int, int>>()
+            
+            Assert.Catch<NotInBaseException>(() =>
             {
-                new ("Lay's", 100, 10),
-                /*
-                 * Next two products are not in base and corresponding exception
-                 * is processed, check Console output for message
-                 */
-                new ("Ginger", 15, 10),
-                new ("IceCream", 50, 150)
+                shopToTest.DeliveryOfProducts(_shopManager, new List<Box>()
+                {
+                    new (_shopManager.GetProductId("Lay's"), 100, 10),
+                    new (_shopManager.GetProductId("Ginger"), 15, 10),
+                });
             });
-            Assert.IsTrue(deliveryOutput == "These products weren't added: Ginger, IceCream, because the product that you want to buy doesn't exist");
         }    
             
         
@@ -48,11 +46,11 @@ namespace Shops.Tests
         public void DeliveryOfProducts_DeliverProductsToTheShop_ShopContainsBoxesWithRegisteredProducts()
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
-            shopToTest.DeliveryOfProducts(_shopManager, new List<Tuple<string, int, int>>
+            shopToTest.DeliveryOfProducts(_shopManager, new List<Box>
             {
-                new ("Lay's", 100, 10),
-                new ("Coca-Cola", 50, 5),
-                new ("Bread", 30, 15),
+                new (_shopManager.GetProductId("Lay's"), 100, 10),
+                new (_shopManager.GetProductId("Coca-Cola"), 50, 5),
+                new (_shopManager.GetProductId("Bread"), 30, 15)
             });
             Assert.True(shopToTest.Boxes[0].ProductId == 1 && 
                         shopToTest.Boxes[0].ProductPrice == 100 &&
@@ -69,10 +67,10 @@ namespace Shops.Tests
         public void ChangeProductPrice_SetAndChangeProductPrice_PriceChanged()
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
-            shopToTest.DeliveryOfProducts(_shopManager, new List<Tuple<string, int, int>>()
+            shopToTest.DeliveryOfProducts(_shopManager, new List<Box>()
             {
-                new ("Lay's", 100, 10),
-                new ("Coca-Cola", 50, 5)
+                new (_shopManager.GetProductId("Lay's"), 100, 10),
+                new (_shopManager.GetProductId("Coca-Cola"), 50, 5)
             });
             Assert.IsTrue(shopToTest.Boxes[0].ProductPrice == 100);
             Assert.IsTrue(shopToTest.Boxes[1].ProductPrice == 50);
@@ -98,13 +96,13 @@ namespace Shops.Tests
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
             Person tester = new ("Ivan", 1000);
-            shopToTest.DeliveryOfProducts(_shopManager, new List<Tuple<string, int, int>>
+            shopToTest.DeliveryOfProducts(_shopManager, new List<Box>
             {
-                new ("Lay's", 100, 7)
+                new (_shopManager.GetProductId("Lay's"), 100, 7)
             });
             Assert.Catch<NotEnoughProductException>(() =>
                 {
-                    _shopManager.Buy(tester, new List<Tuple<string, int>>
+                    _shopManager.Buy(tester, new List<Order>
                     {
                         new ("Lay's", 10)
                     });
@@ -117,13 +115,13 @@ namespace Shops.Tests
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
             Person tester = new ("Ivan", 1000);
-            shopToTest.DeliveryOfProducts(_shopManager, new List<Tuple<string, int, int>>
+            shopToTest.DeliveryOfProducts(_shopManager, new List<Box>
             {
-                new ("Lay's", 110, 15)
+                new (_shopManager.GetProductId("Lay's"), 110, 15)
             });
             Assert.Catch<NotEnoughMoneyException>(() =>
                 {
-                    _shopManager.Buy(tester, new List<Tuple<string, int>>
+                    _shopManager.Buy(tester, new List<Order>
                     {
                         new ("Lay's", 10)
                     });
@@ -138,22 +136,22 @@ namespace Shops.Tests
             Shop firstShop = _shopManager.FindShop("Diksi");
             Shop secondShop = _shopManager.FindShop("Pyatorochka");
             Shop thirdShop = _shopManager.FindShop("Okey");
-            firstShop.DeliveryOfProducts(_shopManager, new List<Tuple<string, int, int>>
+            firstShop.DeliveryOfProducts(_shopManager, new List<Box>
             {
-                new ("Lay's", 100, 3),
-                new ("Coca-Cola", 40, 1),
+                new (_shopManager.GetProductId("Lay's"), 100, 3),
+                new (_shopManager.GetProductId("Coca-Cola"), 40, 1)
             });
-            secondShop.DeliveryOfProducts(_shopManager, new List<Tuple<string, int, int>>
+            secondShop.DeliveryOfProducts(_shopManager, new List<Box>
             {
-                new ("Lay's", 150, 2),
-                new ("Coca-Cola", 50, 5),
+                new (_shopManager.GetProductId("Lay's"), 150, 2),
+                new (_shopManager.GetProductId("Coca-Cola"), 50, 5)
             });
-            thirdShop.DeliveryOfProducts(_shopManager, new List<Tuple<string, int, int>>
+            thirdShop.DeliveryOfProducts(_shopManager, new List<Box>
             {
-                new ("Lay's", 90, 1),
-                new ("Coca-Cola", 100, 3),
+                new (_shopManager.GetProductId("Lay's"), 90, 1),
+                new (_shopManager.GetProductId("Coca-Cola"), 100, 3),
             });
-            _shopManager.Buy(tester, new List<Tuple<string, int>>
+            _shopManager.Buy(tester, new List<Order>
             {
                 new ("Lay's", 5),
                 new ("Coca-Cola", 2)

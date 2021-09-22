@@ -45,13 +45,14 @@ namespace Shops.Services
          * function finds the cheapest set of products that person
          * wants to buy in all existing shops
          */
-        public void Buy(Person person, List<Tuple<string, int>> productsToBuy)
+        public void Buy(Person person, List<Order> productsToBuy)
         {
             int price = 0;
-            var proceeds = new List<Tuple<Shop, int>>();
-            foreach ((string productName, int wantedQuantity) in productsToBuy)
+            var proceeds = new List<Proceed>();
+            foreach (Order order in productsToBuy)
             {
-                int productId = GetProductId(productName);
+                int productId = GetProductId(order.ProductName);
+                int wantedQuantity = order.ProductQuantity;
                 if (!EnoughProduct(productId, wantedQuantity)) return;
                 int currentQuantity = 0;
                 Shop shopWithCheapestProduct = Shops[0];
@@ -80,7 +81,7 @@ namespace Shops.Services
                         boxWithCheapestProduct.Quantity -= wantedQuantity - currentQuantity;
                         currentQuantity = wantedQuantity;
                         price += currentPrice;
-                        proceeds.Add(new Tuple<Shop, int>(
+                        proceeds.Add(new Proceed(
                             shopWithCheapestProduct,
                             currentPrice));
                     }
@@ -89,7 +90,7 @@ namespace Shops.Services
                         currentQuantity += cheapestProductQuantity;
                         currentPrice = boxWithCheapestProduct.ProductPrice * cheapestProductQuantity;
                         price += currentPrice;
-                        proceeds.Add(new Tuple<Shop, int>(
+                        proceeds.Add(new Proceed(
                             shopWithCheapestProduct,
                             currentPrice));
                         boxWithCheapestProduct.Quantity = 0;
@@ -104,9 +105,9 @@ namespace Shops.Services
             }
 
             person.Money -= price;
-            foreach ((Shop shop, int proceed) in proceeds)
+            foreach (Proceed proceed in proceeds)
             {
-                shop.Proceeds += proceed;
+                proceed.Shop.Proceeds += proceed.ProceedValue;
             }
         }
 
@@ -118,17 +119,10 @@ namespace Shops.Services
 
         private bool EnoughProduct(int productId, int wantedQuantity)
         {
-            foreach (Product product in Products.Where(product => product.Id == productId))
-            {
-                if (product.TotalQuantity >= wantedQuantity)
-                {
-                    return true;
-                }
-
-                throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product");
-            }
-
-            return false;
+            Product wantedProduct = Products.Find(product => product.Id == productId);
+            return wantedProduct == null || (wantedProduct.TotalQuantity <= wantedQuantity)
+                ? throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product")
+                : true;
         }
     }
 }
