@@ -30,7 +30,7 @@ namespace Shops.Tests
             
             Assert.Catch<NotInBaseException>(() =>
             {
-                shopToTest.DeliverProducts(_shopManager, new List<Box>()
+                shopToTest.DeliverProducts(new List<Box>()
                 {
                     new (_shopManager.GetProduct("Lay's"), 100, 10),
                     new (_shopManager.GetProduct("Ginger"), 15, 10),
@@ -42,7 +42,7 @@ namespace Shops.Tests
         public void DeliveryOfProducts_DeliverProductsToTheShop_ShopContainsBoxesWithRegisteredProducts()
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
-            shopToTest.DeliverProducts(_shopManager, new List<Box>
+            shopToTest.DeliverProducts(new List<Box>
             {
                 new (_shopManager.GetProduct("Lay's"), 100, 10),
                 new (_shopManager.GetProduct("Coca-Cola"), 50, 5),
@@ -63,7 +63,7 @@ namespace Shops.Tests
         public void ChangeProductPrice_SetAndChangeProductPrice_PriceChanged()
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
-            shopToTest.DeliverProducts(_shopManager, new List<Box>()
+            shopToTest.DeliverProducts(new List<Box>()
             {
                 new (_shopManager.GetProduct("Lay's"), 100, 10),
                 new (_shopManager.GetProduct("Coca-Cola"), 50, 5)
@@ -92,7 +92,7 @@ namespace Shops.Tests
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
             Person tester = new ("Ivan", 1000);
-            shopToTest.DeliverProducts(_shopManager, new List<Box>
+            shopToTest.DeliverProducts(new List<Box>
             {
                 new (_shopManager.GetProduct("Lay's"), 100, 7)
             });
@@ -111,7 +111,7 @@ namespace Shops.Tests
         {
             Shop shopToTest = _shopManager.FindShop("Diksi");
             Person tester = new ("Ivan", 1000);
-            shopToTest.DeliverProducts(_shopManager, new List<Box>
+            shopToTest.DeliverProducts(new List<Box>
             {
                 new (_shopManager.GetProduct("Lay's"), 110, 15)
             });
@@ -132,17 +132,17 @@ namespace Shops.Tests
             Shop firstShop = _shopManager.FindShop("Diksi");
             Shop secondShop = _shopManager.FindShop("Pyatorochka");
             Shop thirdShop = _shopManager.FindShop("Okey");
-            firstShop.DeliverProducts(_shopManager, new List<Box>
+            firstShop.DeliverProducts(new List<Box>
             {
                 new (_shopManager.GetProduct("Lay's"), 100, 3),
                 new (_shopManager.GetProduct("Coca-Cola"), 40, 1)
             });
-            secondShop.DeliverProducts(_shopManager, new List<Box>
+            secondShop.DeliverProducts(new List<Box>
             {
                 new (_shopManager.GetProduct("Lay's"), 150, 2),
                 new (_shopManager.GetProduct("Coca-Cola"), 50, 5)
             });
-            thirdShop.DeliverProducts(_shopManager, new List<Box>
+            thirdShop.DeliverProducts(new List<Box>
             {
                 new (_shopManager.GetProduct("Lay's"), 90, 1),
                 new (_shopManager.GetProduct("Coca-Cola"), 100, 3),

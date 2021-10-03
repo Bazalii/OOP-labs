@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Shops.Services;
 
 namespace Shops.Entities
 {
@@ -25,7 +24,7 @@ namespace Shops.Entities
 
         public List<Box> Boxes { get; } = new ();
 
-        public void DeliverProducts(ShopManager shopManager, List<Box> delivery)
+        public void DeliverProducts(List<Box> delivery)
         {
             foreach (Box box in delivery)
             {
@@ -40,8 +39,7 @@ namespace Shops.Entities
                     wantedBox.Quantity += box.Quantity;
                 }
 
-                Product product = shopManager.Products.Find(product => product.Id == box.Product.Id);
-                product.TotalQuantity += box.Quantity;
+                box.Product.TotalQuantity += box.Quantity;
             }
         }
 

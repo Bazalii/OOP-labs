@@ -58,12 +58,13 @@ namespace Shops.Services
                 {
                     int cheapestProductQuantity = 0;
                     int currentPrice = 0;
-                    int minimalPrice = FindMinimalProductPrice(
+                    int minimalPrice = int.MaxValue;
+                    GetMinimalProductStatistics(
+                        ref minimalPrice,
                         order.Product,
                         ref cheapestProductQuantity,
                         ref shopWithCheapestProduct,
                         ref boxWithCheapestProduct);
-
                     BuyProductsInShop(
                         ref currentQuantity,
                         cheapestProductQuantity,
@@ -80,26 +81,24 @@ namespace Shops.Services
             PayForOrder(person, price, proceeds);
         }
 
-        private int FindMinimalProductPrice(
+        private void GetMinimalProductStatistics(
+            ref int minimalPrice,
             Product product,
             ref int cheapestProductQuantity,
             ref Shop shopWithCheapestProduct,
             ref Box boxWithCheapestProduct)
         {
-            int minimalPrice = int.MaxValue;
             foreach (Shop shop in Shops)
             {
-                foreach (Box box in shop.Boxes
-                    .Where(box => box.Product.Id == product.Id && box.ProductPrice < minimalPrice && box.Quantity > 0))
+                foreach (Box box in shop.Boxes)
                 {
+                    if (box.Product.Id != product.Id || box.ProductPrice >= minimalPrice || box.Quantity <= 0) continue;
                     minimalPrice = box.ProductPrice;
                     cheapestProductQuantity = box.Quantity;
                     shopWithCheapestProduct = shop;
                     boxWithCheapestProduct = box;
                 }
             }
-
-            return minimalPrice;
         }
 
         private void BuyProductsInShop(
