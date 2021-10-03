@@ -53,51 +53,95 @@ namespace Shops.Services
             {
                 int productId = GetProductId(order.Name);
                 int wantedQuantity = order.Quantity;
-                if (!EnoughProduct(productId, wantedQuantity)) return;
+                if (!EnoughProduct(productId, wantedQuantity))
+                    throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product");
                 int currentQuantity = 0;
                 Shop shopWithCheapestProduct = Shops[0];
                 var boxWithCheapestProduct = new Box();
                 while (currentQuantity != wantedQuantity)
                 {
-                    int minimalPrice = int.MaxValue;
                     int cheapestProductQuantity = 0;
-                    foreach (Shop shop in Shops)
-                    {
-                        foreach (Box box in shop.Boxes
-                            .Where(box => box.ProductId == productId)
-                            .Where(box => box.ProductPrice < minimalPrice && box.Quantity > 0))
-                        {
-                            minimalPrice = box.ProductPrice;
-                            cheapestProductQuantity = box.Quantity;
-                            shopWithCheapestProduct = shop;
-                            boxWithCheapestProduct = box;
-                        }
-                    }
+                    int currentPrice = 0;
+                    int minimalPrice = FindShopWithCheapestProductPrice(
+                        productId,
+                        ref cheapestProductQuantity,
+                        ref shopWithCheapestProduct,
+                        ref boxWithCheapestProduct);
 
-                    int currentPrice;
-                    if (currentQuantity + cheapestProductQuantity >= wantedQuantity)
-                    {
-                        currentPrice = (wantedQuantity - currentQuantity) * minimalPrice;
-                        boxWithCheapestProduct.Quantity -= wantedQuantity - currentQuantity;
-                        currentQuantity = wantedQuantity;
-                        price += currentPrice;
-                        proceeds.Add(new Proceed(
-                            shopWithCheapestProduct,
-                            currentPrice));
-                    }
-                    else
-                    {
-                        currentQuantity += cheapestProductQuantity;
-                        currentPrice = boxWithCheapestProduct.ProductPrice * cheapestProductQuantity;
-                        price += currentPrice;
-                        proceeds.Add(new Proceed(
-                            shopWithCheapestProduct,
-                            currentPrice));
-                        boxWithCheapestProduct.Quantity = 0;
-                    }
+                    BuyProductsInShop(
+                        ref currentQuantity,
+                        cheapestProductQuantity,
+                        wantedQuantity,
+                        ref currentPrice,
+                        minimalPrice,
+                        ref price,
+                        ref boxWithCheapestProduct,
+                        ref shopWithCheapestProduct,
+                        proceeds);
                 }
             }
 
+            PayForOrder(person, price, proceeds);
+        }
+
+        private int FindShopWithCheapestProductPrice(
+            int productId,
+            ref int cheapestProductQuantity,
+            ref Shop shopWithCheapestProduct,
+            ref Box boxWithCheapestProduct)
+        {
+            int minimalPrice = int.MaxValue;
+            foreach (Shop shop in Shops)
+            {
+                foreach (Box box in shop.Boxes
+                    .Where(box => box.ProductId == productId)
+                    .Where(box => box.ProductPrice < minimalPrice && box.Quantity > 0))
+                {
+                    minimalPrice = box.ProductPrice;
+                    cheapestProductQuantity = box.Quantity;
+                    shopWithCheapestProduct = shop;
+                    boxWithCheapestProduct = box;
+                }
+            }
+
+            return minimalPrice;
+        }
+
+        private void BuyProductsInShop(
+            ref int currentQuantity,
+            int cheapestProductQuantity,
+            int wantedQuantity,
+            ref int currentPrice,
+            int minimalPrice,
+            ref int price,
+            ref Box boxWithCheapestProduct,
+            ref Shop shopWithCheapestProduct,
+            ICollection<Proceed> proceeds)
+        {
+            if (currentQuantity + cheapestProductQuantity >= wantedQuantity)
+            {
+                currentPrice = (wantedQuantity - currentQuantity) * minimalPrice;
+                boxWithCheapestProduct.Quantity -= wantedQuantity - currentQuantity;
+                currentQuantity = wantedQuantity;
+                price += currentPrice;
+                proceeds.Add(new Proceed(
+                    shopWithCheapestProduct,
+                    currentPrice));
+            }
+            else
+            {
+                currentQuantity += cheapestProductQuantity;
+                currentPrice = boxWithCheapestProduct.ProductPrice * cheapestProductQuantity;
+                price += currentPrice;
+                proceeds.Add(new Proceed(
+                    shopWithCheapestProduct,
+                    currentPrice));
+                boxWithCheapestProduct.Quantity = 0;
+            }
+        }
+
+        private void PayForOrder(Person person, int price, List<Proceed> proceeds)
+        {
             if (person.Money - price < 0)
             {
                 throw new NotEnoughMoneyException(
@@ -120,9 +164,7 @@ namespace Shops.Services
         private bool EnoughProduct(int productId, int wantedQuantity)
         {
             Product wantedProduct = Products.Find(product => product.Id == productId);
-            return wantedProduct == null || (wantedProduct.TotalQuantity <= wantedQuantity)
-                ? throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product")
-                : true;
+            return wantedProduct != null && wantedProduct.TotalQuantity > wantedQuantity;
         }
     }
 }
