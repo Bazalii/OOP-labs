@@ -1,4 +1,5 @@
-﻿using Shops.Tools;
+﻿using System;
+using Shops.Tools;
 
 namespace Shops.Entities
 {
@@ -6,8 +7,8 @@ namespace Shops.Entities
     {
         public ProductOrder(Product product, int quantity)
         {
-            Product = product ?? throw new NullValueException("Name that has been passed is null!");
-            if (quantity <= 0) throw new NegativeValueException("Quantity cannot be negative!");
+            Product = product ?? throw new ArgumentNullException(nameof(product));
+            if (quantity <= 0) throw new ArgumentException("Quantity cannot be negative!");
             Quantity = quantity;
         }
 

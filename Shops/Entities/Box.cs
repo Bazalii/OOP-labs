@@ -1,4 +1,5 @@
-﻿using Shops.Tools;
+﻿using System;
+using Shops.Tools;
 
 namespace Shops.Entities
 {
@@ -13,10 +14,10 @@ namespace Shops.Entities
 
         public Box(Product product, int productPrice, int quantity)
         {
-            Product = product;
-            if (productPrice < 0) throw new NegativeValueException("Price of product cannot be negative!");
+            Product = product ?? throw new ArgumentNullException(nameof(product));
+            if (productPrice < 0) throw new ArgumentException("Price of product cannot be negative!");
             ProductPrice = productPrice;
-            if (quantity < 0) throw new NegativeValueException("Quantity of product cannot be negative!");
+            if (quantity < 0) throw new ArgumentException("Quantity of product cannot be negative!");
             Quantity = quantity;
         }
 

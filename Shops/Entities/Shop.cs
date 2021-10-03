@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shops.Services;
 using Shops.Tools;
@@ -7,18 +8,19 @@ namespace Shops.Entities
 {
     public class Shop
     {
-        private string _address;
         public Shop(int id, string name, string address)
         {
-            if (id < 0) throw new NegativeValueException("Id of shop cannot be negative!");
+            if (id < 0) throw new ArgumentException("Id of shop cannot be negative!");
             Id = id;
-            Name = name;
-            _address = address;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Address = address ?? throw new ArgumentNullException(nameof(address));
         }
 
         public int Id { get; }
 
         public string Name { get; }
+
+        public string Address { get; }
 
         public int Proceeds { get; set; }
 
