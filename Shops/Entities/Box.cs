@@ -6,18 +6,21 @@ namespace Shops.Entities
     {
         public Box()
         {
+            Product = null;
+            Quantity = 0;
+            ProductPrice = 0;
         }
 
-        public Box(int productId, int productPrice, int quantity)
+        public Box(Product product, int productPrice, int quantity)
         {
-            ProductId = productId;
+            Product = product;
             if (productPrice < 0) throw new NegativeValueException("Price of product cannot be negative!");
             ProductPrice = productPrice;
             if (quantity < 0) throw new NegativeValueException("Quantity of product cannot be negative!");
             Quantity = quantity;
         }
 
-        public int ProductId { get; }
+        public Product Product { get; }
 
         public int Quantity { get; set; }
 

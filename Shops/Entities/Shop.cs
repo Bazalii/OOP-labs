@@ -28,7 +28,7 @@ namespace Shops.Entities
         {
             foreach (Box box in delivery)
             {
-                Box wantedBox = GetBoxWithProduct(box.ProductId);
+                Box wantedBox = GetBoxWithProduct(box.Product.Id);
                 if (wantedBox == null)
                 {
                     Boxes.Add(box);
@@ -39,20 +39,20 @@ namespace Shops.Entities
                     wantedBox.Quantity += box.Quantity;
                 }
 
-                Product product = shopManager.Products.Find(product => product.Id == box.ProductId);
+                Product product = shopManager.Products.Find(product => product.Id == box.Product.Id);
                 product.TotalQuantity += box.Quantity;
             }
         }
 
         public void ChangeProductPrice(int productId, int newPrice)
         {
-            Box wantedBox = Boxes.Find(box => box.ProductId == productId);
+            Box wantedBox = Boxes.Find(box => box.Product.Id == productId);
             wantedBox.ProductPrice = newPrice;
         }
 
         private Box GetBoxWithProduct(int productId)
         {
-            return Boxes.FirstOrDefault(box => box.ProductId == productId);
+            return Boxes.FirstOrDefault(box => box.Product.Id == productId);
         }
     }
 }

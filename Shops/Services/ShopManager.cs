@@ -31,6 +31,12 @@ namespace Shops.Services
             Products.Add(new Product(_productIds += 1, name));
         }
 
+        public Product GetProduct(string productName)
+        {
+            return Products.Find(product => product.Name == productName) ??
+                   throw new NotInBaseException("The product that you want to buy doesn't exist");
+        }
+
         public int GetProductId(string productName)
         {
             Product wantedProduct = Products.Find(product => product.Name == productName);
@@ -48,7 +54,7 @@ namespace Shops.Services
             var proceeds = new List<Proceed>();
             foreach (ProductOrder order in productsToBuy)
             {
-                int productId = GetProductId(order.Name);
+                int productId = GetProductId(order.Product.Name);
                 int wantedQuantity = order.Quantity;
                 if (!EnoughProduct(productId, wantedQuantity))
                     throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product");
@@ -91,7 +97,7 @@ namespace Shops.Services
             foreach (Shop shop in Shops)
             {
                 foreach (Box box in shop.Boxes
-                    .Where(box => box.ProductId == productId)
+                    .Where(box => box.Product.Id == productId)
                     .Where(box => box.ProductPrice < minimalPrice && box.Quantity > 0))
                 {
                     minimalPrice = box.ProductPrice;
