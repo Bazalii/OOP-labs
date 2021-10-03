@@ -8,33 +8,33 @@ namespace Shops.Services
 {
     public class ShopManager
     {
+        private readonly List<Product> _products = new ();
+
+        private readonly List<Shop> _shops = new ();
+
         private int _productIds;
 
         private int _shopIds;
 
-        public List<Product> Products { get; private set; } = new ();
-
-        private List<Shop> Shops { get; } = new ();
-
         public void AddNewShop(string shopName, string shopAddress)
         {
-            Shops.Add(new Shop(_shopIds += 1, shopName, shopAddress));
+            _shops.Add(new Shop(_shopIds += 1, shopName, shopAddress));
         }
 
         public Shop FindShop(string shopName)
         {
             int shopId = GetShopId(shopName);
-            return Shops.FirstOrDefault(shop => shop.Id == shopId);
+            return _shops.FirstOrDefault(shop => shop.Id == shopId);
         }
 
         public void RegisterNewProduct(string name)
         {
-            Products.Add(new Product(_productIds += 1, name));
+            _products.Add(new Product(_productIds += 1, name));
         }
 
         public Product GetProduct(string productName)
         {
-            return Products.Find(product => product.Name == productName) ??
+            return _products.Find(product => product.Name == productName) ??
                    throw new NotInBaseException("The product that you want to buy doesn't exist");
         }
 
@@ -50,20 +50,20 @@ namespace Shops.Services
             foreach (ProductOrder order in productsToBuy)
             {
                 int wantedQuantity = order.Quantity;
-                if (!EnoughProduct(order.Product.Id, wantedQuantity))
-                    throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product");
-                proceeds.AddRange(GetShopProceed(order, ref price));
+                if (!EnoughProduct(order.Product, wantedQuantity))
+                    throw new NotEnoughProductException($"$You cannot buy {wantedQuantity} pieces of this product");
+                proceeds.AddRange(GetShopProceeds(order, ref price));
             }
 
             PayForOrder(person, price, proceeds);
         }
 
-        private List<Proceed> GetShopProceed(ProductOrder order, ref int price)
+        private List<Proceed> GetShopProceeds(ProductOrder order, ref int price)
         {
             List<Proceed> currentProceeds = new ();
             int wantedQuantity = order.Quantity;
             int currentQuantity = 0;
-            Shop shopWithCheapestProduct = Shops[0];
+            Shop shopWithCheapestProduct = _shops[0];
             var boxWithCheapestProduct = new Box();
             int minimalPrice = int.MaxValue;
             while (currentQuantity != wantedQuantity)
@@ -98,17 +98,17 @@ namespace Shops.Services
 
         private void GetMinimalProductStatistics(
             ref int minimalPrice,
-            Product product,
+            Product inputProduct,
             ref int cheapestProductQuantity,
             ref Shop shopWithCheapestProduct,
             ref Box boxWithCheapestProduct)
         {
             minimalPrice = int.MaxValue;
-            foreach (Shop shop in Shops)
+            foreach (Shop shop in _shops)
             {
                 foreach (Box box in shop.Boxes)
                 {
-                    if (box.Product.Id != product.Id || box.ProductPrice >= minimalPrice || box.Quantity <= 0) continue;
+                    if (box.Product.Id != inputProduct.Id || box.ProductPrice >= minimalPrice || box.Quantity <= 0) continue;
                     minimalPrice = box.ProductPrice;
                     cheapestProductQuantity = box.Quantity;
                     shopWithCheapestProduct = shop;
@@ -158,13 +158,13 @@ namespace Shops.Services
 
         private int GetShopId(string shopName)
         {
-            Shop wantedShop = Shops.Find(shop => shop.Name == shopName);
-            return wantedShop?.Id ?? throw new NotInBaseException("The product that you want to buy doesn't exist");
+            Shop wantedShop = _shops.Find(shop => shop.Name == shopName);
+            return wantedShop?.Id ?? throw new NotInBaseException("The shop you want to get doesn't exist");
         }
 
-        private bool EnoughProduct(int productId, int wantedQuantity)
+        private bool EnoughProduct(Product inputProduct, int wantedQuantity)
         {
-            Product wantedProduct = Products.Find(product => product.Id == productId);
+            Product wantedProduct = _products.Find(product => product.Id == inputProduct.Id);
             return wantedProduct != null && wantedProduct.TotalQuantity > wantedQuantity;
         }
     }
