@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Shops.Services;
-using Shops.Tools;
 
 namespace Shops.Entities
 {
@@ -10,10 +9,10 @@ namespace Shops.Entities
     {
         public Shop(int id, string name, string address)
         {
-            if (id < 0) throw new ArgumentException("Id of shop cannot be negative!");
+            if (id < 0) throw new ArgumentException("Id of shop cannot be negative!", nameof(id));
             Id = id;
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Address = address ?? throw new ArgumentNullException(nameof(address));
+            Name = name ?? throw new ArgumentNullException(nameof(name), "Name cannot be null!");
+            Address = address ?? throw new ArgumentNullException(nameof(address), "Name cannot be null");
         }
 
         public int Id { get; }
@@ -26,11 +25,11 @@ namespace Shops.Entities
 
         public List<Box> Boxes { get; } = new ();
 
-        public void DeliveryOfProducts(ShopManager shopManager, List<Box> delivery)
+        public void DeliverProducts(ShopManager shopManager, List<Box> delivery)
         {
             foreach (Box box in delivery)
             {
-                Box wantedBox = GetBoxWithProduct(box.Product.Id);
+                Box wantedBox = GetBoxWithProduct(box.Product);
                 if (wantedBox == null)
                 {
                     Boxes.Add(box);
@@ -46,15 +45,15 @@ namespace Shops.Entities
             }
         }
 
-        public void ChangeProductPrice(int productId, int newPrice)
+        public void ChangeProductPrice(Product product, int newPrice)
         {
-            Box wantedBox = Boxes.Find(box => box.Product.Id == productId);
+            Box wantedBox = Boxes.Find(box => box.Product.Id == product.Id);
             wantedBox.ProductPrice = newPrice;
         }
 
-        private Box GetBoxWithProduct(int productId)
+        private Box GetBoxWithProduct(Product product)
         {
-            return Boxes.FirstOrDefault(box => box.Product.Id == productId);
+            return Boxes.FirstOrDefault(box => box.Product.Id == product.Id);
         }
     }
 }

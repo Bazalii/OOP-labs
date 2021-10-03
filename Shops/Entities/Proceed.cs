@@ -1,6 +1,4 @@
 ﻿using System;
-using Shops.Services;
-using Shops.Tools;
 
 namespace Shops.Entities
 {
@@ -8,8 +6,8 @@ namespace Shops.Entities
     {
         public Proceed(Shop shop, int proceedValue)
         {
-            Shop = shop ?? throw new ArgumentNullException(nameof(shop));
-            if (ProceedValue < 0) throw new ArgumentException("Value of proceed cannot be negative!");
+            Shop = shop ?? throw new ArgumentNullException(nameof(shop), "Shop cannot be null!");
+            if (ProceedValue < 0) throw new ArgumentException("Value of proceed cannot be negative!", nameof(ProceedValue));
             ProceedValue = proceedValue;
         }
 

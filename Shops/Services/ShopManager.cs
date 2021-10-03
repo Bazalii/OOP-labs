@@ -37,12 +37,6 @@ namespace Shops.Services
                    throw new NotInBaseException("The product that you want to buy doesn't exist");
         }
 
-        public int GetProductId(string productName)
-        {
-            Product wantedProduct = Products.Find(product => product.Name == productName);
-            return wantedProduct?.Id ?? throw new NotInBaseException("The product that you want to buy doesn't exist");
-        }
-
         /*
          * If there are enough pieces of products according to base,
          * function finds the cheapest set of products that person
@@ -54,9 +48,8 @@ namespace Shops.Services
             var proceeds = new List<Proceed>();
             foreach (ProductOrder order in productsToBuy)
             {
-                int productId = GetProductId(order.Product.Name);
                 int wantedQuantity = order.Quantity;
-                if (!EnoughProduct(productId, wantedQuantity))
+                if (!EnoughProduct(order.Product.Id, wantedQuantity))
                     throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product");
                 int currentQuantity = 0;
                 Shop shopWithCheapestProduct = Shops[0];
@@ -65,8 +58,8 @@ namespace Shops.Services
                 {
                     int cheapestProductQuantity = 0;
                     int currentPrice = 0;
-                    int minimalPrice = FindShopWithCheapestProductPrice(
-                        productId,
+                    int minimalPrice = FindMinimalProductPrice(
+                        order.Product,
                         ref cheapestProductQuantity,
                         ref shopWithCheapestProduct,
                         ref boxWithCheapestProduct);
@@ -78,8 +71,8 @@ namespace Shops.Services
                         ref currentPrice,
                         minimalPrice,
                         ref price,
-                        ref boxWithCheapestProduct,
-                        ref shopWithCheapestProduct,
+                        boxWithCheapestProduct,
+                        shopWithCheapestProduct,
                         proceeds);
                 }
             }
@@ -87,8 +80,8 @@ namespace Shops.Services
             PayForOrder(person, price, proceeds);
         }
 
-        private int FindShopWithCheapestProductPrice(
-            int productId,
+        private int FindMinimalProductPrice(
+            Product product,
             ref int cheapestProductQuantity,
             ref Shop shopWithCheapestProduct,
             ref Box boxWithCheapestProduct)
@@ -97,8 +90,7 @@ namespace Shops.Services
             foreach (Shop shop in Shops)
             {
                 foreach (Box box in shop.Boxes
-                    .Where(box => box.Product.Id == productId)
-                    .Where(box => box.ProductPrice < minimalPrice && box.Quantity > 0))
+                    .Where(box => box.Product.Id == product.Id && box.ProductPrice < minimalPrice && box.Quantity > 0))
                 {
                     minimalPrice = box.ProductPrice;
                     cheapestProductQuantity = box.Quantity;
@@ -117,8 +109,8 @@ namespace Shops.Services
             ref int currentPrice,
             int minimalPrice,
             ref int price,
-            ref Box boxWithCheapestProduct,
-            ref Shop shopWithCheapestProduct,
+            Box boxWithCheapestProduct,
+            Shop shopWithCheapestProduct,
             ICollection<Proceed> proceeds)
         {
             if (currentQuantity + cheapestProductQuantity >= wantedQuantity)

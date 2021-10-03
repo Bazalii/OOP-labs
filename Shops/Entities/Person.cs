@@ -1,5 +1,4 @@
 ﻿using System;
-using Shops.Tools;
 
 namespace Shops.Entities
 {
@@ -7,8 +6,8 @@ namespace Shops.Entities
     {
         public Person(string name, int money)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            if (money < 0) throw new ArgumentException("Money of person cannot be negative!");
+            Name = name ?? throw new ArgumentNullException(nameof(name), "Name cannot be null!");
+            if (money < 0) throw new ArgumentException("Money of person cannot be negative!", nameof(money));
             Money = money;
         }
 

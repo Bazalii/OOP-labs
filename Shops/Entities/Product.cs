@@ -1,5 +1,4 @@
 ﻿using System;
-using Shops.Tools;
 
 namespace Shops.Entities
 {
@@ -7,9 +6,9 @@ namespace Shops.Entities
     {
         public Product(int id, string name)
         {
-            if (id < 0) throw new ArgumentException("Id of product cannot be negative!");
+            if (id < 0) throw new ArgumentException("Id of product cannot be negative!", nameof(id));
             Id = id;
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name = name ?? throw new ArgumentNullException(nameof(name), "Name cannot be null!");
         }
 
         public int Id { get; }
