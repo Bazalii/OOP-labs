@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shops.Entities;
 using Shops.Tools;
@@ -51,34 +52,48 @@ namespace Shops.Services
                 int wantedQuantity = order.Quantity;
                 if (!EnoughProduct(order.Product.Id, wantedQuantity))
                     throw new NotEnoughProductException($"$You can't buy {wantedQuantity} pieces of this product");
-                int currentQuantity = 0;
-                Shop shopWithCheapestProduct = Shops[0];
-                var boxWithCheapestProduct = new Box();
-                while (currentQuantity != wantedQuantity)
-                {
-                    int cheapestProductQuantity = 0;
-                    int currentPrice = 0;
-                    int minimalPrice = int.MaxValue;
-                    GetMinimalProductStatistics(
-                        ref minimalPrice,
-                        order.Product,
-                        ref cheapestProductQuantity,
-                        ref shopWithCheapestProduct,
-                        ref boxWithCheapestProduct);
-                    BuyProductsInShop(
-                        ref currentQuantity,
-                        cheapestProductQuantity,
-                        wantedQuantity,
-                        ref currentPrice,
-                        minimalPrice,
-                        ref price,
-                        boxWithCheapestProduct,
-                        shopWithCheapestProduct,
-                        proceeds);
-                }
+                proceeds.AddRange(GetShopProceed(order, ref price));
             }
 
             PayForOrder(person, price, proceeds);
+        }
+
+        private List<Proceed> GetShopProceed(ProductOrder order, ref int price)
+        {
+            List<Proceed> currentProceeds = new ();
+            int wantedQuantity = order.Quantity;
+            int currentQuantity = 0;
+            Shop shopWithCheapestProduct = Shops[0];
+            var boxWithCheapestProduct = new Box();
+            int minimalPrice = int.MaxValue;
+            while (currentQuantity != wantedQuantity)
+            {
+                int cheapestProductQuantity = 0;
+                GetMinimalProductStatistics(
+                    ref minimalPrice,
+                    order.Product,
+                    ref cheapestProductQuantity,
+                    ref shopWithCheapestProduct,
+                    ref boxWithCheapestProduct);
+                int currentBill = GetBillForBuyingProductsInShop(
+                    ref currentQuantity,
+                    cheapestProductQuantity,
+                    wantedQuantity,
+                    minimalPrice,
+                    boxWithCheapestProduct);
+                price += currentBill;
+                currentProceeds.Add(new Proceed(
+                    shopWithCheapestProduct,
+                    currentBill));
+                foreach (Proceed proceed in currentProceeds)
+                {
+                    Console.WriteLine($"{proceed.ProceedValue}");
+                }
+
+                Console.WriteLine("\n");
+            }
+
+            return currentProceeds;
         }
 
         private void GetMinimalProductStatistics(
@@ -88,6 +103,7 @@ namespace Shops.Services
             ref Shop shopWithCheapestProduct,
             ref Box boxWithCheapestProduct)
         {
+            minimalPrice = int.MaxValue;
             foreach (Shop shop in Shops)
             {
                 foreach (Box box in shop.Boxes)
@@ -101,37 +117,28 @@ namespace Shops.Services
             }
         }
 
-        private void BuyProductsInShop(
+        private int GetBillForBuyingProductsInShop(
             ref int currentQuantity,
             int cheapestProductQuantity,
             int wantedQuantity,
-            ref int currentPrice,
             int minimalPrice,
-            ref int price,
-            Box boxWithCheapestProduct,
-            Shop shopWithCheapestProduct,
-            ICollection<Proceed> proceeds)
+            Box boxWithCheapestProduct)
         {
+            int currentBill;
             if (currentQuantity + cheapestProductQuantity >= wantedQuantity)
             {
-                currentPrice = (wantedQuantity - currentQuantity) * minimalPrice;
+                currentBill = (wantedQuantity - currentQuantity) * minimalPrice;
                 boxWithCheapestProduct.Quantity -= wantedQuantity - currentQuantity;
                 currentQuantity = wantedQuantity;
-                price += currentPrice;
-                proceeds.Add(new Proceed(
-                    shopWithCheapestProduct,
-                    currentPrice));
             }
             else
             {
                 currentQuantity += cheapestProductQuantity;
-                currentPrice = boxWithCheapestProduct.ProductPrice * cheapestProductQuantity;
-                price += currentPrice;
-                proceeds.Add(new Proceed(
-                    shopWithCheapestProduct,
-                    currentPrice));
+                currentBill = boxWithCheapestProduct.ProductPrice * cheapestProductQuantity;
                 boxWithCheapestProduct.Quantity = 0;
             }
+
+            return currentBill;
         }
 
         private void PayForOrder(Person person, int price, List<Proceed> proceeds)

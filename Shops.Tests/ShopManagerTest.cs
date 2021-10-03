@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Shops.Entities;
 using Shops.Services;
@@ -152,6 +153,7 @@ namespace Shops.Tests
                 new (_shopManager.GetProduct("Lay's"), 5),
                 new (_shopManager.GetProduct("Coca-Cola"), 2)
             });
+            Console.WriteLine($"{firstShop.Boxes[0].Quantity}, {firstShop.Boxes[1].Quantity}");
             Assert.IsTrue(firstShop.Boxes[0].Quantity == 0 &&
                           firstShop.Boxes[1].Quantity == 0 &&
                           firstShop.Boxes[0].Product.Id == 1 &&
