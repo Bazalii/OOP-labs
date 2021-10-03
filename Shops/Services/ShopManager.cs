@@ -10,9 +10,6 @@ namespace Shops.Services
         private int _productIds;
 
         private int _shopIds;
-        public ShopManager()
-        {
-        }
 
         public List<Product> Products { get; private set; } = new ();
 
