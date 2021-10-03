@@ -22,8 +22,6 @@ namespace Shops.Tests
             _shopManager.RegisterNewProduct("Coca-Cola");
             _shopManager.RegisterNewProduct("Bread");
         }
-
-        
         
         [Test]
         public void DeliveryOfProducts_DeliverNotRegisteredProductsToTheShop_ThrowException()
@@ -38,8 +36,7 @@ namespace Shops.Tests
                     new (_shopManager.GetProductId("Ginger"), 15, 10),
                 });
             });
-        }    
-            
+        }
         
         [Test]
         public void DeliveryOfProducts_DeliverProductsToTheShop_ShopContainsBoxesWithRegisteredProducts()
@@ -73,8 +70,8 @@ namespace Shops.Tests
             });
             Assert.IsTrue(shopToTest.Boxes[0].ProductPrice == 100);
             Assert.IsTrue(shopToTest.Boxes[1].ProductPrice == 50);
-            shopToTest.ChangeProductPrice(_shopManager, "Lay's", 150);
-            shopToTest.ChangeProductPrice(_shopManager, "Coca-Cola", 45);
+            shopToTest.ChangeProductPrice(_shopManager.GetProductId("Lay's"), 150);
+            shopToTest.ChangeProductPrice(_shopManager.GetProductId("Coca-Cola"), 45);
             Assert.IsTrue(shopToTest.Boxes[0].ProductPrice == 150);
             Assert.IsTrue(shopToTest.Boxes[1].ProductPrice == 45);
         }
@@ -85,7 +82,7 @@ namespace Shops.Tests
             Shop shopToTest = _shopManager.FindShop("Diksi");
             Assert.Catch<NotInBaseException>(() =>
                 {
-                    shopToTest.ChangeProductPrice(_shopManager, "Ginger", 45);
+                    shopToTest.ChangeProductPrice(_shopManager.GetProductId("Ginger"), 45);
                 }
             );
         }

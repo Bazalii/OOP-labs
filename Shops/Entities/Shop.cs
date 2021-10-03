@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Shops.Services;
+using Shops.Tools;
 
 namespace Shops.Entities
 {
@@ -9,6 +10,7 @@ namespace Shops.Entities
         private string _address;
         public Shop(int id, string name, string address)
         {
+            if (id < 0) throw new NegativeValueException("Id of shop cannot be negative!");
             Id = id;
             Name = name;
             _address = address;
@@ -26,7 +28,7 @@ namespace Shops.Entities
         {
             foreach (Box box in delivery)
             {
-                Box wantedBox = BoxWithProduct(box.ProductId);
+                Box wantedBox = GetBoxWithProduct(box.ProductId);
                 if (wantedBox == null)
                 {
                     Boxes.Add(box);
@@ -42,14 +44,13 @@ namespace Shops.Entities
             }
         }
 
-        public void ChangeProductPrice(ShopManager shopManager, string productName, int newPrice)
+        public void ChangeProductPrice(int productId, int newPrice)
         {
-            int productId = shopManager.GetProductId(productName);
             Box wantedBox = Boxes.Find(box => box.ProductId == productId);
             wantedBox.ProductPrice = newPrice;
         }
 
-        private Box BoxWithProduct(int productId)
+        private Box GetBoxWithProduct(int productId)
         {
             return Boxes.FirstOrDefault(box => box.ProductId == productId);
         }
