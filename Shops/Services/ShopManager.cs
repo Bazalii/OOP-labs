@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Shops.Entities;
 using Shops.Tools;
 
 namespace Shops.Services
@@ -45,14 +45,14 @@ namespace Shops.Services
          * function finds the cheapest set of products that person
          * wants to buy in all existing shops
          */
-        public void Buy(Person person, List<Order> productsToBuy)
+        public void Buy(Person person, List<ProductOrder> productsToBuy)
         {
             int price = 0;
             var proceeds = new List<Proceed>();
-            foreach (Order order in productsToBuy)
+            foreach (ProductOrder order in productsToBuy)
             {
-                int productId = GetProductId(order.ProductName);
-                int wantedQuantity = order.ProductQuantity;
+                int productId = GetProductId(order.Name);
+                int wantedQuantity = order.Quantity;
                 if (!EnoughProduct(productId, wantedQuantity)) return;
                 int currentQuantity = 0;
                 Shop shopWithCheapestProduct = Shops[0];

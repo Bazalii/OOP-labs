@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestPlatform.Common.Interfaces;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
+using Shops.Entities;
 using Shops.Services;
 using Shops.Tools;
 
@@ -102,7 +101,7 @@ namespace Shops.Tests
             });
             Assert.Catch<NotEnoughProductException>(() =>
                 {
-                    _shopManager.Buy(tester, new List<Order>
+                    _shopManager.Buy(tester, new List<ProductOrder>
                     {
                         new ("Lay's", 10)
                     });
@@ -121,7 +120,7 @@ namespace Shops.Tests
             });
             Assert.Catch<NotEnoughMoneyException>(() =>
                 {
-                    _shopManager.Buy(tester, new List<Order>
+                    _shopManager.Buy(tester, new List<ProductOrder>
                     {
                         new ("Lay's", 10)
                     });
@@ -151,7 +150,7 @@ namespace Shops.Tests
                 new (_shopManager.GetProductId("Lay's"), 90, 1),
                 new (_shopManager.GetProductId("Coca-Cola"), 100, 3),
             });
-            _shopManager.Buy(tester, new List<Order>
+            _shopManager.Buy(tester, new List<ProductOrder>
             {
                 new ("Lay's", 5),
                 new ("Coca-Cola", 2)

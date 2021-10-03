@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Shops.Tools;
+using Shops.Services;
 
-namespace Shops.Services
+namespace Shops.Entities
 {
     public class Shop
     {

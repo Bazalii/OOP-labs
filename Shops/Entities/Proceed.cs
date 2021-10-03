@@ -1,4 +1,6 @@
-﻿namespace Shops.Services
+﻿using Shops.Services;
+
+namespace Shops.Entities
 {
     public class Proceed
     {

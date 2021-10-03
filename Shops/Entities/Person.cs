@@ -1,4 +1,4 @@
-﻿namespace Shops.Services
+﻿namespace Shops.Entities
 {
     public class Person
     {
