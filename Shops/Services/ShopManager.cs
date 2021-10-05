@@ -63,18 +63,13 @@ namespace Shops.Services
             List<Proceed> currentProceeds = new ();
             int wantedQuantity = order.Quantity;
             int currentQuantity = 0;
-            Shop shopWithCheapestProduct = _shops[0];
-            Box boxWithCheapestProduct = null;
-            int minimalPrice = int.MaxValue;
             while (currentQuantity != wantedQuantity)
             {
-                int cheapestProductQuantity = 0;
-                GetMinimalProductStatistics(
-                    ref minimalPrice,
-                    order.Product,
-                    ref cheapestProductQuantity,
-                    ref shopWithCheapestProduct,
-                    ref boxWithCheapestProduct);
+                MinimalProductStatistics currentStatistics = GetMinimalProductStatistics(order.Product);
+                int minimalPrice = currentStatistics.MinimalPrice;
+                int cheapestProductQuantity = currentStatistics.CheapestProductQuantity;
+                Shop shopWithCheapestProduct = currentStatistics.ShopWithCheapestProduct;
+                Box boxWithCheapestProduct = currentStatistics.BoxWithCheapestProduct;
                 int currentBill = GetBillForBuyingProductsInShop(
                     ref currentQuantity,
                     cheapestProductQuantity,
@@ -90,14 +85,12 @@ namespace Shops.Services
             return currentProceeds;
         }
 
-        private void GetMinimalProductStatistics(
-            ref int minimalPrice,
-            Product inputProduct,
-            ref int cheapestProductQuantity,
-            ref Shop shopWithCheapestProduct,
-            ref Box boxWithCheapestProduct)
+        private MinimalProductStatistics GetMinimalProductStatistics(Product inputProduct)
         {
-            minimalPrice = int.MaxValue;
+            int minimalPrice = int.MaxValue;
+            int cheapestProductQuantity = 0;
+            Shop shopWithCheapestProduct = null;
+            Box boxWithCheapestProduct = null;
             foreach (Shop shop in _shops)
             {
                 foreach (Box box in shop.Boxes)
@@ -109,6 +102,13 @@ namespace Shops.Services
                     boxWithCheapestProduct = box;
                 }
             }
+
+            var currentStatistics = new MinimalProductStatistics(
+                minimalPrice,
+                cheapestProductQuantity,
+                shopWithCheapestProduct,
+                boxWithCheapestProduct);
+            return currentStatistics;
         }
 
         private int GetBillForBuyingProductsInShop(
