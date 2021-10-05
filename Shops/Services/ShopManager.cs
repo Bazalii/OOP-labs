@@ -64,7 +64,7 @@ namespace Shops.Services
             int wantedQuantity = order.Quantity;
             int currentQuantity = 0;
             Shop shopWithCheapestProduct = _shops[0];
-            var boxWithCheapestProduct = new Box();
+            Box boxWithCheapestProduct = null;
             int minimalPrice = int.MaxValue;
             while (currentQuantity != wantedQuantity)
             {
@@ -85,12 +85,6 @@ namespace Shops.Services
                 currentProceeds.Add(new Proceed(
                     shopWithCheapestProduct,
                     currentBill));
-                foreach (Proceed proceed in currentProceeds)
-                {
-                    Console.WriteLine($"{proceed.ProceedValue}");
-                }
-
-                Console.WriteLine("\n");
             }
 
             return currentProceeds;
