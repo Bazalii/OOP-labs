@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Isu.Services;
 
 namespace IsuExtra
@@ -7,17 +8,25 @@ namespace IsuExtra
     {
         private List<StudyGroup> _groups = new ();
 
-        private List<StudyGroup> _trainingGroups = new ();
+        private List<JointTrainingGroup> _trainingGroups = new ();
 
-        public MegaFaculty()
+        public MegaFaculty(string name)
         {
+            Name = name ?? throw new ArgumentNullException(nameof(name), "Name cannot be null!");
         }
 
-        public IReadOnlyList<Group> Groups { get; set; }
+        public string Name { get; }
 
-        public IReadOnlyList<Group> TrainingGroups { get; set; }
+        public IReadOnlyList<StudyGroup> Groups => _groups;
+
+        public IReadOnlyList<JointTrainingGroup> TrainingGroups => _trainingGroups;
 
         public void AddTrainingGroup(string name)
+        {
+            _trainingGroups.Add(new JointTrainingGroup(name));
+        }
+
+        public void AddStudyGroup(string name)
         {
             _groups.Add(new StudyGroup(name));
         }

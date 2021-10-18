@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IsuExtra
 {
@@ -14,9 +15,16 @@ namespace IsuExtra
 
         public string Name { get; }
 
+        public IReadOnlyList<Stream> Streams => _streams;
+
         public void AddStream(Stream stream)
         {
             _streams.Add(stream);
+        }
+
+        public Stream GetStream(string name)
+        {
+            return _streams.FirstOrDefault(stream => stream.Name == name);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Isu.Services
 
         public Group(string name)
         {
-            if (char.IsLetter(name[0]) || name[1] != '3' || name[2] - '0' < 1 || name[2] - '0' > 4 || name[3] - '0' < 0 ||
+            if (!char.IsLetter(name[0]) || name[1] != '3' || name[2] - '0' < 1 || name[2] - '0' > 4 || name[3] - '0' < 0 ||
                 name[3] - '0' > 9 || name[4] - '0' < 0 || name[4] - '0' > 9)
             {
                 throw new InvalidGroupNameException("Incorrect group name");
