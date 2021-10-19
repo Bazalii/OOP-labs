@@ -6,9 +6,9 @@ namespace IsuExtra
 {
     public class MegaFaculty
     {
-        private List<StudyGroup> _groups = new ();
+        private readonly List<StudyGroup> _groups = new ();
 
-        private List<JointTrainingGroup> _trainingGroups = new ();
+        private readonly List<JointTrainingGroup> _trainingGroups = new ();
 
         public MegaFaculty(string name)
         {

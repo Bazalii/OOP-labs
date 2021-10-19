@@ -123,15 +123,12 @@ namespace IsuExtra.Services
 
         public JointTrainingGroup GetTrainingGroup(string name)
         {
-            foreach (MegaFaculty megaFaculty in _megaFaculties)
+            foreach (JointTrainingGroup studyGroup in from megaFaculty in _megaFaculties
+                from studyGroup in megaFaculty.TrainingGroups
+                where studyGroup.Name == name
+                select studyGroup)
             {
-                foreach (JointTrainingGroup studyGroup in megaFaculty.TrainingGroups)
-                {
-                    if (studyGroup.Name == name)
-                    {
-                        return studyGroup;
-                    }
-                }
+                return studyGroup;
             }
 
             throw new NotExistException($"Training group with this {name} doesn't exist!");
@@ -139,21 +136,18 @@ namespace IsuExtra.Services
 
         public StudyGroup GetStudyGroup(string name)
         {
-            foreach (MegaFaculty megaFaculty in _megaFaculties)
+            foreach (StudyGroup studyGroup in from megaFaculty in _megaFaculties
+                from studyGroup in megaFaculty.Groups
+                where studyGroup.Name == name
+                select studyGroup)
             {
-                foreach (StudyGroup studyGroup in megaFaculty.Groups)
-                {
-                    if (studyGroup.Name == name)
-                    {
-                        return studyGroup;
-                    }
-                }
+                return studyGroup;
             }
 
             throw new NotExistException($"Study group {name} doesn't exist!");
         }
 
-        public Stream FindAvailableStream(JointTrainingGroup @trainingGroup, Student student)
+        private Stream FindAvailableStream(JointTrainingGroup @trainingGroup, Student student)
         {
             StudyGroup studentGroup = GetStudyGroup(student.CurrentGroup);
             Stream goodStream = null;
@@ -180,7 +174,7 @@ namespace IsuExtra.Services
             return null;
         }
 
-        public int CountStudentJointTrainingGroups(Student student)
+        private int CountStudentJointTrainingGroups(Student student)
         {
             int numberOfJointTrainingGroups =
                 (from megaFaculty in _megaFaculties
@@ -192,27 +186,12 @@ namespace IsuExtra.Services
             return numberOfJointTrainingGroups;
         }
 
-        public bool CheckIfMegaFacultiesAreTheSame(Student student, string trainingGroupName)
+        private bool CheckIfMegaFacultiesAreTheSame(Student student, string trainingGroupName)
         {
-            Group wantedGroup = null;
-            JointTrainingGroup wantedTrainingGroup = null;
             foreach (MegaFaculty megaFaculty in _megaFaculties)
             {
-                foreach (Group group in megaFaculty.Groups)
-                {
-                    if (student.CurrentGroup == group.Name)
-                    {
-                        wantedGroup = group;
-                    }
-                }
-
-                foreach (JointTrainingGroup trainingGroup in megaFaculty.TrainingGroups)
-                {
-                    if (trainingGroup.Name == trainingGroupName)
-                    {
-                        wantedTrainingGroup = trainingGroup;
-                    }
-                }
+                Group wantedGroup = megaFaculty.Groups.FirstOrDefault(studyGroup => studyGroup.Name == student.CurrentGroup);
+                JointTrainingGroup wantedTrainingGroup = megaFaculty.TrainingGroups.FirstOrDefault(trainingGroup => trainingGroup.Name == trainingGroupName);
 
                 if (wantedGroup != null && wantedTrainingGroup != null)
                 {

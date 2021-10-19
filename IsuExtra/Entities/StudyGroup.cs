@@ -5,7 +5,7 @@ namespace IsuExtra
 {
     public class StudyGroup : Group
     {
-        private List<Lesson> _timetable = new ();
+        private readonly List<Lesson> _timetable = new ();
 
         public StudyGroup(string name)
             : base(name)

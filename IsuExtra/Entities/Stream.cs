@@ -10,9 +10,9 @@ namespace IsuExtra
     {
         private const int MaxStudents = 4;
 
-        private List<Lesson> _timetable = new ();
+        private readonly List<Lesson> _timetable = new ();
 
-        private List<Student> _students = new ();
+        private readonly List<Student> _students = new ();
 
         public Stream(string name)
         {
@@ -37,19 +37,6 @@ namespace IsuExtra
             }
 
             _students.Add(student);
-        }
-
-        public Student GetStudent(string studentName)
-        {
-            foreach (Student student in _students)
-            {
-                if (student.Name == studentName)
-                {
-                    return student;
-                }
-            }
-
-            return null;
         }
 
         public Student GetStudent(int id)
