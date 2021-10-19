@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Isu.Services;
+using IsuExtra.Entities;
+using IsuExtra.Tools;
 
 namespace IsuExtra.Services
 {
@@ -126,28 +128,24 @@ namespace IsuExtra.Services
 
         public JointTrainingGroup GetTrainingGroup(string name)
         {
-            foreach (JointTrainingGroup studyGroup in from megaFaculty in _megaFaculties
-                from studyGroup in megaFaculty.TrainingGroups
-                where studyGroup.Name == name
-                select studyGroup)
-            {
-                return studyGroup;
-            }
+            JointTrainingGroup wantedTrainingGroup = (from megaFaculty in _megaFaculties
+                                                         from trainingGroup in megaFaculty.TrainingGroups
+                                                         where trainingGroup.Name == name
+                                                         select trainingGroup).FirstOrDefault() ??
+                                                     throw new NotExistException($"Training group with this {name} doesn't exist!");
 
-            throw new NotExistException($"Training group with this {name} doesn't exist!");
+            return wantedTrainingGroup;
         }
 
         public StudyGroup GetStudyGroup(string name)
         {
-            foreach (StudyGroup studyGroup in from megaFaculty in _megaFaculties
-                from studyGroup in megaFaculty.Groups
-                where studyGroup.Name == name
-                select studyGroup)
-            {
-                return studyGroup;
-            }
+            StudyGroup wantedStudyGroup = (from megaFaculty in _megaFaculties
+                                              from studyGroup in megaFaculty.Groups
+                                              where studyGroup.Name == name
+                                              select studyGroup).FirstOrDefault() ??
+                                          throw new NotExistException($"Study group {name} doesn't exist!");
 
-            throw new NotExistException($"Study group {name} doesn't exist!");
+            return wantedStudyGroup;
         }
 
         private bool CheckIfAlreadyEnrolled(Student studentToCheck, JointTrainingGroup trainingGroupToCheck)
@@ -162,10 +160,9 @@ namespace IsuExtra.Services
         private Stream FindAvailableStream(JointTrainingGroup @trainingGroup, Student student)
         {
             StudyGroup studentGroup = GetStudyGroup(student.CurrentGroup);
-            Stream goodStream = null;
             foreach (Stream stream in trainingGroup.Streams)
             {
-                goodStream = stream;
+                Stream goodStream = stream;
                 foreach (Lesson streamLesson in stream.Timetable)
                 {
                     foreach (Lesson studyGroupLesson in studentGroup.Timetable)

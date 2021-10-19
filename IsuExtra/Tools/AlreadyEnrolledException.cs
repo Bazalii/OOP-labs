@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IsuExtra
+namespace IsuExtra.Tools
 {
     public class AlreadyEnrolledException : Exception
     {

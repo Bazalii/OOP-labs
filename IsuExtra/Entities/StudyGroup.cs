@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Isu.Services;
 
-namespace IsuExtra
+namespace IsuExtra.Entities
 {
     public class StudyGroup : Group
     {

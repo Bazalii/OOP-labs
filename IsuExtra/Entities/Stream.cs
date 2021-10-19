@@ -4,7 +4,7 @@ using System.Linq;
 using Isu.Services;
 using Isu.Tools;
 
-namespace IsuExtra
+namespace IsuExtra.Entities
 {
     public class Stream
     {

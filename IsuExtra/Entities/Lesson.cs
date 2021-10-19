@@ -1,4 +1,4 @@
-﻿namespace IsuExtra
+﻿namespace IsuExtra.Entities
 {
     public class Lesson
     {

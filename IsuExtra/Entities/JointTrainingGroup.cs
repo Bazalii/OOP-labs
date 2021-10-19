@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IsuExtra
+namespace IsuExtra.Entities
 {
     public class JointTrainingGroup
     {
