@@ -6,11 +6,11 @@ namespace IsuExtra.Services
 {
     public class JointTrainingGroupService
     {
+        private readonly List<MegaFaculty> _megaFaculties = new ();
+
+        private readonly List<Student> _unsignedStudents = new ();
+
         private int _studentIds;
-
-        private List<MegaFaculty> _megaFaculties = new ();
-
-        private List<Student> _unsignedStudents = new ();
 
         public void AddTrainingGroup(MegaFaculty megaFaculty, string name)
         {
@@ -72,14 +72,18 @@ namespace IsuExtra.Services
             return GetTrainingGroup(trainingGroupName).Streams;
         }
 
-        public IReadOnlyList<Student> GetStudents(Stream @stream)
+        public IReadOnlyList<Student> GetStudents(string streamName)
         {
-            return stream.Students;
+            return (from megaFaculty in _megaFaculties
+                from trainingGroup in megaFaculty.TrainingGroups
+                from stream in trainingGroup.Streams
+                where stream.Name == streamName
+                select stream.Students).FirstOrDefault();
         }
 
-        public List<Student> GetUnsignedStudents(StudyGroup @group)
+        public List<Student> GetUnsignedStudents(string groupName)
         {
-            return _unsignedStudents;
+            return _unsignedStudents.FindAll(student => student.CurrentGroup == groupName).ToList();
         }
 
         public MegaFaculty GetMegaFaculty(string name)

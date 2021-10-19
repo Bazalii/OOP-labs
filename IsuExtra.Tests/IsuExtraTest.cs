@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using IsuExtra.Services;
 using NUnit.Framework;
 
@@ -10,7 +9,7 @@ namespace IsuExtra.Tests
     {
         private JointTrainingGroupService JointTrainingGroupService = new ();
         
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             JointTrainingGroupService.AddMegaFaculty("FITIP");
@@ -22,7 +21,7 @@ namespace IsuExtra.Tests
             JointTrainingGroupService.AddStudent(JointTrainingGroupService.GetStudyGroup("M3204"), "Ivan");
             
             JointTrainingGroupService.AddStudyGroup(JointTrainingGroupService.GetMegaFaculty("FTM"), "R3301");
-            JointTrainingGroupService.GetStudyGroup("R3301").AddLesson("Monday. 8:20-9:50", 240);
+            JointTrainingGroupService.GetStudyGroup("R3301").AddLesson("Monday. 8:20-9:50", 105);
             JointTrainingGroupService.GetStudyGroup("R3301").AddLesson("Thursday. 10:00-11:30", 310);
             JointTrainingGroupService.AddStudent(JointTrainingGroupService.GetStudyGroup("R3301"), "Alexey");
 
@@ -71,6 +70,7 @@ namespace IsuExtra.Tests
         [Test]
         public void CancelEntry_StudentCancelsEntryToJointTrainingGroup_StudentIsNotInJointTrainingGroup()
         {
+            JointTrainingGroupService.Enroll(JointTrainingGroupService.GetStudent(1), "Photonics");
             JointTrainingGroupService.CancelEntry(JointTrainingGroupService.GetStudent(1), "Photonics");
             Assert.IsTrue(JointTrainingGroupService.GetTrainingGroup("Photonics").GetStream("Ph 1.2").GetStudent(1) == null);
         }
@@ -79,11 +79,16 @@ namespace IsuExtra.Tests
         public void GetStreams_GetAllJointTrainingGroupStreams_ReceiveAllCorrespondingStreams()
         {
             IReadOnlyList<Stream> wantedStreams = JointTrainingGroupService.GetStreams("Photonics");
-            foreach (Stream stream in wantedStreams)
-            {
-                Console.WriteLine(stream.Name);
-            }
             Assert.IsTrue(wantedStreams.Count == 2 && wantedStreams[0].Name == "Ph 1.1" && wantedStreams[1].Name == "Ph 1.2");
+        }
+        
+        [Test]
+        public void GetUnsignedStudents_GetAllStudentsThatAreNotInJointTrainingGroups_ReceiveAllCorrespondingStreams()
+        {
+            JointTrainingGroupService.AddStudent(JointTrainingGroupService.GetStudyGroup("M3204"), "Vladimir");
+            JointTrainingGroupService.Enroll(JointTrainingGroupService.GetStudent(1), "Photonics");
+            Assert.IsTrue(JointTrainingGroupService.GetUnsignedStudents("M3204")[0].Name == "Vladimir" &&
+                          JointTrainingGroupService.GetUnsignedStudents("R3301")[0].Name == "Alexey");
         }
     }
 }
