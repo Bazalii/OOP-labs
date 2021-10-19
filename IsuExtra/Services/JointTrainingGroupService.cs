@@ -36,14 +36,19 @@ namespace IsuExtra.Services
             }
 
             JointTrainingGroup wantedTrainingGroup = GetTrainingGroup(trainingGroupName);
-            Stream availableStream =
-                FindAvailableStream(wantedTrainingGroup, student) ??
-                throw new NoAvailableStreamsException($"There are no streams that {student.Name} can enroll in");
             if (CountStudentJointTrainingGroups(student) == 2)
             {
                 throw new MaxTrainingGroupsException($"{student.Name} has already enrolled in two training groups");
             }
 
+            if (CheckIfAlreadyEnrolled(student, wantedTrainingGroup))
+            {
+                throw new AlreadyEnrolledException($"{student.Name} is already enrolled in {trainingGroupName}");
+            }
+
+            Stream availableStream =
+                FindAvailableStream(wantedTrainingGroup, student) ??
+                throw new NoAvailableStreamsException($"There are no streams that {student.Name} can enroll in");
             availableStream.AddStudent(student);
             if (CountStudentJointTrainingGroups(student) == 1)
             {
@@ -56,13 +61,11 @@ namespace IsuExtra.Services
             JointTrainingGroup wantedTrainingGroup = GetTrainingGroup(trainingGroupName);
             foreach (Stream stream in wantedTrainingGroup.Streams)
             {
-                if (stream.GetStudent(student.Id) != null)
+                if (stream.GetStudent(student.Id) == null) continue;
+                stream.RemoveStudent(student.Id);
+                if (CountStudentJointTrainingGroups(student) == 1)
                 {
-                    stream.RemoveStudent(student.Id);
-                    if (CountStudentJointTrainingGroups(student) == 1)
-                    {
-                        _unsignedStudents.Add(student);
-                    }
+                    _unsignedStudents.Add(student);
                 }
             }
         }
@@ -145,6 +148,15 @@ namespace IsuExtra.Services
             }
 
             throw new NotExistException($"Study group {name} doesn't exist!");
+        }
+
+        private bool CheckIfAlreadyEnrolled(Student studentToCheck, JointTrainingGroup trainingGroupToCheck)
+        {
+            return (from megaFaculty in _megaFaculties
+                from trainingGroup in megaFaculty.TrainingGroups
+                from stream in trainingGroup.Streams
+                from student in stream.Students
+                select student).Any(student => student.Id == studentToCheck.Id);
         }
 
         private Stream FindAvailableStream(JointTrainingGroup @trainingGroup, Student student)

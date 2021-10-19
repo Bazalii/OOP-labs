@@ -69,6 +69,16 @@ namespace IsuExtra.Tests
         }
         
         [Test]
+        public void Enroll_StudentEnrollsToTheSameJointTraining_ThrowException()
+        {
+            _jointTrainingGroupService.Enroll(_jointTrainingGroupService.GetStudent(1), "Photonics");
+            Assert.Catch<AlreadyEnrolledException>(() =>
+            {
+                _jointTrainingGroupService.Enroll(_jointTrainingGroupService.GetStudent(1), "Photonics");
+            });
+        }
+        
+        [Test]
         public void CancelEntry_StudentCancelsEntryToJointTrainingGroup_StudentIsNotInJointTrainingGroup()
         {
             _jointTrainingGroupService.Enroll(_jointTrainingGroupService.GetStudent(1), "Photonics");
