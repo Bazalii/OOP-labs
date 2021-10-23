@@ -18,7 +18,10 @@ namespace IsuExtra.Tests
             _jointTrainingGroupService.AddMegaFaculty("FITIP");
             _jointTrainingGroupService.AddMegaFaculty("FTM");
             
+            _jointTrainingGroupService.AddStudyGroup(_jointTrainingGroupService.GetMegaFaculty("FITIP"), "M3203");
             _jointTrainingGroupService.AddStudyGroup(_jointTrainingGroupService.GetMegaFaculty("FITIP"), "M3204");
+            
+
             _jointTrainingGroupService.GetStudyGroup("M3204").AddLesson("Monday. 8:20-9:50", 240, "Moskalenko M.A.");
             _jointTrainingGroupService.GetStudyGroup("M3204").AddLesson("Monday. 10:00-11:30", 466, "Moskalenko M.A.");
             _jointTrainingGroupService.AddStudent(_jointTrainingGroupService.GetStudyGroup("M3204"), "Ivan");

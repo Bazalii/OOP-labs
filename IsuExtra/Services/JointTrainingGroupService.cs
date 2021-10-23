@@ -79,11 +79,12 @@ namespace IsuExtra.Services
 
         public IReadOnlyList<Student> GetStudents(string streamName)
         {
-            return (from megaFaculty in _megaFaculties
-                from trainingGroup in megaFaculty.TrainingGroups
-                from stream in trainingGroup.Streams
-                where stream.Name == streamName
-                select stream.Students).FirstOrDefault();
+            return _megaFaculties
+                .SelectMany(
+                    megaFaculty => megaFaculty.TrainingGroups)
+                .SelectMany(trainingGroup => trainingGroup.Streams)
+                .Where(stream => stream.Name == streamName)
+                .Select(stream => stream.Students).FirstOrDefault();
         }
 
         public List<Student> GetUnsignedStudents(string groupName)
@@ -111,27 +112,18 @@ namespace IsuExtra.Services
 
         public Student GetStudent(int id)
         {
-            foreach (MegaFaculty megaFaculty in _megaFaculties)
-            {
-                foreach (StudyGroup group in megaFaculty.Groups)
-                {
-                    Student wantedStudent = group.GetStudent(id);
-                    if (wantedStudent != null)
-                    {
-                        return wantedStudent;
-                    }
-                }
-            }
-
-            throw new NotExistException($"Student with id:{id} doesn't exist");
+            return _megaFaculties
+                .SelectMany(megaFaculty => megaFaculty.Groups, (_, group) => group.GetStudent(id))
+                .FirstOrDefault(wantedStudent => wantedStudent != null) ??
+                   throw new NotExistException($"Student with id:{id} doesn't exist");
         }
 
         public JointTrainingGroup GetTrainingGroup(string name)
         {
-            JointTrainingGroup wantedTrainingGroup = (from megaFaculty in _megaFaculties
-                                                         from trainingGroup in megaFaculty.TrainingGroups
-                                                         where trainingGroup.Name == name
-                                                         select trainingGroup).FirstOrDefault() ??
+            JointTrainingGroup wantedTrainingGroup = _megaFaculties
+                                                         .SelectMany(
+                                                             megaFaculty => megaFaculty.TrainingGroups)
+                                                         .FirstOrDefault(trainingGroup => trainingGroup.Name == name) ??
                                                      throw new NotExistException($"Training group with this {name} doesn't exist!");
 
             return wantedTrainingGroup;
@@ -139,10 +131,10 @@ namespace IsuExtra.Services
 
         public StudyGroup GetStudyGroup(string name)
         {
-            StudyGroup wantedStudyGroup = (from megaFaculty in _megaFaculties
-                                              from studyGroup in megaFaculty.Groups
-                                              where studyGroup.Name == name
-                                              select studyGroup).FirstOrDefault() ??
+            StudyGroup wantedStudyGroup = _megaFaculties
+                                              .SelectMany(
+                                                  megaFaculty => megaFaculty.Groups)
+                                              .FirstOrDefault(group => group.Name == name) ??
                                           throw new NotExistException($"Study group {name} doesn't exist!");
 
             return wantedStudyGroup;
@@ -150,11 +142,10 @@ namespace IsuExtra.Services
 
         private bool CheckIfAlreadyEnrolled(Student studentToCheck, JointTrainingGroup trainingGroupToCheck)
         {
-            return (from megaFaculty in _megaFaculties
-                from trainingGroup in megaFaculty.TrainingGroups
-                from stream in trainingGroup.Streams
-                from student in stream.Students
-                select student).Any(student => student.Id == studentToCheck.Id);
+            return _megaFaculties
+                .SelectMany(megaFaculty => megaFaculty.TrainingGroups)
+                .SelectMany(trainingGroup => trainingGroup.Streams)
+                .SelectMany(stream => stream.Students).Any(student => student.Id == studentToCheck.Id);
         }
 
         private Stream FindAvailableStream(JointTrainingGroup @trainingGroup, Student student)
@@ -186,11 +177,10 @@ namespace IsuExtra.Services
         private int CountStudentJointTrainingGroups(Student student)
         {
             int numberOfJointTrainingGroups =
-                (from megaFaculty in _megaFaculties
-                    from trainingGroup in megaFaculty.TrainingGroups
-                    from stream in trainingGroup.Streams
-                    from currentStudent in stream.Students
-                    select currentStudent).Count(currentStudent => currentStudent.Id == student.Id);
+                _megaFaculties
+                    .SelectMany(megaFaculty => megaFaculty.TrainingGroups)
+                    .SelectMany(trainingGroup => trainingGroup.Streams)
+                    .SelectMany(stream => stream.Students).Count(currentStudent => currentStudent.Id == student.Id);
 
             return numberOfJointTrainingGroups;
         }
