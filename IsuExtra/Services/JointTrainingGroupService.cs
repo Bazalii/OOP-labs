@@ -14,14 +14,14 @@ namespace IsuExtra.Services
 
         private int _studentIds;
 
-        public void AddTrainingGroup(MegaFaculty megaFaculty, string name)
+        public void AddTrainingGroup(string megaFacultyName, string name)
         {
-            megaFaculty.AddTrainingGroup(name);
+            _megaFaculties.Find(megaFaculty => megaFaculty.Name == megaFacultyName)?.AddTrainingGroup(name);
         }
 
-        public void AddStudyGroup(MegaFaculty megaFaculty, string name)
+        public void AddStudyGroup(string megaFacultyName, string name)
         {
-            megaFaculty.AddStudyGroup(name);
+            _megaFaculties.Find(megaFaculty => megaFaculty.Name == megaFacultyName)?.AddStudyGroup(name);
         }
 
         public void AddMegaFaculty(string name)
@@ -103,10 +103,11 @@ namespace IsuExtra.Services
             return wantedMegaFaculty;
         }
 
-        public void AddStudent(StudyGroup @studyGroup, string name)
+        public void AddStudent(string studyGroupName, string name)
         {
-            var newStudent = new Student(_studentIds += 1, name, studyGroup.Name);
-            studyGroup.AddStudent(newStudent);
+            StudyGroup wantedGroup = GetStudyGroup(studyGroupName);
+            var newStudent = new Student(_studentIds += 1, name, studyGroupName);
+            wantedGroup.AddStudent(newStudent);
             _unsignedStudents.Add(newStudent);
         }
 

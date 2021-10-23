@@ -15,27 +15,27 @@ namespace IsuExtra.Tests
         public void Setup()
         {
             _jointTrainingGroupService = new JointTrainingGroupService();
-            _jointTrainingGroupService.AddMegaFaculty("FITIP");
+            _jointTrainingGroupService.AddMegaFaculty("MTIT");
             _jointTrainingGroupService.AddMegaFaculty("FTM");
             
-            _jointTrainingGroupService.AddStudyGroup(_jointTrainingGroupService.GetMegaFaculty("FITIP"), "M3203");
-            _jointTrainingGroupService.AddStudyGroup(_jointTrainingGroupService.GetMegaFaculty("FITIP"), "M3204");
+            _jointTrainingGroupService.AddStudyGroup("MTIT", "M3203");
+            _jointTrainingGroupService.AddStudyGroup("MTIT", "M3204");
             
 
             _jointTrainingGroupService.GetStudyGroup("M3204")
                 .AddLesson(new Lesson("Monday. 8:20-9:50", 240, "Moskalenko M.A."));
             _jointTrainingGroupService.GetStudyGroup("M3204")
                 .AddLesson(new Lesson("Monday. 10:00-11:30", 466, "Moskalenko M.A."));
-            _jointTrainingGroupService.AddStudent(_jointTrainingGroupService.GetStudyGroup("M3204"), "Ivan");
+            _jointTrainingGroupService.AddStudent("M3204", "Ivan");
             
-            _jointTrainingGroupService.AddStudyGroup(_jointTrainingGroupService.GetMegaFaculty("FTM"), "R3301");
+            _jointTrainingGroupService.AddStudyGroup("FTM", "R3301");
             _jointTrainingGroupService.GetStudyGroup("R3301")
                 .AddLesson(new Lesson("Monday. 8:20-9:50", 105, "Petrov I.L."));
             _jointTrainingGroupService.GetStudyGroup("R3301")
                 .AddLesson(new Lesson("Thursday. 10:00-11:30", 310, "Kutuzov M.U."));
-            _jointTrainingGroupService.AddStudent(_jointTrainingGroupService.GetStudyGroup("R3301"), "Alexey");
+            _jointTrainingGroupService.AddStudent("R3301", "Alexey");
 
-            _jointTrainingGroupService.AddTrainingGroup(_jointTrainingGroupService.GetMegaFaculty("FITIP"), "Discrete Math");
+            _jointTrainingGroupService.AddTrainingGroup("MTIT", "Discrete Math");
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").AddStream(new Stream("DM 1.1"));
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").GetStream("DM 1.1")
                 .AddLesson(new Lesson("Thursday. 10:00-11:30", 238, "Chuharev K.I."));
@@ -47,7 +47,7 @@ namespace IsuExtra.Tests
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").GetStream("DM 1.2")
                 .AddLesson(new Lesson("Thursday. 15:20-16:50", 466, "Chuharev K.I."));
             
-            _jointTrainingGroupService.AddTrainingGroup(_jointTrainingGroupService.GetMegaFaculty("FTM"), "Photonics");
+            _jointTrainingGroupService.AddTrainingGroup("FTM", "Photonics");
             _jointTrainingGroupService.GetTrainingGroup("Photonics").AddStream(new Stream("Ph 1.1"));
             _jointTrainingGroupService.GetTrainingGroup("Photonics").GetStream("Ph 1.1")
                 .AddLesson(new Lesson("Monday. 10:00-11:30", 238, "Romanov M.D."));
@@ -113,7 +113,7 @@ namespace IsuExtra.Tests
         [Test]
         public void GetUnsignedStudents_GetAllStudentsThatAreNotInJointTrainingGroups_ReceiveAllCorrespondingStudents()
         {
-            _jointTrainingGroupService.AddStudent(_jointTrainingGroupService.GetStudyGroup("M3204"), "Vladimir");
+            _jointTrainingGroupService.AddStudent("M3204", "Vladimir");
             _jointTrainingGroupService.Enroll(_jointTrainingGroupService.GetStudent(1), "Photonics");
             Assert.IsTrue(_jointTrainingGroupService.GetUnsignedStudents("M3204")[0].Name == "Vladimir" &&
                           _jointTrainingGroupService.GetUnsignedStudents("R3301")[0].Name == "Alexey");
