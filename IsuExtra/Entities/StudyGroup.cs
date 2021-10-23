@@ -14,9 +14,9 @@ namespace IsuExtra.Entities
 
         public IReadOnlyList<Lesson> Timetable => _timetable;
 
-        public void AddLesson(string time, int room, string teacher)
+        public void AddLesson(Lesson lesson)
         {
-            _timetable.Add(new Lesson(time, room, teacher));
+            _timetable.Add(lesson);
         }
     }
 }
