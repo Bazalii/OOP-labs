@@ -1,15 +1,20 @@
-﻿namespace IsuExtra.Entities
+﻿using System;
+
+namespace IsuExtra.Entities
 {
     public class Lesson
     {
-        public Lesson(string time, int room, string teacher)
+        public Lesson(DateTime startTime, DateTime endTime, int room, string teacher)
         {
-            Time = time;
+            StartTime = startTime;
+            EndTime = endTime;
             Room = room;
             Teacher = teacher;
         }
 
-        public string Time { get; }
+        public DateTime StartTime { get; }
+
+        public DateTime EndTime { get; }
 
         public int Room { get; }
 

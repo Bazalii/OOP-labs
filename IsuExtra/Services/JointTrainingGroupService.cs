@@ -149,7 +149,7 @@ namespace IsuExtra.Services
                 .SelectMany(stream => stream.Students).Any(student => student.Id == studentToCheck.Id);
         }
 
-        private Stream FindAvailableStream(JointTrainingGroup @trainingGroup, Student student)
+        private Stream FindAvailableStream(JointTrainingGroup trainingGroup, Student student)
         {
             StudyGroup studentGroup = GetStudyGroup(student.CurrentGroup);
             foreach (Stream stream in trainingGroup.Streams)
@@ -159,7 +159,7 @@ namespace IsuExtra.Services
                 {
                     foreach (Lesson studyGroupLesson in studentGroup.Timetable)
                     {
-                        if (streamLesson.Time == studyGroupLesson.Time)
+                        if (streamLesson.StartTime == studyGroupLesson.StartTime && streamLesson.EndTime == studyGroupLesson.EndTime)
                         {
                             goodStream = null;
                         }
