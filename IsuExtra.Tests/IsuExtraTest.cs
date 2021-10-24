@@ -24,197 +24,65 @@ namespace IsuExtra.Tests
             
 
             _jointTrainingGroupService.GetStudyGroup("M3204")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        25,
-                        8,
-                        20,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        25,
-                        9,
-                        50,
-                        00),
-                    240,
-                    "Moskalenko M.A."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 25, 8, 20, 00),
+                    new DateTime(2021, 10, 25, 9, 50, 00),
+                    240, "Moskalenko M.A."));
             _jointTrainingGroupService.GetStudyGroup("M3204")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        25,
-                        10,
-                        00,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        25,
-                        11,
-                        30,
-                        00),
-                    466,
-                    "Moskalenko M.A."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 25, 10, 00, 00),
+                    new DateTime(2021, 10, 25, 11, 30, 00),
+                    466, "Moskalenko M.A."));
             _jointTrainingGroupService.AddStudent("M3204", "Ivan");
             
             _jointTrainingGroupService.AddStudyGroup("FTM", "R3301");
             _jointTrainingGroupService.GetStudyGroup("R3301")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        25,
-                        8,
-                        20,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        25,
-                        9,
-                        50,
-                        00), 
-                    105, 
-                    "Petrov I.L."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 25, 8, 20, 00),
+                    new DateTime(2021, 10, 25, 9, 50, 00), 
+                    105, "Petrov I.L."));
             _jointTrainingGroupService.GetStudyGroup("R3301")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        28,
-                        10,
-                        00,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        28,
-                        11,
-                        30,
-                        00),
-                    310,
-                    "Kutuzov M.U."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 28, 10, 00, 00),
+                    new DateTime(2021, 10, 28, 11, 30, 00),
+                    310, "Kutuzov M.U."));
             _jointTrainingGroupService.AddStudent("R3301", "Alexey");
 
             _jointTrainingGroupService.AddTrainingGroup("MTIT", "Discrete Math");
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").AddStream(new Stream("DM 1.1"));
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").GetStream("DM 1.1")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        28,
-                        10,
-                        00,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        28,
-                        11,
-                        30,
-                        00),
-                    238,
-                    "Chuharev K.I."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 28, 10, 00, 00),
+                    new DateTime(2021, 10, 28, 11, 30, 00),
+                    238, "Chuharev K.I."));
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").GetStream("DM 1.1")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        28,
-                        15,
-                        20,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        28,
-                        16,
-                        50,
-                        00),
-                    466,
-                    "Chuharev K.I."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 28, 15, 20, 00),
+                    new DateTime(2021, 10, 28, 16, 50, 00),
+                    466, "Chuharev K.I."));
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").AddStream(new Stream("DM 1.2"));
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").GetStream("DM 1.2")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        25,
-                        8,
-                        20,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        25,
-                        9,
-                        50,
-                        00),
-                    238,
-                    "Chuharev K.I."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 25, 8, 20, 00),
+                    new DateTime(2021, 10, 25, 9, 50, 00),
+                    238, "Chuharev K.I."));
             _jointTrainingGroupService.GetTrainingGroup("Discrete Math").GetStream("DM 1.2")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        28,
-                        15,
-                        20,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        28,
-                        16,
-                        50,
-                        00),
-                    466,
-                    "Chuharev K.I."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 28, 15, 20, 00),
+                    new DateTime(2021, 10, 28, 16, 50, 00),
+                    466, "Chuharev K.I."));
             
             _jointTrainingGroupService.AddTrainingGroup("FTM", "Photonics");
             _jointTrainingGroupService.GetTrainingGroup("Photonics").AddStream(new Stream("Ph 1.1"));
             _jointTrainingGroupService.GetTrainingGroup("Photonics").GetStream("Ph 1.1")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        25,
-                        10,
-                        00,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        25,
-                        11,
-                        30,
-                        00),
-                    234,
-                    "Romanov M.D."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 25, 10, 00, 00),
+                    new DateTime(2021, 10, 25, 11, 30, 00),
+                    234, "Romanov M.D."));
             _jointTrainingGroupService.GetTrainingGroup("Photonics").GetStream("Ph 1.1")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        27,
-                        15,
-                        20,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        27,
-                        16,
-                        50,
-                        00),
-                    466,
-                    "Romanov M.D."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 27, 15, 20, 00),
+                    new DateTime(2021, 10, 27, 16, 50, 00),
+                    466, "Romanov M.D."));
             _jointTrainingGroupService.GetTrainingGroup("Photonics").AddStream(new Stream("Ph 1.2"));
             _jointTrainingGroupService.GetTrainingGroup("Photonics").GetStream("Ph 1.2")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        26,
-                        11,
-                        40,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        26,
-                        13,
-                        10,
-                        00),
-                    238,
-                    "Romanov M.D."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 26, 11, 40, 00),
+                    new DateTime(2021, 10, 26, 13, 10, 00),
+                    238, "Romanov M.D."));
             _jointTrainingGroupService.GetTrainingGroup("Photonics").GetStream("Ph 1.2")
-                .AddLesson(new Lesson(new DateTime(2021,
-                        10,
-                        28,
-                        15,
-                        20,
-                        00),
-                    new DateTime(2021,
-                        10,
-                        28,
-                        16,
-                        50,
-                        00),
-                    239,
-                    "Romanov M.D."));
+                .AddLesson(new Lesson(new DateTime(2021, 10, 28, 15, 20, 00),
+                    new DateTime(2021, 10, 28, 16, 50, 00),
+                    239, "Romanov M.D."));
         }
 
         [Test]
