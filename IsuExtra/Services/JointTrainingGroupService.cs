@@ -152,27 +152,14 @@ namespace IsuExtra.Services
         private Stream FindAvailableStream(JointTrainingGroup trainingGroup, Student student)
         {
             StudyGroup studentGroup = GetStudyGroup(student.CurrentGroup);
-            foreach (Stream stream in trainingGroup.Streams)
-            {
-                Stream goodStream = stream;
-                foreach (Lesson streamLesson in stream.Timetable)
-                {
-                    foreach (Lesson studyGroupLesson in studentGroup.Timetable)
-                    {
-                        if (streamLesson.StartTime == studyGroupLesson.StartTime && streamLesson.EndTime == studyGroupLesson.EndTime)
-                        {
-                            goodStream = null;
-                        }
-                    }
-                }
+            return trainingGroup.Streams.FirstOrDefault(stream => !CheckIntersection(stream, studentGroup));
+        }
 
-                if (goodStream != null)
-                {
-                    return goodStream;
-                }
-            }
-
-            return null;
+        private bool CheckIntersection(Stream stream, StudyGroup studyGroup)
+        {
+            return stream.Timetable.FirstOrDefault(streamLesson =>
+                studyGroup.Timetable.FirstOrDefault(studyLesson => studyLesson.StartTime == streamLesson.StartTime) !=
+                null) != null;
         }
 
         private int CountStudentJointTrainingGroups(Student student)
