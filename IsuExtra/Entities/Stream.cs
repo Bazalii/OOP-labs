@@ -10,8 +10,6 @@ namespace IsuExtra.Entities
     {
         private const int MaxStudents = 4;
 
-        private readonly List<Lesson> _timetable = new ();
-
         private readonly List<Student> _students = new ();
 
         public Stream(string name)
@@ -20,13 +18,14 @@ namespace IsuExtra.Entities
         }
 
         public string Name { get; }
-        public IReadOnlyList<Lesson> Timetable => _timetable;
+
+        public LessonsTimetable Timetable { get; } = new ();
 
         public IReadOnlyList<Student> Students => _students;
 
         public void AddLesson(Lesson lesson)
         {
-            _timetable.Add(lesson);
+            Timetable.AddLesson(lesson);
         }
 
         public void AddStudent(Student student)

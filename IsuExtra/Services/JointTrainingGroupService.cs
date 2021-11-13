@@ -157,9 +157,7 @@ namespace IsuExtra.Services
 
         private bool CheckIntersection(Stream stream, StudyGroup studyGroup)
         {
-            return stream.Timetable.FirstOrDefault(streamLesson =>
-                studyGroup.Timetable.FirstOrDefault(studyLesson => studyLesson.StartTime == streamLesson.StartTime) !=
-                null) != null;
+            return stream.Timetable.IntersectsWith(studyGroup.Timetable);
         }
 
         private int CountStudentJointTrainingGroups(Student student)

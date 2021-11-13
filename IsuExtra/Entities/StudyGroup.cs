@@ -5,18 +5,16 @@ namespace IsuExtra.Entities
 {
     public class StudyGroup : Group
     {
-        private readonly List<Lesson> _timetable = new ();
-
         public StudyGroup(string name)
             : base(name)
         {
         }
 
-        public IReadOnlyList<Lesson> Timetable => _timetable;
+        public LessonsTimetable Timetable { get; } = new ();
 
         public void AddLesson(Lesson lesson)
         {
-            _timetable.Add(lesson);
+            Timetable.AddLesson(lesson);
         }
     }
 }
