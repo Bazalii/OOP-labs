@@ -45,7 +45,7 @@ namespace Isu.Tests
         {
             Assert.Catch<InvalidGroupNameException>(() =>
             {
-                _isuService.AddGroup("R3207");
+                _isuService.AddGroup("RK207");
             });
         }
 
