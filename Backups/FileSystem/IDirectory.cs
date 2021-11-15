@@ -1,6 +1,10 @@
-﻿namespace Backups.FileSystem
+﻿using System.Collections.Generic;
+
+namespace Backups.FileSystem
 {
-    public class IDirectory : IStorageObject
+    public interface IDirectory : IStorageObject
     {
+        public IReadOnlyList<IStorageObject> GetObjects();
+        public void AddObject(IStorageObject obj);
     }
 }

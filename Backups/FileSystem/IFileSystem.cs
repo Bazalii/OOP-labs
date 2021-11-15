@@ -2,5 +2,6 @@
 {
     public interface IFileSystem
     {
+        public IDirectory GetRoot();
     }
 }
