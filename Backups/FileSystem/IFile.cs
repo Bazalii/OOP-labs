@@ -1,9 +1,13 @@
 ﻿namespace Backups.FileSystem
 {
-    public interface IFile : IStorageObject
+    public abstract class IFile : IStorageObject
     {
-        public void Write(byte[] information);
+        public abstract void Write(byte[] information);
 
-        public byte[] Read();
+        public abstract byte[] Read();
+
+        public abstract void SetName(string name);
+
+        public abstract string GetName();
     }
 }

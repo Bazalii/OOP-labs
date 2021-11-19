@@ -6,16 +6,16 @@ namespace Backups.FileSystem.Implementations
 {
     public class MemoryFileSystem : IFileSystem
     {
-        private IDirectory _rootDirectory = new MemoryDirectory("C:\\", string.Empty);
+        private IDirectory _rootDirectory = new MemoryDirectory("C:", string.Empty);
 
-        public IDirectory GetRoot()
+        public string GetRoot()
         {
-            return _rootDirectory;
+            return _rootDirectory.GetPath();
         }
 
         public IStorageObject GetStorageObject(string path)
         {
-            return DepthFirstSearch(GetRoot(), path);
+            return DepthFirstSearch(_rootDirectory, path);
         }
 
         public void CreateFile(string pathToFile)
@@ -72,6 +72,27 @@ namespace Backups.FileSystem.Implementations
             }
         }
 
+        public void ExtractFromArchive(string archivePath, string directoryToExtract)
+        {
+        }
+
+        public string GetFullNameFromPath(string path)
+        {
+            return path.Substring(
+                path.LastIndexOf("\\", StringComparison.Ordinal) + 1,
+                path.Length - path.LastIndexOf("\\", StringComparison.Ordinal) - 1);
+        }
+
+        public string GetNameFromPath(string path)
+        {
+            return path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal) + 1, path.Length - path.LastIndexOf("\\", StringComparison.Ordinal) - 1);
+        }
+
+        public string GetParentDirectoryFromPath(string path)
+        {
+            return path.Substring(0, path.LastIndexOf("\\", StringComparison.Ordinal));
+        }
+
         private IStorageObject DepthFirstSearch(IDirectory directory, string path)
         {
             foreach (IStorageObject storageObject in directory.GetObjects())
@@ -88,16 +109,6 @@ namespace Backups.FileSystem.Implementations
             }
 
             throw new DirectoryNotExistException($"Directory {path} doesn't exist!");
-        }
-
-        private string GetNameFromPath(string path)
-        {
-            return path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal), path.Length);
-        }
-
-        private string GetParentDirectoryFromPath(string path)
-        {
-            return path.Substring(0, path.LastIndexOf("\\", StringComparison.Ordinal));
         }
     }
 }

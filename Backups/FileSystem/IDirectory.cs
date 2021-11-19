@@ -2,9 +2,9 @@
 
 namespace Backups.FileSystem
 {
-    public interface IDirectory : IStorageObject
+    public abstract class IDirectory : IStorageObject
     {
-        public IReadOnlyList<IStorageObject> GetObjects();
-        public void AddObject(IStorageObject obj);
+        public abstract IReadOnlyList<IStorageObject> GetObjects();
+        public abstract void AddObject(IStorageObject storageObject);
     }
 }
