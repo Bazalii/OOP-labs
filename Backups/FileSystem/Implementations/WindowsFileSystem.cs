@@ -56,9 +56,19 @@ namespace Backups.FileSystem.Implementations
             ZipFile.ExtractToDirectory(archivePath, directoryToExtract);
         }
 
+        public string GetFullNameFromPath(string path)
+        {
+            return path.Substring(
+                path.LastIndexOf("\\", StringComparison.Ordinal) + 1,
+                path.Length - path.LastIndexOf("\\", StringComparison.Ordinal) - 1);
+        }
+
         public string GetNameFromPath(string path)
         {
-            return path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal), path.Length - path.LastIndexOf("\\", StringComparison.Ordinal));
+            string fullFileName = path.Substring(
+                path.LastIndexOf("\\", StringComparison.Ordinal) + 1,
+                path.Length - path.LastIndexOf("\\", StringComparison.Ordinal) - 1);
+            return fullFileName.Substring(0, fullFileName.IndexOf(".", StringComparison.Ordinal));
         }
 
         public string GetParentDirectoryFromPath(string path)
