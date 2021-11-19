@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 using System.Text;
 
@@ -6,6 +7,22 @@ namespace Backups.FileSystem.Implementations
 {
     public class WindowsFileSystem : IFileSystem
     {
+        public string GetRoot()
+        {
+            string path = Path.GetFullPath("BackupsTest.cs");
+            return path.Substring(0, path.IndexOf("\\", StringComparison.Ordinal));
+        }
+
+        public void CreateFile(string pathToFile)
+        {
+            File.Create(pathToFile).Close();
+        }
+
+        public void RemoveFile(string pathToFile)
+        {
+            File.Delete(pathToFile);
+        }
+
         public void WriteToFile(string pathToFile, string textToWrite)
         {
             FileStream file = File.Create(pathToFile);
@@ -14,9 +31,9 @@ namespace Backups.FileSystem.Implementations
             file.Close();
         }
 
-        public void AddToArchive(string directoryToArchivePath, string archivePath)
+        public void CopyFile(string oldPath, string newPath)
         {
-            ZipFile.CreateFromDirectory(directoryToArchivePath, archivePath);
+            File.Copy(oldPath, newPath);
         }
 
         public void CreateDirectory(string pathToNewDirectory)
@@ -29,19 +46,24 @@ namespace Backups.FileSystem.Implementations
             Directory.Delete(pathToDirectory);
         }
 
-        public void CreateFile(string pathToFile)
+        public void AddToArchive(string directoryToArchivePath, string archivePath)
         {
-            File.Create(pathToFile).Close();
+            ZipFile.CreateFromDirectory(directoryToArchivePath, archivePath);
         }
 
-        public void CopyFile(string oldPath, string newPath)
+        public void ExtractFromArchive(string archivePath, string directoryToExtract)
         {
-            File.Copy(oldPath, newPath);
+            ZipFile.ExtractToDirectory(archivePath, directoryToExtract);
         }
 
-        public void RemoveFile(string pathToFile)
+        public string GetNameFromPath(string path)
         {
-            File.Delete(pathToFile);
+            return path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal), path.Length - path.LastIndexOf("\\", StringComparison.Ordinal));
+        }
+
+        public string GetParentDirectoryFromPath(string path)
+        {
+            return path.Substring(0, path.LastIndexOf("\\", StringComparison.Ordinal));
         }
     }
 }
