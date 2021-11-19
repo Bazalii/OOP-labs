@@ -22,6 +22,8 @@ namespace Backups.FileSystem
 
         void ExtractFromArchive(string archivePath, string directoryToExtract);
 
+        string GetFullNameFromPath(string path);
+
         string GetNameFromPath(string path);
 
         string GetParentDirectoryFromPath(string path);
