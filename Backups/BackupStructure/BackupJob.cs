@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Backups.Algorithms;
 
 namespace Backups.BackupStructure
 {
     public class BackupJob
     {
+        private string _backupsDirectoryPath;
+
         private int _restorePointsCounter;
 
         private string _restorePointName = "RestorePoint";
@@ -14,11 +17,12 @@ namespace Backups.BackupStructure
 
         private List<RestorePoint> _restorePoints = new ();
 
-        public BackupJob(SavingAlgorithm savingAlgorithm)
+        public BackupJob(SavingAlgorithm savingAlgorithm, string backupsDirectoryPath)
         {
             SavingAlgorithm = savingAlgorithm ??
                               throw new ArgumentNullException(
                                   nameof(savingAlgorithm), "SavingAlgorithm cannot be null!");
+            _backupsDirectoryPath = backupsDirectoryPath;
         }
 
         public SavingAlgorithm SavingAlgorithm { get; set; }
@@ -33,6 +37,22 @@ namespace Backups.BackupStructure
         public void AddJobObject(JobObject jobObject)
         {
             _jobObjects.Add(jobObject);
+        }
+
+        public void RemoveJobObject(JobObject jobObjectToRemove)
+        {
+            _jobObjects.Remove(jobObjectToRemove);
+        }
+
+        public void SetBackupPath(string path)
+        {
+            _backupsDirectoryPath = path;
+            SavingAlgorithm.SetBackupsDirectoryPath(path);
+        }
+
+        public int GetRestorePointsNumber()
+        {
+            return _restorePointsCounter;
         }
     }
 }
