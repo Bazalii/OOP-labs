@@ -35,7 +35,7 @@ namespace Backups.FileSystem.Implementations
 
         public override string GetPath()
         {
-            return PathToParentDirectory + "\\" + Name;
+            return PathToParentDirectory != string.Empty ? PathToParentDirectory + "\\" + Name : Name;
         }
     }
 }
