@@ -65,9 +65,7 @@ namespace Backups.FileSystem.Implementations
 
         public string GetNameFromPath(string path)
         {
-            string fullFileName = path.Substring(
-                path.LastIndexOf("\\", StringComparison.Ordinal) + 1,
-                path.Length - path.LastIndexOf("\\", StringComparison.Ordinal) - 1);
+            string fullFileName = GetFullNameFromPath(path);
             return fullFileName.Substring(0, fullFileName.IndexOf(".", StringComparison.Ordinal));
         }
 
