@@ -7,10 +7,10 @@ namespace Backups.Algorithms.Implementations
 {
     public class SingleStorage : SavingAlgorithm
     {
-        public SingleStorage(IFileSystem fileSystem)
+        public SingleStorage(IFileSystem fileSystem, string backupsDirectoryPath)
         {
             FileSystem = fileSystem;
-            BackupsDirectory = fileSystem.GetRoot() + "\\Backups";
+            BackupsDirectory = backupsDirectoryPath;
             SwapDirectory = fileSystem.GetRoot() + "\\Swap";
             FileSystem.CreateDirectory(BackupsDirectory);
         }
@@ -20,13 +20,13 @@ namespace Backups.Algorithms.Implementations
             FileSystem.CreateDirectory(SwapDirectory);
             foreach (JobObject jobObject in jobObjects)
             {
-                FileSystem.CopyFile(jobObject.PathToFile, SwapDirectory + "\\" + FileSystem.GetNameFromPath(jobObject.PathToFile));
+                FileSystem.CopyFile(jobObject.PathToFile, SwapDirectory + "\\" + FileSystem.GetFullNameFromPath(jobObject.PathToFile));
             }
 
             FileSystem.AddToArchive(SwapDirectory, BackupsDirectory + $"\\{backupName}");
             foreach (JobObject jobObject in jobObjects)
             {
-                FileSystem.RemoveFile(SwapDirectory + FileSystem.GetNameFromPath(jobObject.PathToFile));
+                FileSystem.RemoveFile(SwapDirectory + "\\" + FileSystem.GetFullNameFromPath(jobObject.PathToFile));
             }
 
             FileSystem.RemoveDirectory(SwapDirectory);
@@ -35,6 +35,11 @@ namespace Backups.Algorithms.Implementations
         public override void SetFileSystem(IFileSystem fileSystem)
         {
             FileSystem = fileSystem;
+        }
+
+        public override void SetBackupsDirectoryPath(string path)
+        {
+            BackupsDirectory = path;
         }
     }
 }

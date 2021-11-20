@@ -7,10 +7,10 @@ namespace Backups.Algorithms.Implementations
 {
     public class SplitStorage : SavingAlgorithm
     {
-        public SplitStorage(IFileSystem fileSystem)
+        public SplitStorage(IFileSystem fileSystem, string backupsDirectoryPath)
         {
             FileSystem = fileSystem;
-            BackupsDirectory = fileSystem.GetRoot() + "\\Backups";
+            BackupsDirectory = backupsDirectoryPath;
             SwapDirectory = fileSystem.GetRoot() + "\\Swap";
             FileSystem.CreateDirectory(BackupsDirectory);
         }
@@ -31,6 +31,11 @@ namespace Backups.Algorithms.Implementations
         public override void SetFileSystem(IFileSystem fileSystem)
         {
             FileSystem = fileSystem;
+        }
+
+        public override void SetBackupsDirectoryPath(string path)
+        {
+            BackupsDirectory = path;
         }
     }
 }

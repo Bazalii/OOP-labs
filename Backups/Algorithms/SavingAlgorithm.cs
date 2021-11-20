@@ -15,5 +15,7 @@ namespace Backups.Algorithms
         public abstract void Backup(List<JobObject> jobObjects, string backupName);
 
         public abstract void SetFileSystem(IFileSystem fileSystem);
+
+        public abstract void SetBackupsDirectoryPath(string path);
     }
 }
