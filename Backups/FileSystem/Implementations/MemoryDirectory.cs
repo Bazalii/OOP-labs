@@ -37,5 +37,20 @@ namespace Backups.FileSystem.Implementations
         {
             return PathToParentDirectory != string.Empty ? PathToParentDirectory + "\\" + Name : Name;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MemoryDirectory memoryDirectory && Equals(memoryDirectory);
+        }
+
+        public override int GetHashCode()
+        {
+            return GetPath() != null ? GetPath().GetHashCode() : 0;
+        }
+
+        private bool Equals(MemoryDirectory other)
+        {
+            return GetPath() == other.GetPath();
+        }
     }
 }

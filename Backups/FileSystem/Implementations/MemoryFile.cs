@@ -39,5 +39,20 @@
         {
             return PathToParentDirectory + "\\" + Name;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MemoryFile memoryFile && Equals(memoryFile);
+        }
+
+        public override int GetHashCode()
+        {
+            return GetPath() != null ? GetPath().GetHashCode() : 0;
+        }
+
+        private bool Equals(MemoryFile other)
+        {
+            return GetPath() == other.GetPath();
+        }
     }
 }
