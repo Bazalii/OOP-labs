@@ -4,8 +4,9 @@
     {
         private byte[] _information;
 
-        public MemoryFile(string name)
+        public MemoryFile(string pathToParentDirectory, string name)
         {
+            PathToParentDirectory = pathToParentDirectory;
             Name = name;
         }
 
