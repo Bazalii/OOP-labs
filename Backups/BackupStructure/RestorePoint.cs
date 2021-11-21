@@ -5,15 +5,15 @@ namespace Backups.BackupStructure
 {
     public class RestorePoint
     {
-        private List<JobObject> _backupedFiles = new ();
+        private readonly List<JobObject> _backupedFiles = new ();
 
-        public RestorePoint(DateTime timeOfBackup, List<JobObject> backupedFiles)
+        public RestorePoint(DateTime timeOfBackup, IEnumerable<JobObject> backupedFiles)
         {
             TimeOfBackup = timeOfBackup;
             _backupedFiles.AddRange(backupedFiles);
         }
 
         public IReadOnlyList<JobObject> BackupedFiles => _backupedFiles;
-        public DateTime TimeOfBackup { get; set; }
+        public DateTime TimeOfBackup { get; }
     }
 }
