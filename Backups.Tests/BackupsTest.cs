@@ -1,8 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Backups.Algorithms.Implementations;
 using Backups.BackupStructure;
-using Backups.FileSystem;
 using Backups.FileSystem.Implementations;
 using NUnit.Framework;
 
@@ -21,8 +19,6 @@ namespace Backups.Tests
             _fileSystem = new MemoryFileSystem();
             _fileSystem.CreateDirectory("C:\\One");
             _fileSystem.CreateDirectory("C:\\Two");
-            _fileSystem.CreateDirectory("C:\\Backups");
-            _fileSystem.CreateDirectory("C:\\MyBackups");
             _fileSystem.CreateFile("C:\\One\\First.txt");
             _fileSystem.CreateFile("C:\\Two\\Second.txt");
             _fileSystem.WriteToFile("C:\\One\\First.txt", "Hi, I'm the first file!");
@@ -36,14 +32,12 @@ namespace Backups.Tests
             _backupJob.AddJobObject(new JobObject("C:\\One\\First.txt"));
             _backupJob.AddJobObject(new JobObject("C:\\Two\\Second.txt"));
             _backupJob.Process();
-            foreach (var vari in (_fileSystem.GetStorageObject("C:\\Swap") as IDirectory).GetObjects())
-            {
-                Console.WriteLine(vari.GetPath());
-            }
             _backupJob.RemoveJobObject(new JobObject("C:\\One\\First.txt"));
             _fileSystem.WriteToFile("C:\\Two\\Second.txt", "Hi, I'm new second file!");
             _backupJob.Process();
             Assert.IsTrue(_backupJob.GetRestorePointsNumber() == 2);
+            _fileSystem.ExtractFromArchive("C:\\Backups\\RestorePoint0First", "C:\\Extract");
+            _fileSystem.ExtractFromArchive("C:\\Backups\\RestorePoint1Second", "C:\\Extract");
             Assert.IsTrue(((MemoryDirectory) _fileSystem.GetStorageObject("C:\\Backups")).GetObjects().Count == 3);
             Assert.IsTrue(
                 ((MemoryDirectory) _fileSystem.GetStorageObject("C:\\Backups")).GetObjects()[0]
