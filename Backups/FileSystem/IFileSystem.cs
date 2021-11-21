@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Backups.FileSystem
+﻿namespace Backups.FileSystem
 {
     public interface IFileSystem
     {

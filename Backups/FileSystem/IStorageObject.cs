@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Backups.FileSystem
+﻿namespace Backups.FileSystem
 {
     public abstract class IStorageObject
     {
