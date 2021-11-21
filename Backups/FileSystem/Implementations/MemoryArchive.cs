@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Backups.FileSystem.Implementations
 {
@@ -8,8 +9,12 @@ namespace Backups.FileSystem.Implementations
 
         public MemoryArchive(string pathToParentDirectory, string name)
         {
-            PathToParentDirectory = pathToParentDirectory;
-            Name = name;
+            PathToParentDirectory = pathToParentDirectory ??
+                                    throw new ArgumentNullException(
+                                        nameof(pathToParentDirectory), "Path cannot be null!");
+            Name = name ??
+                   throw new ArgumentNullException(
+                       nameof(name), "Name cannot be null!");
         }
 
         public override IReadOnlyList<StorageObject> GetObjects()

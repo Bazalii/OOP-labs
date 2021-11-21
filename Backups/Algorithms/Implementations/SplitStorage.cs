@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Backups.BackupStructure;
 using Backups.FileSystem;
 
@@ -8,8 +9,12 @@ namespace Backups.Algorithms.Implementations
     {
         public SplitStorage(IFileSystem fileSystem, string backupsDirectoryPath)
         {
-            FileSystem = fileSystem;
-            BackupsDirectory = backupsDirectoryPath;
+            FileSystem = fileSystem ??
+                         throw new ArgumentNullException(
+                             nameof(fileSystem), "FileSystem cannot be null!");
+            BackupsDirectory = backupsDirectoryPath ??
+                               throw new ArgumentNullException(
+                                   nameof(backupsDirectoryPath), "Path cannot be null!");
             SwapDirectory = fileSystem.GetRoot() + "\\Swap";
             FileSystem.CreateDirectory(BackupsDirectory);
         }

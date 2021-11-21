@@ -1,4 +1,6 @@
-﻿namespace Backups.FileSystem.Implementations
+﻿using System;
+
+namespace Backups.FileSystem.Implementations
 {
     public class MemoryFile : VirtualFile
     {
@@ -6,8 +8,12 @@
 
         public MemoryFile(string pathToParentDirectory, string name)
         {
-            PathToParentDirectory = pathToParentDirectory;
-            Name = name;
+            PathToParentDirectory = pathToParentDirectory ??
+                                    throw new ArgumentNullException(
+                                        nameof(pathToParentDirectory), "Path cannot be null!");
+            Name = name ??
+                   throw new ArgumentNullException(
+                       nameof(name), "Name cannot be null!");
         }
 
         public override void Write(byte[] information)

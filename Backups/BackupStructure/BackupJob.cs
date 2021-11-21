@@ -21,7 +21,9 @@ namespace Backups.BackupStructure
             SavingAlgorithm = savingAlgorithm ??
                               throw new ArgumentNullException(
                                   nameof(savingAlgorithm), "SavingAlgorithm cannot be null!");
-            _backupsDirectoryPath = backupsDirectoryPath;
+            _backupsDirectoryPath = backupsDirectoryPath ??
+                                    throw new ArgumentNullException(
+                                        nameof(backupsDirectoryPath), "Path cannot be null!");
         }
 
         public SavingAlgorithm SavingAlgorithm { get; set; }

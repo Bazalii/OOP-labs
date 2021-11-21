@@ -8,7 +8,7 @@ namespace Backups.BackupStructure
         {
             PathToFile = pathToFile ??
                          throw new ArgumentNullException(
-                             nameof(pathToFile), "PathToFile cannot be null!");
+                             nameof(pathToFile), "Path cannot be null!");
         }
 
         public string PathToFile { get; }
