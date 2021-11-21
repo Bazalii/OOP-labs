@@ -1,6 +1,6 @@
 ﻿namespace Backups.FileSystem
 {
-    public abstract class IFile : IStorageObject
+    public abstract class VirtualFile : StorageObject
     {
         public abstract void Write(byte[] information);
 

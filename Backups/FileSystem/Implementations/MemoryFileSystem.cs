@@ -6,14 +6,14 @@ namespace Backups.FileSystem.Implementations
 {
     public class MemoryFileSystem : IFileSystem
     {
-        private IDirectory _rootDirectory = new MemoryDirectory(string.Empty, "C:");
+        private readonly VirtualDirectory _rootDirectory = new MemoryDirectory(string.Empty, "C:");
 
         public string GetRoot()
         {
             return _rootDirectory.GetPath();
         }
 
-        public IStorageObject GetStorageObject(string path)
+        public StorageObject GetStorageObject(string path)
         {
             return DepthFirstSearch(_rootDirectory, path) ??
                    throw new StorageObjectNotExistException($"Storage object {path} doesn't exist!");
@@ -21,10 +21,18 @@ namespace Backups.FileSystem.Implementations
 
         public void CreateFile(string pathToFile)
         {
-            string parentDirectoryPath = GetParentDirectoryFromPath(pathToFile);
-            var file = new MemoryFile(parentDirectoryPath, GetFullNameFromPath(pathToFile));
-            var directory = GetStorageObject(parentDirectoryPath) as MemoryDirectory;
-            directory.AddObject(file);
+            try
+            {
+                GetStorageObject(pathToFile);
+                throw new StorageObjectAlreadyExists($"File {pathToFile} already exists");
+            }
+            catch (StorageObjectNotExistException)
+            {
+                string parentDirectoryPath = GetParentDirectoryFromPath(pathToFile);
+                var file = new MemoryFile(parentDirectoryPath, GetFullNameFromPath(pathToFile));
+                var directory = GetStorageObject(parentDirectoryPath) as MemoryDirectory;
+                directory.AddObject(file);
+            }
         }
 
         public void RemoveFile(string pathToFile)
@@ -42,9 +50,9 @@ namespace Backups.FileSystem.Implementations
 
         public void CopyFile(string oldPath, string newPath)
         {
-            var newDirectory = GetStorageObject(GetParentDirectoryFromPath(newPath)) as IDirectory;
+            var newDirectory = GetStorageObject(GetParentDirectoryFromPath(newPath)) as VirtualDirectory;
             var fileToCopy = GetStorageObject(oldPath) as MemoryFile;
-            MemoryFile copyOfFile = new MemoryFile(GetParentDirectoryFromPath(newPath), GetFullNameFromPath(newPath));
+            var copyOfFile = new MemoryFile(GetParentDirectoryFromPath(newPath), GetFullNameFromPath(newPath));
             copyOfFile.Write(fileToCopy.Read());
             copyOfFile.SetPath(GetParentDirectoryFromPath(newPath));
             newDirectory.AddObject(copyOfFile);
@@ -52,23 +60,39 @@ namespace Backups.FileSystem.Implementations
 
         public void CreateDirectory(string pathToNewDirectory)
         {
-            string pathToParentDirectory = GetParentDirectoryFromPath(pathToNewDirectory);
-            var parentDirectory = GetStorageObject(pathToParentDirectory) as MemoryDirectory;
-            parentDirectory.AddObject(new MemoryDirectory(pathToParentDirectory, GetNameFromPath(pathToNewDirectory)));
+            try
+            {
+                GetStorageObject(pathToNewDirectory);
+                throw new StorageObjectAlreadyExists($"Directory {pathToNewDirectory} already exists!");
+            }
+            catch (StorageObjectNotExistException)
+            {
+                string pathToParentDirectory = GetParentDirectoryFromPath(pathToNewDirectory);
+                var parentDirectory = GetStorageObject(pathToParentDirectory) as MemoryDirectory;
+                parentDirectory.AddObject(new MemoryDirectory(pathToParentDirectory, GetNameFromPath(pathToNewDirectory)));
+            }
         }
 
         public void RemoveDirectory(string pathToDirectory)
         {
-            var directory = GetStorageObject(pathToDirectory) as MemoryDirectory;
-            IStorageObject storageObject = GetStorageObject(pathToDirectory);
+            var directory = GetStorageObject(GetParentDirectoryFromPath(pathToDirectory)) as MemoryDirectory;
+            StorageObject storageObject = GetStorageObject(pathToDirectory);
             directory.RemoveObject(storageObject);
         }
 
         public void CreateArchive(string pathToNewArchive)
         {
-            string pathToParentDirectory = GetParentDirectoryFromPath(pathToNewArchive);
-            var parentDirectory = GetStorageObject(pathToParentDirectory) as MemoryDirectory;
-            parentDirectory.AddObject(new MemoryArchive(pathToParentDirectory, GetNameFromPath(pathToNewArchive)));
+            try
+            {
+                GetStorageObject(pathToNewArchive);
+                throw new StorageObjectAlreadyExists($"Directory {pathToNewArchive} already exists!");
+            }
+            catch (StorageObjectNotExistException)
+            {
+                string pathToParentDirectory = GetParentDirectoryFromPath(pathToNewArchive);
+                var parentDirectory = GetStorageObject(pathToParentDirectory) as MemoryDirectory;
+                parentDirectory.AddObject(new MemoryArchive(pathToParentDirectory, GetNameFromPath(pathToNewArchive)));
+            }
         }
 
         public void AddToArchive(string directoryToArchivePath, string archivePath)
@@ -76,8 +100,16 @@ namespace Backups.FileSystem.Implementations
             MemoryDirectory memoryDirectory = GetStorageObject(directoryToArchivePath) as MemoryDirectory ??
                                               throw new StorageObjectNotExistException(
                                                   $"Directory {directoryToArchivePath} doesn't exist! ");
-            CreateArchive(archivePath);
-            foreach (IStorageObject storageObject in memoryDirectory.GetObjects())
+            try
+            {
+                GetStorageObject(archivePath);
+            }
+            catch (StorageObjectNotExistException)
+            {
+                CreateArchive(archivePath);
+            }
+
+            foreach (StorageObject storageObject in memoryDirectory.GetObjects())
             {
                 CopyFile(storageObject.GetPath(), archivePath + "\\" + GetFullNameFromPath(storageObject.GetPath()));
             }
@@ -95,7 +127,7 @@ namespace Backups.FileSystem.Implementations
             }
 
             var archive = GetStorageObject(archivePath) as MemoryArchive;
-            foreach (IStorageObject storageObject in archive.GetObjects())
+            foreach (StorageObject storageObject in archive.GetObjects())
             {
                 CopyFile(storageObject.GetPath(), directoryToExtract + "\\" + GetFullNameFromPath(storageObject.GetPath()));
             }
@@ -113,26 +145,26 @@ namespace Backups.FileSystem.Implementations
             string fullFileName = GetFullNameFromPath(path);
             int dotIndex = fullFileName.IndexOf(".", StringComparison.Ordinal);
             int nameLength = dotIndex < 0 ? fullFileName.Length : dotIndex;
-            return fullFileName.Substring(0, nameLength);
+            return fullFileName[..nameLength];
         }
 
         public string GetParentDirectoryFromPath(string path)
         {
-            return path.Substring(0, path.LastIndexOf("\\", StringComparison.Ordinal));
+            return path[..path.LastIndexOf("\\", StringComparison.Ordinal)];
         }
 
-        private IStorageObject DepthFirstSearch(IDirectory directory, string path)
+        private StorageObject DepthFirstSearch(VirtualDirectory virtualDirectory, string path)
         {
-            if (path == directory.GetPath())
+            if (path == virtualDirectory.GetPath())
             {
-                return directory;
+                return virtualDirectory;
             }
 
-            foreach (IStorageObject storageObject in directory.GetObjects())
+            foreach (StorageObject storageObject in virtualDirectory.GetObjects())
             {
-                if (storageObject is IDirectory concreteDirectory)
+                if (storageObject is VirtualDirectory concreteDirectory)
                 {
-                    IStorageObject output = DepthFirstSearch(concreteDirectory, path);
+                    StorageObject output = DepthFirstSearch(concreteDirectory, path);
                     if (output != null)
                     {
                         return output;

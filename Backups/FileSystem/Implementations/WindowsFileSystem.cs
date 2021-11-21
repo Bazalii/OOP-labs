@@ -10,7 +10,7 @@ namespace Backups.FileSystem.Implementations
         public string GetRoot()
         {
             string path = Path.GetFullPath("BackupsTest.cs");
-            return path.Substring(0, path.IndexOf("\\", StringComparison.Ordinal));
+            return path[..path.IndexOf("\\", StringComparison.Ordinal)];
         }
 
         public void CreateFile(string pathToFile)
@@ -66,12 +66,12 @@ namespace Backups.FileSystem.Implementations
         public string GetNameFromPath(string path)
         {
             string fullFileName = GetFullNameFromPath(path);
-            return fullFileName.Substring(0, fullFileName.IndexOf(".", StringComparison.Ordinal));
+            return fullFileName[..fullFileName.IndexOf(".", StringComparison.Ordinal)];
         }
 
         public string GetParentDirectoryFromPath(string path)
         {
-            return path.Substring(0, path.LastIndexOf("\\", StringComparison.Ordinal));
+            return path[..path.LastIndexOf("\\", StringComparison.Ordinal)];
         }
     }
 }

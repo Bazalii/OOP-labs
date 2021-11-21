@@ -1,6 +1,6 @@
 ﻿namespace Backups.FileSystem.Implementations
 {
-    public class MemoryFile : IFile
+    public class MemoryFile : VirtualFile
     {
         private byte[] _information;
 

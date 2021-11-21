@@ -2,9 +2,9 @@
 
 namespace Backups.FileSystem.Implementations
 {
-    public class MemoryDirectory : IDirectory
+    public class MemoryDirectory : VirtualDirectory
     {
-        private readonly List<IStorageObject> _objects = new ();
+        private readonly List<StorageObject> _objects = new ();
 
         public MemoryDirectory(string pathToParentDirectory, string name)
         {
@@ -12,17 +12,17 @@ namespace Backups.FileSystem.Implementations
             Name = name;
         }
 
-        public override IReadOnlyList<IStorageObject> GetObjects()
+        public override IReadOnlyList<StorageObject> GetObjects()
         {
             return _objects;
         }
 
-        public override void AddObject(IStorageObject storageObject)
+        public override void AddObject(StorageObject storageObject)
         {
             _objects.Add(storageObject);
         }
 
-        public void RemoveObject(IStorageObject storageObject)
+        public void RemoveObject(StorageObject storageObject)
         {
             _objects.Remove(storageObject);
         }

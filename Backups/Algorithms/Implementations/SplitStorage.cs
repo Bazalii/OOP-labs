@@ -34,6 +34,7 @@ namespace Backups.Algorithms.Implementations
 
         public override void SetBackupsDirectoryPath(string path)
         {
+            FileSystem.CreateDirectory(path);
             BackupsDirectory = path;
         }
     }

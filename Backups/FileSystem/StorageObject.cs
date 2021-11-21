@@ -1,6 +1,6 @@
 ﻿namespace Backups.FileSystem
 {
-    public abstract class IStorageObject
+    public abstract class StorageObject
     {
         protected string PathToParentDirectory { get; set; }
 
