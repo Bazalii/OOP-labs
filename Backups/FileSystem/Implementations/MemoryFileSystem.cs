@@ -25,20 +25,20 @@ namespace Backups.FileSystem.Implementations
             string parentDirectoryPath = GetParentDirectoryFromPath(pathToFile);
             var file = new MemoryFile(parentDirectoryPath, GetFullNameFromPath(pathToFile));
             var directory = GetStorageObject(parentDirectoryPath) as MemoryDirectory;
-            directory?.AddObject(file);
+            directory.AddObject(file);
         }
 
         public void RemoveFile(string pathToFile)
         {
             var directory = GetStorageObject(GetParentDirectoryFromPath(pathToFile)) as MemoryDirectory;
-            directory?.RemoveObject(GetStorageObject(pathToFile));
+            directory.RemoveObject(GetStorageObject(pathToFile));
         }
 
         public void WriteToFile(string pathToFile, string textToWrite)
         {
             var file = GetStorageObject(pathToFile) as MemoryFile;
             byte[] information = new UTF8Encoding(true).GetBytes(textToWrite);
-            file?.Write(information);
+            file.Write(information);
         }
 
         public void CopyFile(string oldPath, string newPath)
@@ -55,14 +55,14 @@ namespace Backups.FileSystem.Implementations
         {
             string pathToParentDirectory = GetParentDirectoryFromPath(pathToNewDirectory);
             var parentDirectory = GetStorageObject(pathToParentDirectory) as MemoryDirectory;
-            parentDirectory?.AddObject(new MemoryDirectory(pathToParentDirectory, GetNameFromPath(pathToNewDirectory)));
+            parentDirectory.AddObject(new MemoryDirectory(pathToParentDirectory, GetNameFromPath(pathToNewDirectory)));
         }
 
         public void RemoveDirectory(string pathToDirectory)
         {
             var directory = GetStorageObject(pathToDirectory) as MemoryDirectory;
             IStorageObject storageObject = GetStorageObject(pathToDirectory);
-            directory?.RemoveObject(storageObject);
+            directory.RemoveObject(storageObject);
         }
 
         public void CreateArchive(string pathToNewArchive)
