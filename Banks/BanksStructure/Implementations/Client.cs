@@ -10,6 +10,14 @@
 
         private int _passportNumber;
 
+        public Client(string name, string surname, string address = null, int passportNumber = 0)
+        {
+            _name = name;
+            _surname = surname;
+            _address = address;
+            _passportNumber = passportNumber;
+        }
+
         internal Client()
         {
         }
