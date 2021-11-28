@@ -5,16 +5,41 @@ namespace Banks.BanksStructure
 {
     public abstract class BankPrototype
     {
+        protected string Name { get; set; }
+
+        protected int AccountIds { get; set; }
+
+        protected IPercentCalculator PercentCalculator { get; set; }
+
+        protected int AccountsTerm { get; set; }
+
+        protected float LimitIfDoubtful { get; set; }
+
         protected List<Account> Accounts { get; set; } = new ();
 
         protected List<Client> Clients { get; set; } = new ();
 
         public abstract void AddAccount(Account account);
 
+        public abstract void CreateDepositAccount(Client client, float amountOfMoney);
+
+        public abstract void CreateDebitAccount(Client client, float amountOfMoney);
+
+        public abstract void CreateCreditAccount(Client client, float amountOfMoney);
+
         public abstract void AddClient(Client client);
+
+        public abstract bool GetClientDoubtfulness(Client client);
 
         public abstract bool CheckIfMonthPassed(Account account);
 
         public abstract void AddDailyIncome();
+
+        public abstract void ReduceDaysLeft();
+
+        public string GetName()
+        {
+            return Name;
+        }
     }
 }
