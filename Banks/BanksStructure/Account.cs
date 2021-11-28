@@ -17,6 +17,9 @@
         public abstract void AddDailyIncome();
 
         public abstract void WithdrawMoney(float amountOfMoney);
+
+        public abstract void ReduceDaysLeft();
+
         public void AddMoney(float amountOfMoney)
         {
             AmountOfMoney += amountOfMoney;
@@ -55,6 +58,11 @@
         public bool GetDoubtfulness()
         {
             return IsDoubtful;
+        }
+
+        public float GetLimitIfIsDoubtful()
+        {
+            return LimitIfIsDoubtful;
         }
     }
 }

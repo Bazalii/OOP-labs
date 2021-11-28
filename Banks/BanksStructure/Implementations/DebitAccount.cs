@@ -4,7 +4,7 @@ namespace Banks.BanksStructure.Implementations
 {
     public class DebitAccount : SavingsAccount
     {
-        public DebitAccount(int id, int term, int percent, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
+        public DebitAccount(int id, int term, float percent, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
             : base(id, term, percent, amountOfMoney, doubtfulness, limitIfIsDoubtful)
         {
         }
@@ -17,6 +17,11 @@ namespace Banks.BanksStructure.Implementations
             }
 
             AddMoney(-amountOfMoney);
+        }
+
+        public override void ReduceDaysLeft()
+        {
+            DaysLeft -= 1;
         }
     }
 }

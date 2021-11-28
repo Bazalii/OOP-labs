@@ -2,10 +2,11 @@
 {
     public abstract class SavingsAccount : Account
     {
-        protected SavingsAccount(int id, int term, int percent, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
+        protected SavingsAccount(int id, int term, float percent, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
         {
             Id = id;
             Term = term;
+            DaysLeft = term;
             Percent = percent;
             AmountOfMoney = amountOfMoney;
             IsDoubtful = doubtfulness;
