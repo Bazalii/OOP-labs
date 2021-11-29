@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Banks.BanksStructure.Implementations
 {
@@ -10,11 +11,11 @@ namespace Banks.BanksStructure.Implementations
 
         private string _address;
 
-        private int _passportNumber;
+        private string _passportNumber;
 
         private List<Account> _accounts = new ();
 
-        public Client(string name, string surname, string address = null, int passportNumber = 0)
+        public Client(string name, string surname, string address = null, string passportNumber = null)
         {
             _name = name;
             _surname = surname;
@@ -25,6 +26,8 @@ namespace Banks.BanksStructure.Implementations
         internal Client()
         {
         }
+
+        public IReadOnlyList<Account> ReadableAccounts => _accounts;
 
         public string GetName()
         {
@@ -47,13 +50,13 @@ namespace Banks.BanksStructure.Implementations
             return _address;
         }
 
-        public void SetPassportNumber(int passportNumber)
+        public void SetPassportNumber(string passportNumber)
         {
             _passportNumber = passportNumber;
             ChangeAccountsDoubtfulness();
         }
 
-        public int GetPassportNumber()
+        public string GetPassportNumber()
         {
             return _passportNumber;
         }
@@ -61,6 +64,16 @@ namespace Banks.BanksStructure.Implementations
         public void AddAccount(Account account)
         {
             _accounts.Add(account);
+        }
+
+        public void RemoveAccount(Account account)
+        {
+            _accounts.Remove(account);
+        }
+
+        public List<string> GetAccountIds()
+        {
+            return _accounts.Select(account => account.GetId()).ToList();
         }
 
         internal void SetName(string name)

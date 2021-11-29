@@ -29,7 +29,7 @@ namespace Banks.BanksStructure.Implementations
             _client.SetAddress(address);
         }
 
-        public void SetPassportNumber(int passportNumber)
+        public void SetPassportNumber(string passportNumber)
         {
             _client.SetPassportNumber(passportNumber);
         }
