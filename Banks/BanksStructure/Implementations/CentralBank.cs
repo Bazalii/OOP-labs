@@ -8,12 +8,15 @@ namespace Banks.BanksStructure.Implementations
     {
         private int _transactionIds;
 
+        private int _bankIds;
+
         private List<Bank> _banks = new ();
 
         private List<Transaction> _transactions = new ();
 
         public void RegisterBank(Bank bank)
         {
+            bank.SetId(_bankIds += 1);
             _banks.Add(bank);
         }
 
@@ -33,7 +36,7 @@ namespace Banks.BanksStructure.Implementations
         public void AddMoney(Account accountToReplenish, float amountOfMoney)
         {
             accountToReplenish.AddMoney(amountOfMoney);
-            _transactions.Add(new ReplenishmentTransaction(_transactionIds += 1, accountToReplenish, amountOfMoney));
+            RegisterTransaction(new ReplenishmentTransaction(_transactionIds += 1, accountToReplenish, amountOfMoney));
         }
 
         public void WithdrawMoney(Account accountToWithdraw, float amountOfMoney)
@@ -46,7 +49,7 @@ namespace Banks.BanksStructure.Implementations
             }
 
             accountToWithdraw.WithdrawMoney(amountOfMoney);
-            _transactions.Add(new WithdrawalTransaction(_transactionIds += 1, accountToWithdraw, amountOfMoney));
+            RegisterTransaction(new WithdrawalTransaction(_transactionIds += 1, accountToWithdraw, amountOfMoney));
         }
 
         public void TransferMoney(Account accountToWithdraw, Account accountToReplenish, float amountOfMoney)
@@ -60,7 +63,7 @@ namespace Banks.BanksStructure.Implementations
 
             accountToWithdraw.WithdrawMoney(amountOfMoney);
             accountToReplenish.AddMoney(amountOfMoney);
-            _transactions.Add(new TransferTransaction(_transactionIds += 1, accountToWithdraw, accountToReplenish, amountOfMoney));
+            RegisterTransaction(new TransferTransaction(_transactionIds += 1, accountToWithdraw, accountToReplenish, amountOfMoney));
         }
 
         public void CancelTransaction(Transaction transaction)
@@ -86,6 +89,37 @@ namespace Banks.BanksStructure.Implementations
         public Transaction GetTransaction(int id)
         {
             return _transactions.FirstOrDefault(transaction => transaction.GetId() == id);
+        }
+
+        public Bank GetBankByName(string name)
+        {
+            return _banks.FirstOrDefault(bank => bank.GetName() == name);
+        }
+
+        public Bank GetBankById(int id)
+        {
+            return _banks.FirstOrDefault(bank => bank.GetId() == id);
+        }
+
+        public List<string> GetAllBankNames()
+        {
+            return _banks.Select(bank => bank.GetName()).ToList();
+        }
+
+        public BankWithAccount GetBankAndAccountByAccountId(string accountId)
+        {
+            foreach (Bank bank in _banks)
+            {
+                foreach (Account account in bank.ReadableAccounts)
+                {
+                    if (account.GetId() == accountId)
+                    {
+                        return new BankWithAccount(bank, account);
+                    }
+                }
+            }
+
+            throw new NotFoundException($"Account with Id: {accountId} doesn't exist");
         }
     }
 }
