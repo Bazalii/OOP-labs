@@ -4,7 +4,7 @@ namespace Banks.BanksStructure.Implementations
 {
     public class DepositAccount : SavingsAccount
     {
-        public DepositAccount(int id, int term, float percent, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
+        public DepositAccount(string id, int term, float percent, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
             : base(id, term, percent, amountOfMoney, doubtfulness, limitIfIsDoubtful)
         {
         }

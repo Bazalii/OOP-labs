@@ -2,7 +2,7 @@
 {
     public abstract class SavingsAccount : Account
     {
-        protected SavingsAccount(int id, int term, float percent, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
+        protected SavingsAccount(string id, int term, float percent, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
         {
             Id = id;
             Term = term;

@@ -4,7 +4,7 @@
     {
         private float _commission;
 
-        public CreditAccount(int id, int term, float commission, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
+        public CreditAccount(string id, int term, float commission, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
         {
             Id = id;
             Term = term;
