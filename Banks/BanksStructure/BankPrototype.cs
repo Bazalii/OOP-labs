@@ -37,9 +37,13 @@ namespace Banks.BanksStructure
 
         public abstract void CreateCreditAccount(Client client, float amountOfMoney);
 
-        public abstract void AddClient(Client client);
+        public abstract void RegisterAccountAndClient(Account account, Client client);
 
-        public abstract Client GetClientByAccountId(string accountId);
+        public abstract void RegisterClient(Client client);
+
+        public abstract bool CheckIfClientRegistered(Client client);
+
+        public abstract Client GetClientByAccount(Account account);
 
         public abstract bool GetClientDoubtfulness(Client client);
 

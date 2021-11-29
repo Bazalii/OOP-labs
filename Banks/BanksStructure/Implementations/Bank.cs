@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Banks.BanksStructure.Implementations
 {
@@ -19,7 +20,7 @@ namespace Banks.BanksStructure.Implementations
 
         public override void RemoveAccount(Account account)
         {
-            GetClientByAccountId(account.GetId()).RemoveAccount(account);
+            GetClientByAccount(account).RemoveAccount(account);
             Accounts.Remove(account);
         }
 
@@ -37,13 +38,12 @@ namespace Banks.BanksStructure.Implementations
                 amountOfMoney,
                 GetClientDoubtfulness(client),
                 LimitIfDoubtful);
-            Accounts.Add(account);
-            client.AddAccount(account);
+            RegisterAccountAndClient(account, client);
         }
 
         public override void CloseDepositAccount(Account account)
         {
-            CreateDebitAccount(GetClientByAccountId(account.GetId()), account.GetAmountOfMoney());
+            CreateDebitAccount(GetClientByAccount(account), account.GetAmountOfMoney());
             RemoveAccount(account);
         }
 
@@ -56,8 +56,7 @@ namespace Banks.BanksStructure.Implementations
                 amountOfMoney,
                 GetClientDoubtfulness(client),
                 LimitIfDoubtful);
-            Accounts.Add(account);
-            client.AddAccount(account);
+            RegisterAccountAndClient(account, client);
         }
 
         public override void CreateCreditAccount(Client client, float amountOfMoney)
@@ -69,18 +68,32 @@ namespace Banks.BanksStructure.Implementations
                 amountOfMoney,
                 GetClientDoubtfulness(client),
                 LimitIfDoubtful);
-            Accounts.Add(account);
-            client.AddAccount(account);
+            RegisterAccountAndClient(account, client);
         }
 
-        public override void AddClient(Client client)
+        public override void RegisterAccountAndClient(Account account, Client client)
+        {
+            Accounts.Add(account);
+            client.AddAccount(account);
+            if (!CheckIfClientRegistered(client))
+            {
+                RegisterClient(client);
+            }
+        }
+
+        public override void RegisterClient(Client client)
         {
             Clients.Add(client);
         }
 
-        public override Client GetClientByAccountId(string accountId)
+        public override bool CheckIfClientRegistered(Client client)
         {
-            return Clients.FirstOrDefault(client => client.GetAccountIds().Contains(accountId));
+            return Clients.Contains(client);
+        }
+
+        public override Client GetClientByAccount(Account account)
+        {
+            return Clients.FirstOrDefault(client => client.ReadableAccounts.Contains(account));
         }
 
         public override bool GetClientDoubtfulness(Client client)
