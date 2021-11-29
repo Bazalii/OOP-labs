@@ -1,8 +1,10 @@
-﻿namespace Banks.BanksStructure
+﻿using System;
+
+namespace Banks.BanksStructure
 {
     public abstract class Account
     {
-        protected int Id { get; init; }
+        protected string Id { get; init; }
 
         protected int Term { get; init; }
 
@@ -25,9 +27,14 @@
             AmountOfMoney += amountOfMoney;
         }
 
-        public int GetId()
+        public string GetId()
         {
             return Id;
+        }
+
+        public string GetBankId()
+        {
+            return Id[..Id.IndexOf("_", StringComparison.Ordinal)];
         }
 
         public int GetTerm()
@@ -63,6 +70,21 @@
         public float GetLimitIfIsDoubtful()
         {
             return LimitIfIsDoubtful;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Account account && Equals(account);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        private bool Equals(Account other)
+        {
+            return Id == other.Id;
         }
     }
 }
