@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 
 namespace Banks.BanksStructure.Implementations
 {
@@ -17,40 +17,60 @@ namespace Banks.BanksStructure.Implementations
             Accounts.Add(account);
         }
 
+        public override void RemoveAccount(Account account)
+        {
+            GetClientByAccountId(account.GetId()).RemoveAccount(account);
+            Accounts.Remove(account);
+        }
+
+        public override void CloseAccount(Account account)
+        {
+            RemoveAccount(account);
+        }
+
         public override void CreateDepositAccount(Client client, float amountOfMoney)
         {
             var account = new DepositAccount(
-                AccountIds += 1,
+                $"{Id}" + "_" + $"{AccountIds += 1}",
                 AccountsTerm,
                 PercentCalculator.CalculateDepositPercent(amountOfMoney),
                 amountOfMoney,
                 GetClientDoubtfulness(client),
                 LimitIfDoubtful);
             Accounts.Add(account);
+            client.AddAccount(account);
+        }
+
+        public override void CloseDepositAccount(Account account)
+        {
+            CreateDebitAccount(GetClientByAccountId(account.GetId()), account.GetAmountOfMoney());
+            RemoveAccount(account);
         }
 
         public override void CreateDebitAccount(Client client, float amountOfMoney)
         {
             var account = new DebitAccount(
-                AccountIds += 1,
+                $"{Id}" + "_" + $"{AccountIds += 1}",
                 AccountsTerm,
                 PercentCalculator.CalculateDebitPercent(amountOfMoney),
                 amountOfMoney,
                 GetClientDoubtfulness(client),
                 LimitIfDoubtful);
             Accounts.Add(account);
+            client.AddAccount(account);
         }
 
         public override void CreateCreditAccount(Client client, float amountOfMoney)
         {
             var account = new CreditAccount(
-                AccountIds += 1,
+                $"{Id}" + "_" + $"{AccountIds += 1}",
                 AccountsTerm,
                 PercentCalculator.CalculateCreditCommission(amountOfMoney),
                 amountOfMoney,
                 GetClientDoubtfulness(client),
                 LimitIfDoubtful);
             Accounts.Add(account);
+            client.AddAccount(account);
         }
 
         public override void AddClient(Client client)
@@ -58,9 +78,14 @@ namespace Banks.BanksStructure.Implementations
             Clients.Add(client);
         }
 
+        public override Client GetClientByAccountId(string accountId)
+        {
+            return Clients.FirstOrDefault(client => client.GetAccountIds().Contains(accountId));
+        }
+
         public override bool GetClientDoubtfulness(Client client)
         {
-            return client.GetAddress() == null || client.GetPassportNumber() == 0;
+            return client.GetAddress() == null || client.GetPassportNumber() == null;
         }
 
         public override bool CheckIfMonthPassed(Account account)
@@ -73,6 +98,7 @@ namespace Banks.BanksStructure.Implementations
             foreach (Account account in Accounts)
             {
                 account.AddDailyIncome();
+                ReduceDaysLeft();
                 if (account is SavingsAccount savingsAccount && CheckIfMonthPassed(account))
                 {
                     savingsAccount.AddMonthlyIncome();
@@ -86,6 +112,21 @@ namespace Banks.BanksStructure.Implementations
             {
                 account.ReduceDaysLeft();
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Bank bank && Equals(bank);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        private bool Equals(Bank other)
+        {
+            return Id == other.Id;
         }
     }
 }
