@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Banks.BanksStructure;
 using Banks.BanksStructure.Implementations;
 using Spectre.Console;
@@ -79,6 +80,7 @@ namespace Banks.ConsoleInterfaceStructure
 
         public void GetTransactions(List<Transaction> transactions)
         {
+            if (!transactions.Any()) return;
             var table = new Table();
             table.AddColumn("[yellow]Transaction Id[/]");
             table.AddColumn("[red]Withdrawal account[/]");
@@ -175,6 +177,7 @@ namespace Banks.ConsoleInterfaceStructure
 
         public void GetAccountsStatus(IReadOnlyList<Account> accounts)
         {
+            if (!accounts.Any()) return;
             var table = new Table();
             table.AddColumn("[yellow]Account Id[/]");
             table.AddColumn(new TableColumn("[green]Amount of money[/]"));
