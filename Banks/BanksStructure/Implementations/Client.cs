@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Banks.BanksStructure.Implementations
@@ -17,8 +18,12 @@ namespace Banks.BanksStructure.Implementations
 
         public Client(string name, string surname, string address = null, string passportNumber = null)
         {
-            _name = name;
-            _surname = surname;
+            _name = name ??
+                    throw new ArgumentNullException(
+                        nameof(name), "Name cannot be null!");
+            _surname = surname ??
+                       throw new ArgumentNullException(
+                           nameof(surname), "Surname cannot be null!");
             _address = address;
             _passportNumber = passportNumber;
         }

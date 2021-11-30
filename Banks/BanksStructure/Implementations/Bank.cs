@@ -7,9 +7,23 @@ namespace Banks.BanksStructure.Implementations
     {
         public Bank(string name, IPercentCalculator percentCalculator, int accountsTerm, float limitIfDoubtful)
         {
-            Name = name;
-            PercentCalculator = percentCalculator;
+            Name = name ??
+                   throw new ArgumentNullException(
+                       nameof(name), "Name cannot be null!");
+            PercentCalculator = percentCalculator ??
+                                throw new ArgumentNullException(
+                                    nameof(percentCalculator), "Percent calculator cannot be null!");
+            if (accountsTerm <= 0)
+            {
+                throw new ArgumentException("Term of account should be a positive integer!", nameof(accountsTerm));
+            }
+
             AccountsTerm = accountsTerm;
+            if (limitIfDoubtful <= 0)
+            {
+                throw new ArgumentException("Limit for account should be a positive float!", nameof(limitIfDoubtful));
+            }
+
             LimitIfDoubtful = limitIfDoubtful;
         }
 

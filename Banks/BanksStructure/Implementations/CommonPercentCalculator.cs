@@ -19,7 +19,18 @@ namespace Banks.BanksStructure.Implementations
             }
 
             _depositSumsWithPercents = depositSumsWithPercents;
+
+            if (debitPercent <= 0)
+            {
+                throw new ArgumentException("Debit percent should be a positive float!", nameof(debitPercent));
+            }
+
             _debitPercent = debitPercent;
+            if (creditCommission <= 0)
+            {
+                throw new ArgumentException("Credit comission should be a positive float!", nameof(creditCommission));
+            }
+
             _creditCommission = creditCommission;
         }
 
