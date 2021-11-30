@@ -91,6 +91,44 @@ namespace Banks.BanksStructure.Implementations
             return _transactions.FirstOrDefault(transaction => transaction.GetId() == id);
         }
 
+        public List<Transaction> GetClientTransactions(Client client)
+        {
+            List<Transaction> output = new ();
+            foreach (Transaction transaction in _transactions)
+            {
+                foreach (Account account in client.ReadableAccounts)
+                {
+                    switch (transaction)
+                    {
+                        case WithdrawalTransaction withdrawalTransaction:
+                            if (account.Equals(withdrawalTransaction.AccountToWithdraw))
+                            {
+                                output.Add(withdrawalTransaction);
+                            }
+
+                            break;
+                        case ReplenishmentTransaction replenishmentTransaction:
+                            if (account.Equals(replenishmentTransaction.AccountToReplenish))
+                            {
+                                output.Add(replenishmentTransaction);
+                            }
+
+                            break;
+                        case TransferTransaction transferTransaction:
+                            if (account.Equals(transferTransaction.AccountToWithdraw) ||
+                                account.Equals(transferTransaction.AccountToReplenish))
+                            {
+                                output.Add(transferTransaction);
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            return output;
+        }
+
         public Bank GetBankByName(string name)
         {
             return _banks.FirstOrDefault(bank => bank.GetName() == name);
