@@ -67,8 +67,52 @@ namespace Banks.ConsoleInterfaceStructure
             return new DataForTwoWaysTransactions(accountToWithdrawId, accountToReplenishId, amountOfMoney);
         }
 
-        public void CancelTransaction()
+        public int CancelTransaction(List<int> personalTransactions)
         {
+            return AnsiConsole.Prompt(
+                new SelectionPrompt<int>()
+                    .Title("[green]Which transaction do you want to cancel?[/]?")
+                    .PageSize(10)
+                    .MoreChoicesText("[grey](Move up and down to choose)[/]")
+                    .AddChoices(personalTransactions));
+        }
+
+        public void GetTransactions(List<Transaction> transactions)
+        {
+            var table = new Table();
+            table.AddColumn("[yellow]Transaction Id[/]");
+            table.AddColumn("[red]Withdrawal account[/]");
+            table.AddColumn(new TableColumn("[green]Replenishment account[/]"));
+            table.AddColumn(new TableColumn("[blue]Amount of money[/]"));
+            foreach (Transaction transaction in transactions)
+            {
+                switch (transaction)
+                {
+                    case WithdrawalTransaction withdrawalTransaction:
+                        table.AddRow(
+                            $"[yellow]{withdrawalTransaction.GetId()}[/]",
+                            $"[red]{withdrawalTransaction.AccountToWithdraw.GetId()}[/]",
+                            "-",
+                            $"[green]{withdrawalTransaction.GetAmountOfMoney()}[/]");
+                        break;
+                    case ReplenishmentTransaction replenishmentTransaction:
+                        table.AddRow(
+                            $"[yellow]{replenishmentTransaction.GetId()}[/]",
+                            "-",
+                            $"[green]{replenishmentTransaction.AccountToReplenish.GetId()}[/]",
+                            $"[blue]{replenishmentTransaction.GetAmountOfMoney()}[/]");
+                        break;
+                    case TransferTransaction transferTransaction:
+                        table.AddRow(
+                            $"[yellow]{transferTransaction.GetId()}[/]",
+                            $"[red]{transferTransaction.AccountToWithdraw.GetId()}[/]",
+                            $"[green]{transferTransaction.AccountToReplenish.GetId()}[/]",
+                            $"[blue]{transferTransaction.GetAmountOfMoney()}[/]");
+                        break;
+                }
+            }
+
+            AnsiConsole.Write(table);
         }
 
         public int ScrollDays()
@@ -84,9 +128,9 @@ namespace Banks.ConsoleInterfaceStructure
         public void Start()
         {
             AnsiConsole.Markup("[red]Welcome to the Ivan's Bank application![/]");
-            AnsiConsole.WriteLine("\n");
+            AnsiConsole.WriteLine(string.Empty);
             AnsiConsole.Markup("[blue]Type \"commands\" to get full list of available commands.[/]");
-            AnsiConsole.WriteLine("\n");
+            AnsiConsole.WriteLine(string.Empty);
         }
 
         public Client RegisterClient()
@@ -115,6 +159,8 @@ namespace Banks.ConsoleInterfaceStructure
             table.AddColumn("[yellow]Command[/]");
             table.AddColumn(new TableColumn("[green]Description[/]"));
             table.AddRow("[yellow]commands[/]", "[green]Shows the list of all available commands[/]");
+            table.AddRow("[yellow]getAccounts[/]", "[green]Shows the list of your accounts[/]");
+            table.AddRow("[yellow]getTransactions[/]", "[green]Shows the list of your transactions[/]");
             table.AddRow("[yellow]registerClient[/]", "[green]Gives you an opportunity to register if you are not registered yet[/]");
             table.AddRow("[yellow]registerAccount[/]", "[green]Adds new account[/]");
             table.AddRow("[yellow]closeAccount[/]", "[green]Closes one of your accounts[/]");

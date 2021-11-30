@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Banks.BanksStructure;
 using Banks.BanksStructure.Implementations;
 
@@ -26,8 +27,11 @@ namespace Banks.ConsoleInterfaceStructure
                     case "commands":
                         _console.GetAvailableCommands();
                         break;
-                    case "getStatus":
+                    case "getAccounts":
                         _console.GetAccountsStatus(_currentClient.ReadableAccounts);
+                        break;
+                    case "getTransactions":
+                        _console.GetTransactions(_centralBank.GetClientTransactions(_currentClient));
                         break;
                     case "registerClient":
                         RegisterClient(_console.RegisterClient());
@@ -48,7 +52,9 @@ namespace Banks.ConsoleInterfaceStructure
                         TransferMoney(_console.TransferMoney(_currentClient.GetAccountIds()));
                         break;
                     case "cancel":
-                        _console.CancelTransaction();
+                        CancelTransaction(_console.CancelTransaction(_centralBank
+                            .GetClientTransactions(_currentClient).Select(transaction => transaction.GetId())
+                            .ToList()));
                         break;
                     case "scroll":
                         ScrollDays(_console.ScrollDays());
@@ -146,6 +152,11 @@ namespace Banks.ConsoleInterfaceStructure
             {
                 _centralBank.AddDailyIncome();
             }
+        }
+
+        private void CancelTransaction(int id)
+        {
+            _centralBank.CancelTransaction(_centralBank.GetTransaction(id));
         }
     }
 }
