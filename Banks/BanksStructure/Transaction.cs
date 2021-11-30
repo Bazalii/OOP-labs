@@ -12,7 +12,7 @@
 
         public float GetAmountOfMoney()
         {
-            return Id;
+            return AmountOfMoney;
         }
     }
 }
