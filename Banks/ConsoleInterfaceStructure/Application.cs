@@ -8,9 +8,19 @@ namespace Banks.ConsoleInterfaceStructure
 {
     public class Application
     {
-        private ConsoleInterface _console = new ();
+        private readonly ConsoleInterface _console = new ();
 
-        private CentralBank _centralBank = new ();
+        private readonly CentralBank _centralBank = new ();
+
+        private readonly IPercentCalculator _newPercentCalculator = new CommonPercentCalculator(
+            new List<DepositSumWithPercent>()
+            {
+                new (20000, 2.5F),
+                new (30000, 4F),
+                new (70000, 5F),
+            },
+            2F,
+            30F);
 
         private Client _currentClient;
 
@@ -56,6 +66,15 @@ namespace Banks.ConsoleInterfaceStructure
                             .GetClientTransactions(_currentClient).Select(transaction => transaction.GetId())
                             .ToList()));
                         break;
+                    case "subscribe":
+                        Subscribe(_console.Subscribe(_centralBank.GetAllBankNames()));
+                        break;
+                    case "unsubscribe":
+                        Unsubscribe(_console.Unsubscribe(_centralBank.GetAllBankNames()));
+                        break;
+                    case "changePercents":
+                        ChangePercents(_console.ChangePercents(_centralBank.GetAllBankNames()));
+                        break;
                     case "scroll":
                         ScrollDays(_console.ScrollDays());
                         break;
@@ -94,11 +113,28 @@ namespace Banks.ConsoleInterfaceStructure
             Client client = new ("Alexey", "Ivanov", "Nauki prospekt, 30, 110", "1234567");
             secondBank.RegisterClient(client);
             secondBank.CreateCreditAccount(client, 10000);
+            secondBank.Subscribe(client);
         }
 
         private void RegisterClient(Client client)
         {
             _currentClient = client;
+        }
+
+        private void Subscribe(string bankName)
+        {
+            _centralBank.GetBankByName(bankName).Subscribe(_currentClient);
+        }
+
+        private void Unsubscribe(string bankName)
+        {
+            _currentClient.Unsubscribe(bankName);
+        }
+
+        private void ChangePercents(string bankName)
+        {
+            Bank bank = _centralBank.GetBankByName(bankName);
+            _console.ShowMessages(bank.SetPercentCalculator(_newPercentCalculator));
         }
 
         private void RegisterAccount(DataForNewAccount dataForNewAccount)
