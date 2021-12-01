@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Banks.BanksStructure;
 using Banks.BanksStructure.Implementations;
+using Banks.Tools;
 
 namespace Banks.ConsoleInterfaceStructure
 {
@@ -159,10 +160,17 @@ namespace Banks.ConsoleInterfaceStructure
         {
             BankWithAccount bankWithFirstAccount = _centralBank.GetBankAndAccountByAccountId(dataForTwoWaysTransactions.FirstAccountId);
             BankWithAccount bankWithSecondAccount = _centralBank.GetBankAndAccountByAccountId(dataForTwoWaysTransactions.SecondAccountId);
-            _centralBank.TransferMoney(
-                bankWithFirstAccount.FoundAccount,
-                bankWithSecondAccount.FoundAccount,
-                dataForTwoWaysTransactions.AmountOfMoney);
+            try
+            {
+                _centralBank.TransferMoney(
+                    bankWithFirstAccount.FoundAccount,
+                    bankWithSecondAccount.FoundAccount,
+                    dataForTwoWaysTransactions.AmountOfMoney);
+            }
+            catch (TheSameAccountsException exception)
+            {
+                _console.ReflectException(exception.Message);
+            }
         }
 
         private void CancelTransaction(int id)

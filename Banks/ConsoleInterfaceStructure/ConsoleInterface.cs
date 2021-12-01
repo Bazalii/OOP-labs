@@ -103,7 +103,8 @@ namespace Banks.ConsoleInterfaceStructure
 
         public DataForNewAccount RegisterAccount(List<string> banks, List<string> accountTypes)
         {
-            AnsiConsole.Markup($"[green]In which bank do you want to open new account?[/]");
+            AnsiConsole.Markup("[green]In which bank do you want to open new account?[/]");
+            AnsiConsole.Markup("\n");
             string bankName = GetWantedBank(banks);
             string accountType = GetWantedAccount(accountTypes);
             float amountOfMoney = AnsiConsole.Prompt(
@@ -198,7 +199,7 @@ namespace Banks.ConsoleInterfaceStructure
             AnsiConsole.WriteLine(string.Empty);
             AnsiConsole.Markup("[green]You can control all the process with the beginning as a CEO of central bank.[/]");
             AnsiConsole.WriteLine(string.Empty);
-            AnsiConsole.Markup("[green]This app works with only one registered client.[/]");
+            AnsiConsole.Markup("[green]This app works with only one registered client(you).[/]");
             AnsiConsole.WriteLine(string.Empty);
             AnsiConsole.Markup("[green]So, first of all you have to register as a client.[/]");
             AnsiConsole.WriteLine(string.Empty);
@@ -255,6 +256,12 @@ namespace Banks.ConsoleInterfaceStructure
                     .PageSize(10)
                     .MoreChoicesText("[grey](Move up and down to choose)[/]")
                     .AddChoices(accountTypes));
+        }
+
+        public void ReflectException(string message)
+        {
+            AnsiConsole.Markup($"[red]{message}[/]");
+            AnsiConsole.Markup("\n");
         }
     }
 }

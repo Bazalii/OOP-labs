@@ -6,13 +6,13 @@ namespace Banks.BanksStructure.Implementations
 {
     public class CentralBank
     {
+        private readonly List<Bank> _banks = new ();
+
+        private readonly List<Transaction> _transactions = new ();
+
         private int _transactionIds;
 
         private int _bankIds;
-
-        private List<Bank> _banks = new ();
-
-        private List<Transaction> _transactions = new ();
 
         public void RegisterBank(Bank bank)
         {
@@ -54,6 +54,11 @@ namespace Banks.BanksStructure.Implementations
 
         public void TransferMoney(Account accountToWithdraw, Account accountToReplenish, float amountOfMoney)
         {
+            if (accountToWithdraw.Equals(accountToReplenish))
+            {
+                throw new TheSameAccountsException("Account to withdraw and account to replenish should be different!");
+            }
+
             if (accountToWithdraw.GetDoubtfulness() && amountOfMoney > accountToWithdraw.GetLimitIfIsDoubtful())
             {
                 throw new DoubtfulAccountException(
