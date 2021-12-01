@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Banks.BanksStructure.Implementations
 {
     public class Bank : BankPrototype
     {
+        private IHandler _handler;
         public Bank(string name, IPercentCalculator percentCalculator, int accountsTerm, float limitIfDoubtful)
         {
             Name = name ??
                    throw new ArgumentNullException(
                        nameof(name), "Name cannot be null!");
+            _handler = new PercentChangesHandler(Name);
             PercentCalculator = percentCalculator ??
                                 throw new ArgumentNullException(
                                     nameof(percentCalculator), "Percent calculator cannot be null!");
@@ -25,6 +28,17 @@ namespace Banks.BanksStructure.Implementations
             }
 
             LimitIfDoubtful = limitIfDoubtful;
+        }
+
+        public void Subscribe(IMyObserver observer)
+        {
+            observer.Subscribe(_handler);
+        }
+
+        public List<string> SetPercentCalculator(IPercentCalculator percentCalculator)
+        {
+            PercentCalculator = percentCalculator;
+            return _handler.Notify();
         }
 
         public override void AddAccount(Account account)
