@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Banks.BanksStructure.Implementations
 {
-    public class Client
+    public class Client : IMyObserver
     {
         private string _name;
 
@@ -15,6 +15,8 @@ namespace Banks.BanksStructure.Implementations
         private string _passportNumber;
 
         private List<Account> _accounts = new ();
+
+        private List<IMyDisposable> _subscriptionCancellations = new ();
 
         public Client(string name, string surname, string address = null, string passportNumber = null)
         {
@@ -33,6 +35,22 @@ namespace Banks.BanksStructure.Implementations
         }
 
         public IReadOnlyList<Account> ReadableAccounts => _accounts;
+
+        public void Subscribe(IHandler handler)
+        {
+            _subscriptionCancellations.Add(handler.Subscribe(this));
+            Console.WriteLine(_subscriptionCancellations[0].GetName());
+        }
+
+        public void Unsubscribe(string objectName)
+        {
+            _subscriptionCancellations.FirstOrDefault(cancellation => cancellation.GetName() == objectName)?.Dispose();
+        }
+
+        public string Notify()
+        {
+            return GetName() + " is notified!";
+        }
 
         public string GetName()
         {
