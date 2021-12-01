@@ -121,22 +121,6 @@ namespace Banks.ConsoleInterfaceStructure
             _currentClient = client;
         }
 
-        private void Subscribe(string bankName)
-        {
-            _centralBank.GetBankByName(bankName).Subscribe(_currentClient);
-        }
-
-        private void Unsubscribe(string bankName)
-        {
-            _currentClient.Unsubscribe(bankName);
-        }
-
-        private void ChangePercents(string bankName)
-        {
-            Bank bank = _centralBank.GetBankByName(bankName);
-            _console.ShowMessages(bank.SetPercentCalculator(_newPercentCalculator));
-        }
-
         private void RegisterAccount(DataForNewAccount dataForNewAccount)
         {
             Bank bank = _centralBank.GetBankByName(dataForNewAccount.BankName);
@@ -182,17 +166,33 @@ namespace Banks.ConsoleInterfaceStructure
                 dataForTwoWaysTransactions.AmountOfMoney);
         }
 
+        private void CancelTransaction(int id)
+        {
+            _centralBank.CancelTransaction(_centralBank.GetTransaction(id));
+        }
+
+        private void Subscribe(string bankName)
+        {
+            _centralBank.GetBankByName(bankName).Subscribe(_currentClient);
+        }
+
+        private void Unsubscribe(string bankName)
+        {
+            _currentClient.Unsubscribe(bankName);
+        }
+
+        private void ChangePercents(string bankName)
+        {
+            Bank bank = _centralBank.GetBankByName(bankName);
+            _console.ShowMessages(bank.SetPercentCalculator(_newPercentCalculator));
+        }
+
         private void ScrollDays(int days)
         {
             for (int i = 0; i < days; i++)
             {
                 _centralBank.AddDailyIncome();
             }
-        }
-
-        private void CancelTransaction(int id)
-        {
-            _centralBank.CancelTransaction(_centralBank.GetTransaction(id));
         }
     }
 }

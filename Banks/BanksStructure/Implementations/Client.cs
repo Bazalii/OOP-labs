@@ -39,7 +39,6 @@ namespace Banks.BanksStructure.Implementations
         public void Subscribe(IHandler handler)
         {
             _subscriptionCancellations.Add(handler.Subscribe(this));
-            Console.WriteLine(_subscriptionCancellations[0].GetName());
         }
 
         public void Unsubscribe(string objectName)
