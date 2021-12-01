@@ -1,6 +1,6 @@
 ﻿namespace Banks.BanksStructure
 {
-    public interface IPercentCalculator
+    public interface IPercentCalculator : IMyObservable
     {
         float CalculateDepositPercent(float amountOfMoney);
 

@@ -28,7 +28,7 @@ namespace Banks.BanksStructure.Implementations
             _debitPercent = debitPercent;
             if (creditCommission <= 0)
             {
-                throw new ArgumentException("Credit comission should be a positive float!", nameof(creditCommission));
+                throw new ArgumentException("Credit commission should be a positive float!", nameof(creditCommission));
             }
 
             _creditCommission = creditCommission;
