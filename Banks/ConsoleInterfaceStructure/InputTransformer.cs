@@ -1,5 +1,4 @@
-﻿using System;
-using Banks.BanksStructure.Implementations;
+﻿using Banks.BanksStructure.Implementations;
 
 namespace Banks.ConsoleInterfaceStructure
 {

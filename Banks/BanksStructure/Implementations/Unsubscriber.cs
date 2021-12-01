@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Banks.BanksStructure.Implementations
 {
     public class Unsubscriber : IMyDisposable
     {
-        private string _name;
+        private readonly string _name;
 
-        private List<IMyObserver> _observers;
+        private readonly List<IMyObserver> _observers;
 
-        private IMyObserver _observer;
+        private readonly IMyObserver _observer;
 
         public Unsubscriber(string name, List<IMyObserver> observers, IMyObserver observer)
         {

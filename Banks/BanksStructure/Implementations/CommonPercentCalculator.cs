@@ -5,11 +5,11 @@ namespace Banks.BanksStructure.Implementations
 {
     public class CommonPercentCalculator : IPercentCalculator
     {
-        private List<DepositSumWithPercent> _depositSumsWithPercents;
+        private readonly List<DepositSumWithPercent> _depositSumsWithPercents;
 
-        private float _debitPercent;
+        private readonly float _debitPercent;
 
-        private float _creditCommission;
+        private readonly float _creditCommission;
 
         public CommonPercentCalculator(List<DepositSumWithPercent> depositSumsWithPercents, float debitPercent, float creditCommission)
         {

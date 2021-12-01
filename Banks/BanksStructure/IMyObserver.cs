@@ -1,7 +1,4 @@
-﻿using System;
-using Banks.BanksStructure.Implementations;
-
-namespace Banks.BanksStructure
+﻿namespace Banks.BanksStructure
 {
     public interface IMyObserver
     {

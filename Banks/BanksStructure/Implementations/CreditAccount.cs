@@ -4,7 +4,7 @@ namespace Banks.BanksStructure.Implementations
 {
     public class CreditAccount : Account
     {
-        private float _commission;
+        private readonly float _commission;
 
         public CreditAccount(string id, int term, float commission, float amountOfMoney, bool doubtfulness, float limitIfIsDoubtful)
         {

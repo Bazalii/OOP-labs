@@ -9,15 +9,15 @@ namespace Banks.BanksStructure
 
         protected int Id { get; set; }
 
-        protected string Name { get; set; }
+        protected string Name { get; init; }
 
         protected int AccountIds { get; set; }
 
         protected IPercentCalculator PercentCalculator { get; set; }
 
-        protected int AccountsTerm { get; set; }
+        protected int AccountsTerm { get; init; }
 
-        protected float LimitIfDoubtful { get; set; }
+        protected float LimitIfDoubtful { get; init; }
 
         protected List<Account> Accounts { get; set; } = new ();
 

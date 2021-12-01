@@ -6,6 +6,10 @@ namespace Banks.BanksStructure.Implementations
 {
     public class Client : IMyObserver
     {
+        private readonly List<Account> _accounts = new ();
+
+        private readonly List<IMyDisposable> _subscriptionCancellations = new ();
+
         private string _name;
 
         private string _surname;
@@ -13,10 +17,6 @@ namespace Banks.BanksStructure.Implementations
         private string _address;
 
         private string _passportNumber;
-
-        private List<Account> _accounts = new ();
-
-        private List<IMyDisposable> _subscriptionCancellations = new ();
 
         public Client(string name, string surname, string address = null, string passportNumber = null)
         {

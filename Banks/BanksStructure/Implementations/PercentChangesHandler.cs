@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Banks.BanksStructure.Implementations
 {
     public class PercentChangesHandler : IHandler
     {
-        private string _bankName;
+        private readonly string _bankName;
 
-        private List<IMyObserver> _observers = new ();
+        private readonly List<IMyObserver> _observers = new ();
 
         public PercentChangesHandler(string bankName)
         {

@@ -80,8 +80,7 @@ namespace Banks.ConsoleInterfaceStructure
                         break;
                     case "quit":
                         _console.OnEnd();
-                        Environment.Exit(0);
-                        break;
+                        return;
                 }
             }
         }

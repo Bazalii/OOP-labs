@@ -40,9 +40,9 @@ namespace Banks.BanksStructure
 
         protected float MonthlyIncome { get; set; }
 
-        protected float Percent { get; set; }
+        protected float Percent { get; }
 
-        protected float DailyPercent { get; set; }
+        protected float DailyPercent { get; }
 
         public override void AddDailyIncome()
         {

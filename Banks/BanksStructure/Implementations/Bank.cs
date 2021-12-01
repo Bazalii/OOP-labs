@@ -6,7 +6,7 @@ namespace Banks.BanksStructure.Implementations
 {
     public class Bank : BankPrototype
     {
-        private IHandler _handler;
+        private readonly IHandler _handler;
         public Bank(string name, IPercentCalculator percentCalculator, int accountsTerm, float limitIfDoubtful)
         {
             Name = name ??
