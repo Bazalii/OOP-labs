@@ -35,18 +35,18 @@ namespace Banks.BanksStructure
                 throw new ArgumentException("Limit for account should be a positive float!", nameof(limitIfIsDoubtful));
             }
 
-            DailyPercent = Percent * AmountOfMoney / 365;
+            DailyIncome = Percent * AmountOfMoney / 36500;
         }
 
         protected float MonthlyIncome { get; set; }
 
         protected float Percent { get; }
 
-        protected float DailyPercent { get; }
+        protected float DailyIncome { get; }
 
         public override void AddDailyIncome()
         {
-            MonthlyIncome += DailyPercent;
+            MonthlyIncome += DailyIncome;
         }
 
         public void AddMonthlyIncome()
