@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Backups.Algorithms.Implementations;
 using Backups.BackupStructure;
+using Backups.FileSystem;
 using Backups.FileSystem.Implementations;
 using NUnit.Framework;
 
@@ -13,10 +14,14 @@ namespace Backups.Tests
 
         private MemoryFileSystem _fileSystem;
 
+        private IArchiver _archiver;
+
         [SetUp]
         public void SetUp()
         {
-            _fileSystem = new MemoryFileSystem();
+            MemoryFileSystem.Reset();
+            _fileSystem = MemoryFileSystem.GetInstance();
+            _archiver = new VirtualArchiver();
             _fileSystem.CreateDirectory("C:\\One");
             _fileSystem.CreateDirectory("C:\\Two");
             _fileSystem.CreateFile("C:\\One\\First.txt");
@@ -28,7 +33,7 @@ namespace Backups.Tests
         [Test]
         public void Process_UseSplitStorageAlgorithmToProcessBackupJobTwice_BackupJobHasTwoRestorePointsFileSystemHasThreeStorages()
         {
-            _backupJob = new BackupJob(new SplitStorage(_fileSystem, "C:\\Backups"), "C:\\Backups");
+            _backupJob = new BackupJob(new SplitStorage(_fileSystem, _archiver, "C:\\Backups"), "C:\\Backups");
             _backupJob.AddJobObject(new JobObject("C:\\One\\First.txt"));
             _backupJob.AddJobObject(new JobObject("C:\\Two\\Second.txt"));
             _backupJob.Process();
@@ -36,8 +41,8 @@ namespace Backups.Tests
             _fileSystem.WriteToFile("C:\\Two\\Second.txt", "Hi, I'm new second file!");
             _backupJob.Process();
             Assert.IsTrue(_backupJob.GetRestorePointsNumber() == 2);
-            _fileSystem.ExtractFromArchive("C:\\Backups\\RestorePoint0First", "C:\\Extract");
-            _fileSystem.ExtractFromArchive("C:\\Backups\\RestorePoint1Second", "C:\\Extract");
+            _archiver.ExtractFromArchive("C:\\Backups\\RestorePoint0First", "C:\\Extract");
+            _archiver.ExtractFromArchive("C:\\Backups\\RestorePoint1Second", "C:\\Extract");
             Assert.IsTrue(((MemoryDirectory) _fileSystem.GetStorageObject("C:\\Backups")).GetObjects().Count == 3);
             Assert.IsTrue(
                 ((MemoryDirectory) _fileSystem.GetStorageObject("C:\\Backups")).GetObjects()[0]
@@ -66,7 +71,7 @@ namespace Backups.Tests
         [Test]
         public void Process_UseSingleStorageAlgorithmToProcessJob_BackupJobHasOneRestorePointFileSystemHasOneStorageWithFiles()
         {
-            _backupJob = new BackupJob(new SingleStorage(_fileSystem, "C:\\Backups"), "C:\\Backups");
+            _backupJob = new BackupJob(new SingleStorage(_fileSystem, _archiver, "C:\\Backups"), "C:\\Backups");
             _backupJob.SetBackupPath("C:\\MyBackups");
             _backupJob.AddJobObject(new JobObject("C:\\One\\First.txt"));
             _backupJob.AddJobObject(new JobObject("C:\\Two\\Second.txt"));
