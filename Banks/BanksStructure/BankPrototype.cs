@@ -51,7 +51,7 @@ namespace Banks.BanksStructure
 
         public abstract void AddDailyIncome();
 
-        public abstract void ReduceDaysLeft();
+        public abstract void ReduceDaysLeft(Account account);
 
         public void SetId(int id)
         {

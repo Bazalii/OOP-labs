@@ -139,7 +139,7 @@ namespace Banks.BanksStructure.Implementations
             foreach (Account account in Accounts)
             {
                 account.AddDailyIncome();
-                ReduceDaysLeft();
+                ReduceDaysLeft(account);
                 if (account is SavingsAccount savingsAccount && CheckIfMonthPassed(account))
                 {
                     savingsAccount.AddMonthlyIncome();
@@ -147,12 +147,9 @@ namespace Banks.BanksStructure.Implementations
             }
         }
 
-        public override void ReduceDaysLeft()
+        public override void ReduceDaysLeft(Account account)
         {
-            foreach (Account account in Accounts)
-            {
-                account.ReduceDaysLeft();
-            }
+            account.ReduceDaysLeft();
         }
 
         public override bool Equals(object obj)
