@@ -8,6 +8,8 @@ namespace Backups.Algorithms
     {
         protected IFileSystem FileSystem { get; set; }
 
+        protected IArchiver Archiver { get; set; }
+
         protected string BackupsDirectory { get; set; }
 
         protected string SwapDirectory { get; set; }

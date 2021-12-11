@@ -7,11 +7,14 @@ namespace Backups.Algorithms.Implementations
 {
     public class SplitStorage : SavingAlgorithm
     {
-        public SplitStorage(IFileSystem fileSystem, string backupsDirectoryPath)
+        public SplitStorage(IFileSystem fileSystem, IArchiver archiver, string backupsDirectoryPath)
         {
             FileSystem = fileSystem ??
                          throw new ArgumentNullException(
                              nameof(fileSystem), "FileSystem cannot be null!");
+            Archiver = archiver ??
+                       throw new ArgumentNullException(
+                           nameof(archiver), "Archiver cannot be null!");
             BackupsDirectory = backupsDirectoryPath ??
                                throw new ArgumentNullException(
                                    nameof(backupsDirectoryPath), "Path cannot be null!");
@@ -25,7 +28,7 @@ namespace Backups.Algorithms.Implementations
             foreach (JobObject jobObject in jobObjects)
             {
                 FileSystem.CopyFile(jobObject.PathToFile, SwapDirectory + "\\" + FileSystem.GetFullNameFromPath(jobObject.PathToFile));
-                FileSystem.AddToArchive(SwapDirectory, BackupsDirectory + $"\\{backupName + FileSystem.GetNameFromPath(jobObject.PathToFile)}");
+                Archiver.AddToArchive(SwapDirectory, BackupsDirectory + $"\\{backupName + FileSystem.GetNameFromPath(jobObject.PathToFile)}");
                 FileSystem.RemoveFile(SwapDirectory + "\\" + FileSystem.GetFullNameFromPath(jobObject.PathToFile));
             }
 

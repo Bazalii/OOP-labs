@@ -7,11 +7,14 @@ namespace Backups.Algorithms.Implementations
 {
     public class SingleStorage : SavingAlgorithm
     {
-        public SingleStorage(IFileSystem fileSystem, string backupsDirectoryPath)
+        public SingleStorage(IFileSystem fileSystem, IArchiver archiver, string backupsDirectoryPath)
         {
             FileSystem = fileSystem ??
                          throw new ArgumentNullException(
                              nameof(fileSystem), "FileSystem cannot be null!");
+            Archiver = archiver ??
+                       throw new ArgumentNullException(
+                           nameof(archiver), "Archiver cannot be null!");
             BackupsDirectory = backupsDirectoryPath ??
                                throw new ArgumentNullException(
                                    nameof(backupsDirectoryPath), "Path cannot be null!");
@@ -27,7 +30,7 @@ namespace Backups.Algorithms.Implementations
                 FileSystem.CopyFile(jobObject.PathToFile, SwapDirectory + "\\" + FileSystem.GetFullNameFromPath(jobObject.PathToFile));
             }
 
-            FileSystem.AddToArchive(SwapDirectory, BackupsDirectory + $"\\{backupName}");
+            Archiver.AddToArchive(SwapDirectory, BackupsDirectory + $"\\{backupName}");
             foreach (JobObject jobObject in jobObjects)
             {
                 FileSystem.RemoveFile(SwapDirectory + "\\" + FileSystem.GetFullNameFromPath(jobObject.PathToFile));
