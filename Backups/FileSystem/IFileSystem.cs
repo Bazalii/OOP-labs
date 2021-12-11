@@ -16,10 +16,6 @@
 
         void RemoveDirectory(string pathToDirectory);
 
-        void AddToArchive(string directoryToArchivePath, string archivePath);
-
-        void ExtractFromArchive(string archivePath, string directoryToExtract);
-
         string GetFullNameFromPath(string path);
 
         string GetNameFromPath(string path);
