@@ -14,7 +14,7 @@ namespace Banks.ConsoleInterfaceStructure
         private readonly CentralBank _centralBank = new ();
 
         private readonly IPercentCalculator _newPercentCalculator = new CommonPercentCalculator(
-            new List<DepositSumWithPercent>()
+            new List<DepositSumWithPercent>
             {
                 new (20000, 2.5F),
                 new (30000, 4F),
@@ -196,10 +196,7 @@ namespace Banks.ConsoleInterfaceStructure
 
         private void ScrollDays(int days)
         {
-            for (int i = 0; i < days; i++)
-            {
-                _centralBank.AddDailyIncome();
-            }
+            _centralBank.ScrollDays(days);
         }
     }
 }
