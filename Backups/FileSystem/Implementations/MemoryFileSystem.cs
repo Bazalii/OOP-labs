@@ -6,7 +6,23 @@ namespace Backups.FileSystem.Implementations
 {
     public class MemoryFileSystem : IFileSystem
     {
+        private static MemoryFileSystem _instance;
+
         private readonly VirtualDirectory _rootDirectory = new MemoryDirectory(string.Empty, "C:");
+
+        private MemoryFileSystem()
+        {
+        }
+
+        public static MemoryFileSystem GetInstance()
+        {
+            return _instance ??= new MemoryFileSystem();
+        }
+
+        public static void Reset()
+        {
+            _instance = null;
+        }
 
         public string GetRoot()
         {
@@ -78,59 +94,6 @@ namespace Backups.FileSystem.Implementations
             var directory = GetStorageObject(GetParentDirectoryFromPath(pathToDirectory)) as MemoryDirectory;
             StorageObject storageObject = GetStorageObject(pathToDirectory);
             directory.RemoveObject(storageObject);
-        }
-
-        public void CreateArchive(string pathToNewArchive)
-        {
-            try
-            {
-                GetStorageObject(pathToNewArchive);
-                throw new StorageObjectAlreadyExists($"Directory {pathToNewArchive} already exists!");
-            }
-            catch (StorageObjectNotExistException)
-            {
-                string pathToParentDirectory = GetParentDirectoryFromPath(pathToNewArchive);
-                var parentDirectory = GetStorageObject(pathToParentDirectory) as MemoryDirectory;
-                parentDirectory.AddObject(new MemoryArchive(pathToParentDirectory, GetNameFromPath(pathToNewArchive)));
-            }
-        }
-
-        public void AddToArchive(string directoryToArchivePath, string archivePath)
-        {
-            MemoryDirectory memoryDirectory = GetStorageObject(directoryToArchivePath) as MemoryDirectory ??
-                                              throw new StorageObjectNotExistException(
-                                                  $"Directory {directoryToArchivePath} doesn't exist! ");
-            try
-            {
-                GetStorageObject(archivePath);
-            }
-            catch (StorageObjectNotExistException)
-            {
-                CreateArchive(archivePath);
-            }
-
-            foreach (StorageObject storageObject in memoryDirectory.GetObjects())
-            {
-                CopyFile(storageObject.GetPath(), archivePath + "\\" + GetFullNameFromPath(storageObject.GetPath()));
-            }
-        }
-
-        public void ExtractFromArchive(string archivePath, string directoryToExtract)
-        {
-            try
-            {
-                GetStorageObject(directoryToExtract);
-            }
-            catch (StorageObjectNotExistException)
-            {
-                CreateDirectory(directoryToExtract);
-            }
-
-            var archive = GetStorageObject(archivePath) as MemoryArchive;
-            foreach (StorageObject storageObject in archive.GetObjects())
-            {
-                CopyFile(storageObject.GetPath(), directoryToExtract + "\\" + GetFullNameFromPath(storageObject.GetPath()));
-            }
         }
 
         public string GetFullNameFromPath(string path)
