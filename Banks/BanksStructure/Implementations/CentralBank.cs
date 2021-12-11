@@ -164,5 +164,13 @@ namespace Banks.BanksStructure.Implementations
 
             throw new NotFoundException($"Account with Id: {accountId} doesn't exist");
         }
+
+        public void ScrollDays(int days)
+        {
+            for (int i = 0; i < days; i++)
+            {
+                AddDailyIncome();
+            }
+        }
     }
 }
