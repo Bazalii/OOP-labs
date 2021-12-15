@@ -31,24 +31,17 @@ namespace Backups.FileSystem.Implementations
 
         public StorageObject GetStorageObject(string path)
         {
-            return DepthFirstSearch(_rootDirectory, path) ??
-                   throw new StorageObjectNotExistException($"Storage object {path} doesn't exist!");
+            return DepthFirstSearch(_rootDirectory, path);
         }
 
         public void CreateFile(string pathToFile)
         {
-            try
-            {
-                GetStorageObject(pathToFile);
+            if (GetStorageObject(pathToFile) != null)
                 throw new StorageObjectAlreadyExists($"File {pathToFile} already exists");
-            }
-            catch (StorageObjectNotExistException)
-            {
-                string parentDirectoryPath = GetParentDirectoryFromPath(pathToFile);
-                var file = new MemoryFile(parentDirectoryPath, GetFullNameFromPath(pathToFile));
-                var directory = GetStorageObject(parentDirectoryPath) as MemoryDirectory;
-                directory.AddObject(file);
-            }
+            string parentDirectoryPath = GetParentDirectoryFromPath(pathToFile);
+            var file = new MemoryFile(parentDirectoryPath, GetFullNameFromPath(pathToFile));
+            var directory = GetStorageObject(parentDirectoryPath) as MemoryDirectory;
+            directory.AddObject(file);
         }
 
         public void RemoveFile(string pathToFile)
@@ -76,17 +69,11 @@ namespace Backups.FileSystem.Implementations
 
         public void CreateDirectory(string pathToNewDirectory)
         {
-            try
-            {
-                GetStorageObject(pathToNewDirectory);
+            if (GetStorageObject(pathToNewDirectory) != null)
                 throw new StorageObjectAlreadyExists($"Directory {pathToNewDirectory} already exists!");
-            }
-            catch (StorageObjectNotExistException)
-            {
-                string pathToParentDirectory = GetParentDirectoryFromPath(pathToNewDirectory);
-                var parentDirectory = GetStorageObject(pathToParentDirectory) as MemoryDirectory;
-                parentDirectory.AddObject(new MemoryDirectory(pathToParentDirectory, GetNameFromPath(pathToNewDirectory)));
-            }
+            string pathToParentDirectory = GetParentDirectoryFromPath(pathToNewDirectory);
+            var parentDirectory = GetStorageObject(pathToParentDirectory) as MemoryDirectory;
+            parentDirectory.AddObject(new MemoryDirectory(pathToParentDirectory, GetNameFromPath(pathToNewDirectory)));
         }
 
         public void RemoveDirectory(string pathToDirectory)

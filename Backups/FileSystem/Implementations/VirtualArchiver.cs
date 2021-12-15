@@ -6,17 +6,11 @@ namespace Backups.FileSystem.Implementations
     {
         public void CreateArchive(string pathToNewArchive)
         {
-            try
-            {
-                MemoryFileSystem.GetInstance().GetStorageObject(pathToNewArchive);
+            if (MemoryFileSystem.GetInstance().GetStorageObject(pathToNewArchive) != null)
                 throw new StorageObjectAlreadyExists($"Directory {pathToNewArchive} already exists!");
-            }
-            catch (StorageObjectNotExistException)
-            {
-                string pathToParentDirectory = MemoryFileSystem.GetInstance().GetParentDirectoryFromPath(pathToNewArchive);
-                var parentDirectory = MemoryFileSystem.GetInstance().GetStorageObject(pathToParentDirectory) as MemoryDirectory;
-                parentDirectory.AddObject(new MemoryArchive(pathToParentDirectory, MemoryFileSystem.GetInstance().GetNameFromPath(pathToNewArchive)));
-            }
+            string pathToParentDirectory = MemoryFileSystem.GetInstance().GetParentDirectoryFromPath(pathToNewArchive);
+            var parentDirectory = MemoryFileSystem.GetInstance().GetStorageObject(pathToParentDirectory) as MemoryDirectory;
+            parentDirectory.AddObject(new MemoryArchive(pathToParentDirectory, MemoryFileSystem.GetInstance().GetNameFromPath(pathToNewArchive)));
         }
 
         public void AddToArchive(string directoryToArchivePath, string archivePath)
@@ -24,15 +18,8 @@ namespace Backups.FileSystem.Implementations
             MemoryDirectory memoryDirectory = MemoryFileSystem.GetInstance().GetStorageObject(directoryToArchivePath) as MemoryDirectory ??
                                               throw new StorageObjectNotExistException(
                                                   $"Directory {directoryToArchivePath} doesn't exist! ");
-            try
-            {
-                MemoryFileSystem.GetInstance().GetStorageObject(archivePath);
-            }
-            catch (StorageObjectNotExistException)
-            {
+            if (MemoryFileSystem.GetInstance().GetStorageObject(archivePath) == null)
                 CreateArchive(archivePath);
-            }
-
             foreach (StorageObject storageObject in memoryDirectory.GetObjects())
             {
                 MemoryFileSystem.GetInstance().CopyFile(
@@ -43,15 +30,8 @@ namespace Backups.FileSystem.Implementations
 
         public void ExtractFromArchive(string archivePath, string directoryToExtract)
         {
-            try
-            {
-                MemoryFileSystem.GetInstance().GetStorageObject(directoryToExtract);
-            }
-            catch (StorageObjectNotExistException)
-            {
+            if (MemoryFileSystem.GetInstance().GetStorageObject(directoryToExtract) == null)
                 MemoryFileSystem.GetInstance().CreateDirectory(directoryToExtract);
-            }
-
             var archive = MemoryFileSystem.GetInstance().GetStorageObject(archivePath) as MemoryArchive;
             foreach (StorageObject storageObject in archive.GetObjects())
             {
