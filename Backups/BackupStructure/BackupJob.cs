@@ -6,54 +6,54 @@ namespace Backups.BackupStructure
 {
     public class BackupJob
     {
-        private string _backupsDirectoryPath;
-
-        private int _restorePointsCounter;
-
-        private string _restorePointName = "RestorePoint";
-
-        private List<JobObject> _jobObjects = new ();
-
-        private List<RestorePoint> _restorePoints = new ();
-
         public BackupJob(SavingAlgorithm savingAlgorithm, string backupsDirectoryPath)
         {
             SavingAlgorithm = savingAlgorithm ??
                               throw new ArgumentNullException(
                                   nameof(savingAlgorithm), "SavingAlgorithm cannot be null!");
-            _backupsDirectoryPath = backupsDirectoryPath ??
-                                    throw new ArgumentNullException(
-                                        nameof(backupsDirectoryPath), "Path cannot be null!");
+            BackupsDirectoryPath = backupsDirectoryPath ??
+                                   throw new ArgumentNullException(
+                                       nameof(backupsDirectoryPath), "Path cannot be null!");
         }
 
         public SavingAlgorithm SavingAlgorithm { get; set; }
 
+        protected string BackupsDirectoryPath { get; set; }
+
+        protected int RestorePointsCounter { get; set; }
+
+        protected string RestorePointName { get; set; } = "RestorePoint";
+
+        protected List<JobObject> JobObjects { get; set; } = new ();
+
+        protected List<RestorePoint> RestorePoints { get; set; } = new ();
+
         public void Process()
         {
-            SavingAlgorithm.Backup(_jobObjects, _restorePointName + _restorePointsCounter);
-            _restorePoints.Add(new RestorePoint(DateTime.Now, _jobObjects));
-            _restorePointsCounter += 1;
+            SavingAlgorithm.Backup(JobObjects, RestorePointName + RestorePointsCounter);
+            RestorePoints.Add(new RestorePoint(DateTime.Now, JobObjects));
+            RestorePointsCounter += 1;
         }
 
         public void AddJobObject(JobObject jobObject)
         {
-            _jobObjects.Add(jobObject);
+            JobObjects.Add(jobObject);
         }
 
         public void RemoveJobObject(JobObject jobObjectToRemove)
         {
-            _jobObjects.Remove(jobObjectToRemove);
+            JobObjects.Remove(jobObjectToRemove);
         }
 
         public void SetBackupPath(string path)
         {
-            _backupsDirectoryPath = path;
+            BackupsDirectoryPath = path;
             SavingAlgorithm.SetBackupsDirectoryPath(path);
         }
 
         public int GetRestorePointsNumber()
         {
-            return _restorePointsCounter;
+            return RestorePointsCounter;
         }
     }
 }
