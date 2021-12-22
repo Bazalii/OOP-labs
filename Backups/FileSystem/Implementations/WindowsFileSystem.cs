@@ -23,12 +23,16 @@ namespace Backups.FileSystem.Implementations
             File.Delete(pathToFile);
         }
 
-        public void WriteToFile(string pathToFile, string textToWrite)
+        public void WriteToFile(string pathToFile, byte[] information)
         {
             FileStream file = File.Create(pathToFile);
-            byte[] information = new UTF8Encoding(true).GetBytes(textToWrite);
             file.Write(information, 0, information.Length);
             file.Close();
+        }
+
+        public byte[] ReadFile(string pathToFile)
+        {
+            return File.ReadAllBytes(pathToFile);
         }
 
         public void CopyFile(string oldPath, string newPath)

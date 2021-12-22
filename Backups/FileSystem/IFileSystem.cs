@@ -8,7 +8,9 @@
 
         void RemoveFile(string pathToFile);
 
-        void WriteToFile(string pathToFile, string textToWrite);
+        void WriteToFile(string pathToFile, byte[] information);
+
+        byte[] ReadFile(string pathToFile);
 
         void CopyFile(string oldPath, string newPath);
 

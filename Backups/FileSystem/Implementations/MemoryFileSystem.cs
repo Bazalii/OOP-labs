@@ -50,11 +50,22 @@ namespace Backups.FileSystem.Implementations
             directory.RemoveObject(GetStorageObject(pathToFile));
         }
 
-        public void WriteToFile(string pathToFile, string textToWrite)
+        public void WriteToFile(string pathToFile, byte[] information)
         {
             var file = GetStorageObject(pathToFile) as MemoryFile;
-            byte[] information = new UTF8Encoding(true).GetBytes(textToWrite);
+            if (file == null)
+            {
+                CreateFile(pathToFile);
+                file = GetStorageObject(pathToFile) as MemoryFile;
+            }
+
             file.Write(information);
+        }
+
+        public byte[] ReadFile(string pathToFile)
+        {
+            var file = GetStorageObject(pathToFile) as MemoryFile;
+            return file.Read();
         }
 
         public void CopyFile(string oldPath, string newPath)
