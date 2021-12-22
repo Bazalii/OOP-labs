@@ -2,8 +2,8 @@
 {
     public interface IArchiver
     {
-        void AddToArchive(string directoryToArchivePath, string archivePath);
+        byte[] Compress(byte[] file);
 
-        void ExtractFromArchive(string archivePath, string directoryToExtract);
+        byte[] Decompress(byte[] file);
     }
 }
