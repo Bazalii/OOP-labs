@@ -50,16 +50,6 @@ namespace Backups.FileSystem.Implementations
             Directory.Delete(pathToDirectory);
         }
 
-        public void AddToArchive(string directoryToArchivePath, string archivePath)
-        {
-            ZipFile.CreateFromDirectory(directoryToArchivePath, archivePath);
-        }
-
-        public void ExtractFromArchive(string archivePath, string directoryToExtract)
-        {
-            ZipFile.ExtractToDirectory(archivePath, directoryToExtract);
-        }
-
         public string GetFullNameFromPath(string path)
         {
             return path.Substring(
