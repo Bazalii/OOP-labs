@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Backups.BackupStructure;
 using Backups.FileSystem;
 
@@ -24,19 +25,15 @@ namespace Backups.Algorithms.Implementations
 
         public override void Backup(List<JobObject> jobObjects, string backupName)
         {
-            FileSystem.CreateDirectory(SwapDirectory);
+            List<byte> archiveFiles = new ();
             foreach (JobObject jobObject in jobObjects)
             {
-                FileSystem.CopyFile(jobObject.PathToFile, SwapDirectory + "\\" + FileSystem.GetFullNameFromPath(jobObject.PathToFile));
+                archiveFiles.AddRange(FileSystem.ReadFile(jobObject.PathToFile));
+                archiveFiles.AddRange(Encoding.UTF8.GetBytes("$|$"));
             }
 
-            Archiver.AddToArchive(SwapDirectory, BackupsDirectory + $"\\{backupName}");
-            foreach (JobObject jobObject in jobObjects)
-            {
-                FileSystem.RemoveFile(SwapDirectory + "\\" + FileSystem.GetFullNameFromPath(jobObject.PathToFile));
-            }
-
-            FileSystem.RemoveDirectory(SwapDirectory);
+            byte[] compressedFiles = Archiver.Compress(archiveFiles.ToArray());
+            FileSystem.WriteToFile(BackupsDirectory + $"\\{backupName}", compressedFiles);
         }
 
         public override void SetFileSystem(IFileSystem fileSystem)
