@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using Backups.Tools;
 
 namespace Backups.FileSystem.Implementations

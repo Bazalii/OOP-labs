@@ -2,7 +2,7 @@
 
 namespace Backups.FileSystem.Implementations
 {
-    public class VirtualArchiver : IArchiver
+    public class VirtualArchiver
     {
         public void CreateArchive(string pathToNewArchive)
         {
