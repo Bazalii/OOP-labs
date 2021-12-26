@@ -1,7 +1,7 @@
 ﻿using Backups.Algorithms;
 using Backups.BackupStructure;
 
-namespace BackupsExtra.Tests.BackupExtraStructure
+namespace BackupsExtra.BackupExtraStructure
 {
     public class ModifiedBackupJob : BackupJob
     {
