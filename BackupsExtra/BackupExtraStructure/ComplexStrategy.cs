@@ -11,7 +11,7 @@ namespace BackupsExtra.BackupExtraStructure
         public ComplexStrategy(
             SavingAlgorithm savingAlgorithm,
             RestoreAlgorithm restoreAlgorithm,
-            PointRemovalAlgorithm removalAlgorithm,
+            IPointRemovalAlgorithm removalAlgorithm,
             MergeAlgorithm mergeAlgorithm)
         {
             SavingAlgorithm = savingAlgorithm ??
@@ -32,7 +32,7 @@ namespace BackupsExtra.BackupExtraStructure
 
         public RestoreAlgorithm RestoreAlgorithm { get; }
 
-        public PointRemovalAlgorithm RemovalAlgorithm { get; }
+        public IPointRemovalAlgorithm RemovalAlgorithm { get; }
 
         public MergeAlgorithm MergeAlgorithm { get; }
     }
