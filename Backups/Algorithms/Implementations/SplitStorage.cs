@@ -7,7 +7,7 @@ namespace Backups.Algorithms.Implementations
 {
     public class SplitStorage : SavingAlgorithm
     {
-        public SplitStorage(IFileSystem fileSystem, IArchiver archiver, string backupsDirectoryPath)
+        public SplitStorage(IFileSystem fileSystem, IArchiver archiver, string backupsDirectory)
         {
             FileSystem = fileSystem ??
                          throw new ArgumentNullException(
@@ -15,9 +15,9 @@ namespace Backups.Algorithms.Implementations
             Archiver = archiver ??
                        throw new ArgumentNullException(
                            nameof(archiver), "Archiver cannot be null!");
-            BackupsDirectory = backupsDirectoryPath ??
+            BackupsDirectory = backupsDirectory ??
                                throw new ArgumentNullException(
-                                   nameof(backupsDirectoryPath), "Path cannot be null!");
+                                   nameof(backupsDirectory), "Path cannot be null!");
             SwapDirectory = fileSystem.GetRoot() + "\\Swap";
             FileSystem.CreateDirectory(BackupsDirectory);
         }
