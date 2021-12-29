@@ -39,12 +39,12 @@ namespace BackupsExtra.Algorithms.MergeAlgorithms.Implementations
 
                 if (flag) continue;
                 byte[] information = FileSystem.ReadFile(
-                    BackupsDirectory + $"{firstRestorePoint.Name}{firstFileName}");
+                    BackupsDirectory + $"\\{firstRestorePoint.Name}{firstFileName}");
                 FileSystem.WriteToFile(
-                    BackupsDirectory + $"{secondRestorePoint.Name}{firstFileName}",
+                    BackupsDirectory + $"\\{secondRestorePoint.Name}{firstFileName}",
                     information);
                 FileSystem.RemoveFile(
-                    BackupsDirectory + $"{firstRestorePoint.Name}{firstFileName}");
+                    BackupsDirectory + $"\\{firstRestorePoint.Name}{firstFileName}");
                 jobObjects.Add(firstJobObject);
             }
 
