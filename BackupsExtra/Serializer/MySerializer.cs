@@ -24,11 +24,8 @@ namespace BackupsExtra.Serializer
 
         public void Serialize(ModifiedBackupJob modifiedBackupJob)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(modifiedBackupJob, Formatting.Indented, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.All,
-            }));
-            _fileSystem.WriteToFile(_pathToFile, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(modifiedBackupJob, Formatting.Indented, new JsonSerializerSettings
+            _fileSystem.WriteToFile(_pathToFile, Encoding.UTF8.GetBytes(
+                JsonConvert.SerializeObject(modifiedBackupJob, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,
             })));
@@ -36,7 +33,8 @@ namespace BackupsExtra.Serializer
 
         public ModifiedBackupJob DeSerialize()
         {
-            return JsonConvert.DeserializeObject<ModifiedBackupJob>(Encoding.UTF8.GetString(_fileSystem.ReadFile(_pathToFile)), new JsonSerializerSettings
+            return JsonConvert.DeserializeObject<ModifiedBackupJob>(
+                Encoding.UTF8.GetString(_fileSystem.ReadFile(_pathToFile)), new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,
             });
