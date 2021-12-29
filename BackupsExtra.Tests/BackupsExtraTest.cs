@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Backups.Algorithms.Implementations;
 using Backups.BackupStructure;
 using Backups.FileSystem;
@@ -10,7 +9,6 @@ using BackupsExtra.Algorithms.PointRemovalCalculators.Implementations;
 using BackupsExtra.Algorithms.RestoreAlgorithms.Implementations;
 using BackupsExtra.BackupExtraStructure;
 using BackupsExtra.Logger.Implementations;
-using BackupsExtra.Serializer;
 using BackupsExtra.Tools;
 using NUnit.Framework;
 using Serilog;

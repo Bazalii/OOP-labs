@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Backups.Algorithms;
 using Backups.BackupStructure;
 using Backups.FileSystem;
 using Newtonsoft.Json;

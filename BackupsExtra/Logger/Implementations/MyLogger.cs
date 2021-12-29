@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Serilog;
-using Serilog.Core;
 
 namespace BackupsExtra.Logger.Implementations
 {
