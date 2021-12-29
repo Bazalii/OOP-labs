@@ -60,7 +60,7 @@ namespace Backups.BackupStructure
 
         public int GetRestorePointsNumber()
         {
-            return RestorePointsCounter;
+            return RestorePoints.Count;
         }
     }
 }
