@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Backups.BackupStructure;
-using Backups.FileSystem;
 using BackupsExtra.Tools;
 using Newtonsoft.Json;
 
-namespace BackupsExtra.Algorithms.PointRemovalAlgorithms.Implementations
+namespace BackupsExtra.Algorithms.PointRemovalCalculators.Implementations
 {
-    public class NumberOfPointsAlgorithm : IPointRemovalAlgorithm
+    public class NumberOfPointsCalculator : IPointRemovalCalculator
     {
-        public NumberOfPointsAlgorithm(int maxPoints)
+        public NumberOfPointsCalculator(int maxPoints)
         {
             if (maxPoints <= 0)
             {
@@ -24,13 +23,13 @@ namespace BackupsExtra.Algorithms.PointRemovalAlgorithms.Implementations
 
         public int GetNumberOfPointsToRemove(List<RestorePoint> restorePoints)
         {
-            int numberOfPointsToDelete = restorePoints.Count - MaxPoints;
-            if (numberOfPointsToDelete == restorePoints.Count)
+            int numberOfPointsToRemove = restorePoints.Count - MaxPoints;
+            if (numberOfPointsToRemove == restorePoints.Count)
             {
                 throw new CannotDeleteAllPointsException("All restore points cannot be deleted!");
             }
 
-            return numberOfPointsToDelete > 0 ? numberOfPointsToDelete : 0;
+            return numberOfPointsToRemove > 0 ? numberOfPointsToRemove : 0;
         }
     }
 }

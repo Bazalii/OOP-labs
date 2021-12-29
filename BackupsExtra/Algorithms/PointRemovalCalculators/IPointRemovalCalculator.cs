@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Backups.BackupStructure;
-using Backups.FileSystem;
 
-namespace BackupsExtra.Algorithms.PointRemovalAlgorithms
+namespace BackupsExtra.Algorithms.PointRemovalCalculators
 {
-    public interface IPointRemovalAlgorithm
+    public interface IPointRemovalCalculator
     {
         int GetNumberOfPointsToRemove(List<RestorePoint> restorePoints);
     }

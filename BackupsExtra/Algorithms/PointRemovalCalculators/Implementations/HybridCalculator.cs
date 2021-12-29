@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Backups.BackupStructure;
-using Backups.FileSystem;
-using BackupsExtra.Tools;
 using Newtonsoft.Json;
 
-namespace BackupsExtra.Algorithms.PointRemovalAlgorithms.Implementations
+namespace BackupsExtra.Algorithms.PointRemovalCalculators.Implementations
 {
-    public class HybridAlgorithm : IPointRemovalAlgorithm
+    public class HybridCalculator : IPointRemovalCalculator
     {
-        public HybridAlgorithm(List<IPointRemovalAlgorithm> algorithms, bool all)
+        public HybridCalculator(List<IPointRemovalCalculator> algorithms, bool all)
         {
             if (algorithms.Count < 2)
             {
@@ -24,7 +22,7 @@ namespace BackupsExtra.Algorithms.PointRemovalAlgorithms.Implementations
         }
 
         [JsonProperty]
-        protected List<IPointRemovalAlgorithm> Algorithms { get; set; }
+        protected List<IPointRemovalCalculator> Algorithms { get; set; }
 
         [JsonProperty]
         protected bool All { get; set; }
