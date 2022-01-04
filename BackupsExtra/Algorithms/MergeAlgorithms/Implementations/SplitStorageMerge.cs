@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Backups.BackupStructure;
 using Backups.FileSystem;
 
@@ -24,20 +25,17 @@ namespace BackupsExtra.Algorithms.MergeAlgorithms.Implementations
             List<JobObject> jobObjects = new ();
             foreach (JobObject firstJobObject in firstRestorePoint.BackupedFiles)
             {
-                bool flag = false;
                 string firstFileName = FileSystem.GetNameFromPath(firstJobObject.PathToFile);
-                foreach (JobObject secondJobObject in secondRestorePoint.BackupedFiles)
+                JobObject wantedJobObject =
+                    secondRestorePoint.BackupedFiles.FirstOrDefault(jobObject =>
+                        firstJobObject.PathToFile == jobObject.PathToFile);
+                if (wantedJobObject != null)
                 {
-                    if (firstJobObject.PathToFile == secondJobObject.PathToFile)
-                    {
-                        flag = true;
-                        FileSystem.RemoveFile(BackupsDirectory +
-                                              $"{firstRestorePoint.Name}{firstFileName}");
-                        break;
-                    }
+                    FileSystem.RemoveFile(BackupsDirectory +
+                                          $"{firstRestorePoint.Name}{firstFileName}");
+                    continue;
                 }
 
-                if (flag) continue;
                 byte[] information = FileSystem.ReadFile(
                     BackupsDirectory + $"\\{firstRestorePoint.Name}{firstFileName}");
                 FileSystem.WriteToFile(
