@@ -1,37 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using Backups.Algorithms;
+using Newtonsoft.Json;
 
 namespace Backups.BackupStructure
 {
     public class BackupJob
     {
-        public BackupJob(SavingAlgorithm savingAlgorithm, string backupsDirectoryPath)
+        public BackupJob(SavingAlgorithm savingAlgorithm, string backupsDirectory)
         {
             SavingAlgorithm = savingAlgorithm ??
                               throw new ArgumentNullException(
                                   nameof(savingAlgorithm), "SavingAlgorithm cannot be null!");
-            BackupsDirectoryPath = backupsDirectoryPath ??
+            BackupsDirectory = backupsDirectory ??
                                    throw new ArgumentNullException(
-                                       nameof(backupsDirectoryPath), "Path cannot be null!");
+                                       nameof(backupsDirectory), "Path cannot be null!");
         }
 
-        public SavingAlgorithm SavingAlgorithm { get; set; }
-
-        protected string BackupsDirectoryPath { get; set; }
-
-        protected int RestorePointsCounter { get; set; }
-
-        protected string RestorePointName { get; set; } = "RestorePoint";
-
+        [JsonProperty]
         protected List<JobObject> JobObjects { get; set; } = new ();
 
+        [JsonProperty]
+        protected SavingAlgorithm SavingAlgorithm { get; set; }
+
+        [JsonProperty]
+        protected string BackupsDirectory { get; set; }
+
+        [JsonProperty]
+        protected int RestorePointsCounter { get; set; }
+
+        [JsonProperty]
+        protected string RestorePointName { get; set; } = "RestorePoint";
+
+        [JsonProperty]
         protected List<RestorePoint> RestorePoints { get; set; } = new ();
 
         public void Process()
         {
             SavingAlgorithm.Backup(JobObjects, RestorePointName + RestorePointsCounter);
-            RestorePoints.Add(new RestorePoint(DateTime.Now, JobObjects));
+            RestorePoints.Add(new RestorePoint(RestorePointName + RestorePointsCounter, DateTime.Now, JobObjects));
             RestorePointsCounter += 1;
         }
 
@@ -47,13 +54,13 @@ namespace Backups.BackupStructure
 
         public void SetBackupPath(string path)
         {
-            BackupsDirectoryPath = path;
+            BackupsDirectory = path;
             SavingAlgorithm.SetBackupsDirectoryPath(path);
         }
 
         public int GetRestorePointsNumber()
         {
-            return RestorePointsCounter;
+            return RestorePoints.Count;
         }
     }
 }
