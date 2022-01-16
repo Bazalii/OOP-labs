@@ -48,7 +48,7 @@ namespace Reports.Server.Services.Implementations
         {
             FindById(employeeId).AddTask();
         }
-        
+
         public Employee ChangeAssignedEmployee(Guid employeeId, Guid taskId)
         {
             Task task = GetAssignedEmployee(taskId).GetTaskById(taskId);
