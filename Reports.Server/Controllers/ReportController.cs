@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Reports.DAL.Entities;
 using Reports.Server.Services;
 
