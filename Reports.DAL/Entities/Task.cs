@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Reports.DAL.Entities
 {
     public class Task
     {
+        [JsonProperty]
         private List<Change> _changes = new ();
 
         public Task(Guid id, string description, DateTime timeOfCreation, TaskStatus status)

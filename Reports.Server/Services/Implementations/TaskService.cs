@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Reports.DAL.Entities;
 
 namespace Reports.Server.Services.Implementations
 {
     public class TaskService : ITaskService
     {
+        [JsonProperty]
         private List<Task> _tasks = new ();
 
         public Task Create(string description)

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Reports.DAL.Entities;
 
 namespace Reports.Server.Services.Implementations
 {
     public class EmployeeService : IEmployeeService
     {
+        [JsonProperty]
         private List<Employee> _employees = new ();
 
         public Employee Create(string name)
         {
             Employee employee = new Employee(Guid.NewGuid(), name);
             _employees.Add(employee);
-            Console.WriteLine(_employees.Count);
             return employee;
         }
 
@@ -46,7 +47,8 @@ namespace Reports.Server.Services.Implementations
 
         public Employee AssignEmployee(Guid employeeId)
         {
-            FindById(employeeId).AddTask();
+            FindById(employeeId);
+            return null;
         }
 
         public Employee ChangeAssignedEmployee(Guid employeeId, Guid taskId)
@@ -79,14 +81,13 @@ namespace Reports.Server.Services.Implementations
         public Employee AddSubordinate(Guid supervisorId, Guid subordinateId)
         {
             Employee supervisor = FindById(supervisorId);
-            Console.WriteLine(supervisor.Subordinates.Count);
             supervisor.AddSubordinate(FindById(subordinateId));
-            Console.WriteLine(supervisor.Subordinates.Count);
             return supervisor;
         }
 
         public Employee Update(Employee entity)
         {
+            return null;
         }
     }
 }

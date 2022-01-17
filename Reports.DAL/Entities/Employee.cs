@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Reports.DAL.Entities
 {
     public class Employee
     {
+        [JsonProperty]
         private List<Employee> _subordinates = new ();
 
+        [JsonProperty]
         private List<Task> _tasks = new ();
 
         public Employee(Guid id, string name)
