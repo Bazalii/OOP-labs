@@ -14,18 +14,24 @@ namespace Reports.Server.Services
 
         Employee FindById(Guid id);
 
-        IReadOnlyList<Task> GetEmployeeTasks(Guid id);
+        IReadOnlyList<Guid> GetEmployeeTasks(Guid id);
+
+        Employee AssignEmployee(Guid employeeId, Guid taskId);
 
         Employee GetAssignedEmployee(Guid id);
 
         Employee ChangeAssignedEmployee(Guid employeeId, Guid taskId);
 
-        List<Task> GetSubordinatesTasks(Guid id);
+        List<Guid> GetSubordinatesTasks(Guid id);
 
         Employee Delete(Guid id);
 
         Employee AddSubordinate(Guid supervisorId, Guid subordinateId);
 
         Employee Update(Employee entity);
+
+        public void Save();
+
+        public void Load();
     }
 }

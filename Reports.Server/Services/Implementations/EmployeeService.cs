@@ -1,68 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
+using Backups.FileSystem.Implementations;
 using Reports.DAL.Entities;
 
 namespace Reports.Server.Services.Implementations
 {
     public class EmployeeService : IEmployeeService
     {
-        [JsonProperty]
-        private List<Employee> _employees = new ();
+        private IEmployeeDataBase _dataBase = new EmployeeDataBase(new WindowsFileSystem());
 
         public Employee Create(string name)
         {
             Employee employee = new Employee(Guid.NewGuid(), name);
-            _employees.Add(employee);
+            _dataBase.Add(employee);
             return employee;
         }
 
         public List<Employee> GetAll()
         {
-            return _employees;
+            return _dataBase.GetAll();
         }
 
         public Employee FindByName(string name)
         {
-            Console.WriteLine(_employees.Count);
-            Console.WriteLine(name);
-            return _employees.FirstOrDefault(employee => employee.Name == name);
+            return _dataBase.FindByName(name);
         }
 
         public Employee FindById(Guid id)
         {
-            return _employees.FirstOrDefault(employee => employee.Id == id);
+            return _dataBase.FindById(id);
         }
 
-        public IReadOnlyList<Task> GetEmployeeTasks(Guid id)
+        public IReadOnlyList<Guid> GetEmployeeTasks(Guid id)
         {
             return FindById(id).Tasks;
         }
 
-        public Employee GetAssignedEmployee(Guid id)
+        public Employee AssignEmployee(Guid employeeId, Guid taskId)
         {
-            return _employees.FirstOrDefault(employee => employee.Tasks.FirstOrDefault(task => task.Id == id) != null);
+            Employee employee = FindById(employeeId);
+            employee.AddTask(taskId);
+            return employee;
         }
 
-        public Employee AssignEmployee(Guid employeeId)
+        public Employee GetAssignedEmployee(Guid id)
         {
-            FindById(employeeId);
-            return null;
+            return _dataBase.GetAssignedEmployee(id);
         }
 
         public Employee ChangeAssignedEmployee(Guid employeeId, Guid taskId)
         {
-            Task task = GetAssignedEmployee(taskId).GetTaskById(taskId);
-            GetAssignedEmployee(taskId).RemoveTask(task);
+            GetAssignedEmployee(taskId).RemoveTask(taskId);
             Employee employee = FindById(employeeId);
-            employee.AddTask(task);
+            employee.AddTask(taskId);
             return employee;
         }
 
-        public List<Task> GetSubordinatesTasks(Guid id)
+        public List<Guid> GetSubordinatesTasks(Guid id)
         {
-            List<Task> output = new ();
+            List<Guid> output = new ();
             foreach (Employee employee in FindById(id).Subordinates)
             {
                 output.AddRange(employee.Tasks);
@@ -73,9 +69,7 @@ namespace Reports.Server.Services.Implementations
 
         public Employee Delete(Guid id)
         {
-            Employee employee = FindById(id);
-            _employees.Remove(employee);
-            return employee;
+            return _dataBase.Delete(id);
         }
 
         public Employee AddSubordinate(Guid supervisorId, Guid subordinateId)
@@ -88,6 +82,16 @@ namespace Reports.Server.Services.Implementations
         public Employee Update(Employee entity)
         {
             return null;
+        }
+
+        public void Save()
+        {
+            _dataBase.Serialize();
+        }
+
+        public void Load()
+        {
+            _dataBase.DeSerialize();
         }
     }
 }

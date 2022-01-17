@@ -11,7 +11,7 @@ namespace Reports.DAL.Entities
         private List<Employee> _subordinates = new ();
 
         [JsonProperty]
-        private List<Task> _tasks = new ();
+        private List<Guid> _tasks = new ();
 
         public Employee(Guid id, string name)
         {
@@ -35,31 +35,26 @@ namespace Reports.DAL.Entities
 
         public IReadOnlyList<Employee> Subordinates => _subordinates;
 
-        public IReadOnlyList<Task> Tasks => _tasks;
+        public IReadOnlyList<Guid> Tasks => _tasks;
 
         public void AddSubordinate(Employee subordinate)
         {
             _subordinates.Add(subordinate);
         }
 
-        public int GetLength()
-        {
-            return _subordinates.Count;
-        }
-
-        public void AddTask(Task task)
+        public void AddTask(Guid task)
         {
             _tasks.Add(task);
         }
 
-        public void RemoveTask(Task task)
+        public void RemoveTask(Guid task)
         {
             _tasks.Remove(task);
         }
 
-        public Task GetTaskById(Guid id)
+        public Guid GetTaskById(Guid id)
         {
-            return _tasks.FirstOrDefault(task => task.Id == id);
+            return _tasks.FirstOrDefault(taskId => taskId == id);
         }
 
         public override bool Equals(object obj)
