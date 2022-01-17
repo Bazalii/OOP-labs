@@ -14,6 +14,8 @@ namespace Reports.Server.Services
 
         public Report Delete(Guid id);
 
+        void ChangeStatus(Guid id, ReportStatus status);
+
         void Update(Report report);
 
         public void Save();

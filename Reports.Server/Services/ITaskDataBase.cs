@@ -14,6 +14,8 @@ namespace Reports.Server.Services
 
         public Task GetByLatestTime();
 
+        public Task ChangeTask(Guid employeeId, Guid taskId, string change);
+
         public List<Task> GetByEmployeeChanges(Guid id);
 
         public void ChangeStatus(Guid id, TaskStatus status);

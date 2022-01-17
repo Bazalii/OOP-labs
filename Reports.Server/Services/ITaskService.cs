@@ -16,6 +16,8 @@ namespace Reports.Server.Services
 
         public List<Task> GetByEmployeeChanges(Guid id);
 
+        public Task ChangeTask(Guid employeeId, Guid taskId, string change);
+
         void ChangeStatus(Guid id, TaskStatus status);
 
         List<Task> GetTasksForTheWeek();
