@@ -10,16 +10,16 @@ namespace Reports.Server.Services
 
         Report FindById(Guid id);
 
-        public List<Guid> GetAllFinishedDailyReports();
+        List<Guid> GetAllFinishedDailyReports();
 
-        public Report Delete(Guid id);
+        Report Delete(Guid id);
 
         void ChangeStatus(Guid id, ReportStatus status);
 
         void Update(Report report);
 
-        public void Save();
+        void Save();
 
-        public void Load();
+        void Load();
     }
 }

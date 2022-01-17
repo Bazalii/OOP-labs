@@ -2,7 +2,7 @@
 {
     public interface IDataBase
     {
-        public void Serialize();
+        void Serialize();
 
         void DeSerialize();
     }

@@ -30,8 +30,8 @@ namespace Reports.Server.Services
 
         Employee Update(Employee entity);
 
-        public void Save();
+        void Save();
 
-        public void Load();
+        void Load();
     }
 }

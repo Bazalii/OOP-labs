@@ -14,16 +14,16 @@ namespace Reports.Server.Services
 
         Task GetByLatestTime();
 
-        public List<Task> GetByEmployeeChanges(Guid id);
+        List<Task> GetByEmployeeChanges(Guid id);
 
-        public Task ChangeTask(Guid employeeId, Guid taskId, string change);
+        Task ChangeTask(Guid employeeId, Guid taskId, string change);
 
         void ChangeStatus(Guid id, TaskStatus status);
 
         List<Task> GetTasksForTheWeek();
 
-        public void Save();
+        void Save();
 
-        public void Load();
+        void Load();
     }
 }

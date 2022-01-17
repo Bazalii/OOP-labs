@@ -6,16 +6,16 @@ namespace Reports.Server.Services
 {
     public interface IEmployeeDataBase : IDataBase
     {
-        public void Add(Employee employee);
+        void Add(Employee employee);
 
-        public Employee FindByName(string name);
+        Employee FindByName(string name);
 
-        public Employee FindById(Guid id);
+        Employee FindById(Guid id);
 
-        public List<Employee> GetAll();
+        List<Employee> GetAll();
 
-        public Employee GetAssignedEmployee(Guid id);
+        Employee GetAssignedEmployee(Guid id);
 
-        public Employee Delete(Guid id);
+        Employee Delete(Guid id);
     }
 }
