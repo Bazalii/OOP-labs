@@ -72,10 +72,10 @@ namespace Reports.Clients
             return AnsiConsole.Ask<string>("[green]Please type the status:[/]");
         }
 
-        public void WriteEmployee(Employee employee)
+        public void WriteEmployee(Employee employee, List<Task> tasks)
         {
             AnsiConsole.Markup($"[green]{employee.Name} with id: {employee.Id}[/]");
-            AnsiConsole.WriteLine(employee.GetLength());
+            AnsiConsole.WriteLine(string.Empty);
             if (employee.Subordinates.Any())
             {
                 AnsiConsole.Markup("[yellow]Subordinates:[/]");
@@ -86,6 +86,8 @@ namespace Reports.Clients
                     AnsiConsole.WriteLine(string.Empty);
                 }
             }
+
+            WriteTasks(tasks);
         }
 
         public void WriteEmployeesTree(Employee teamlead)
@@ -99,7 +101,7 @@ namespace Reports.Clients
         {
             foreach (Change change in changes)
             {
-                AnsiConsole.Markup($"[orange]{change.EmployeeId} : {change.Time} : {change.Commentary}[/]");
+                AnsiConsole.Markup($"[green]{change.EmployeeId} : {change.Time} : {change.Commentary}[/]");
                 AnsiConsole.WriteLine(string.Empty);
             }
         }
@@ -124,11 +126,11 @@ namespace Reports.Clients
             }
         }
 
-        public void WriteReport(Report report)
+        public void WriteReport(Report report, List<Task> tasks)
         {
-            AnsiConsole.Markup($"[orange]{report.Id} : {report.Status} : {report.TimeOfCreation} : {report.AuthorId} : {report.Commentary}[/]");
+            AnsiConsole.Markup($"[green]{report.Id} : {report.Status} : {report.TimeOfCreation} : {report.AuthorId} : {report.Commentary}[/]");
             AnsiConsole.WriteLine(string.Empty);
-            WriteTasks(report.Tasks);
+            WriteTasks(tasks);
         }
 
         public void GetAvailableCommands()
