@@ -147,6 +147,8 @@ namespace Reports.Server.Controllers
         [Route("/tasks/addDescription")]
         public IActionResult AddCommentary([FromQuery] Guid id, [FromQuery] string description)
         {
+            if (id == Guid.Empty || string.IsNullOrWhiteSpace(description))
+                return StatusCode((int)HttpStatusCode.BadRequest);
             _service.FindById(id).Description = description;
             return NoContent();
         }

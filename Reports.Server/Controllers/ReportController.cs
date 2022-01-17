@@ -27,18 +27,14 @@ namespace Reports.Server.Controllers
         [HttpGet]
         public IActionResult Find([FromQuery] Guid id)
         {
-            if (id != Guid.Empty)
+            if (id == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            Report result = _service.FindById(id);
+            if (result != null)
             {
-                Report result = _service.FindById(id);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpGet]
@@ -74,18 +70,14 @@ namespace Reports.Server.Controllers
         [Route("/reports/deleteReport")]
         public IActionResult DeleteReport([FromQuery] Guid id)
         {
-            if (id != Guid.Empty)
+            if (id == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            Report result = _service.Delete(id);
+            if (result != null)
             {
-                Report result = _service.Delete(id);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpPatch]
@@ -113,6 +105,7 @@ namespace Reports.Server.Controllers
         [Route("/reports/addTask")]
         public IActionResult AddTasks([FromQuery] Guid reportId, [FromQuery] Guid taskId)
         {
+            if (reportId == Guid.Empty || taskId == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
             _service.FindById(reportId).AddTask(taskId);
             return Ok();
         }

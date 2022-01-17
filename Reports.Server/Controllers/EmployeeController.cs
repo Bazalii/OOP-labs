@@ -4,6 +4,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Reports.DAL.Entities;
 using Reports.Server.Services;
+using static System.Net.HttpStatusCode;
 
 namespace Reports.Server.Controllers
 {
@@ -69,54 +70,42 @@ namespace Reports.Server.Controllers
         [Route("/employees/getEmployeeTasks")]
         public IActionResult GetEmployeeTasks([FromQuery] Guid id)
         {
-            if (id != Guid.Empty)
+            if (id == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            IReadOnlyList<Guid> result = _service.GetEmployeeTasks(id);
+            if (result != null)
             {
-                IReadOnlyList<Guid> result = _service.GetEmployeeTasks(id);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpGet]
         [Route("/employees/getAssignedEmployee")]
         public IActionResult GetAssignedEmployee([FromQuery] Guid id)
         {
-            if (id != Guid.Empty)
+            if (id == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            Employee result = _service.GetAssignedEmployee(id);
+            if (result != null)
             {
-                Employee result = _service.GetAssignedEmployee(id);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpGet]
         [Route("/employees/getSubordinatesTasks")]
         public IActionResult GetSubordinatesTasks([FromQuery] Guid id)
         {
-            if (id != Guid.Empty)
+            if (id == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            List<Guid> result = _service.GetSubordinatesTasks(id);
+            if (result != null)
             {
-                List<Guid> result = _service.GetSubordinatesTasks(id);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpGet]
@@ -139,72 +128,57 @@ namespace Reports.Server.Controllers
         [Route("/employees/assignEmployee")]
         public IActionResult AssignEmployee([FromQuery] Guid employeeId, [FromQuery] Guid taskId)
         {
-            if (employeeId != Guid.Empty && taskId != Guid.Empty)
+            if (employeeId == Guid.Empty || taskId == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            Employee result = _service.AssignEmployee(employeeId, taskId);
+            if (result != null)
             {
-                Employee result = _service.AssignEmployee(employeeId, taskId);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpPatch]
         [Route("/employees/changeAssignedEmployee")]
         public IActionResult ChangeAssignedEmployee([FromQuery] Guid employeeId, [FromQuery] Guid taskId)
         {
-            if (employeeId != Guid.Empty && taskId != Guid.Empty)
+            if (employeeId == Guid.Empty || taskId == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            Employee result = _service.ChangeAssignedEmployee(employeeId, taskId);
+            if (result != null)
             {
-                Employee result = _service.ChangeAssignedEmployee(employeeId, taskId);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpPatch]
         [Route("/employees/addSubordinate")]
         public IActionResult AddSubordinate([FromQuery] Guid supervisorId, [FromQuery] Guid subordinateId)
         {
-            if (supervisorId != Guid.Empty && subordinateId != Guid.Empty)
+            if (supervisorId == Guid.Empty || subordinateId == Guid.Empty)
+                return StatusCode((int)HttpStatusCode.BadRequest);
+            Employee result = _service.AddSubordinate(supervisorId, subordinateId);
+            if (result != null)
             {
-                Employee result = _service.AddSubordinate(supervisorId, subordinateId);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpDelete]
         [Route("/employees/deleteEmployee")]
         public IActionResult DeleteEmployee([FromQuery] Guid id)
         {
-            if (id != Guid.Empty)
+            if (id == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            Employee result = _service.Delete(id);
+            if (result != null)
             {
-                Employee result = _service.Delete(id);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
     }
 }
