@@ -33,6 +33,11 @@ namespace Reports.Server.Services.Implementations
             return _dataBase.Delete(id);
         }
 
+        public void ChangeStatus(Guid id, ReportStatus status)
+        {
+            _dataBase.ChangeStatus(id, status);
+        }
+
         public void Update(Report report)
         {
             Delete(report.Id);

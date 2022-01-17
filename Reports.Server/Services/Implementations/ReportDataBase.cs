@@ -31,6 +31,11 @@ namespace Reports.Server.Services.Implementations
             return _reports.FirstOrDefault(employee => employee.Id == id);
         }
 
+        public void ChangeStatus(Guid id, ReportStatus status)
+        {
+            FindById(id).ChangeStatus(status);
+        }
+
         public List<Guid> GetAllFinishedDailyReports()
         {
             List<Guid> employees = new ();

@@ -24,7 +24,7 @@ namespace Reports.DAL.Entities
 
         public string Commentary { get; }
 
-        public ReportStatus Status { get; }
+        public ReportStatus Status { get; private set; }
 
         public DateTime TimeOfCreation { get; }
 
@@ -33,6 +33,11 @@ namespace Reports.DAL.Entities
         public void AddTask(Guid task)
         {
             _tasks.Add(task);
+        }
+
+        public void ChangeStatus(ReportStatus status)
+        {
+            Status = status;
         }
     }
 }

@@ -90,6 +90,27 @@ namespace Reports.Server.Controllers
         }
 
         [HttpPatch]
+        [Route("/reports/changeStatus")]
+        public IActionResult ChangeStatus([FromQuery] Guid id, [FromQuery] string status)
+        {
+            if (id == Guid.Empty || string.IsNullOrWhiteSpace(status)) return StatusCode((int)HttpStatusCode.BadRequest);
+            switch (status)
+            {
+                case "Draft":
+                    _service.ChangeStatus(id, ReportStatus.Draft);
+                    break;
+                case "Ready":
+                    _service.ChangeStatus(id, ReportStatus.Ready);
+                    break;
+                case "Closed":
+                    _service.ChangeStatus(id, ReportStatus.Closed);
+                    break;
+            }
+
+            return Ok();
+        }
+
+        [HttpPatch]
         [Route("/reports/addTask")]
         public IActionResult AddTasks([FromQuery] Guid reportId, [FromQuery] Guid taskId)
         {
