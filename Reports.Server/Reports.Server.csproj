@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Backups\Backups.csproj" />
       <ProjectReference Include="..\Reports.DAL\Reports.DAL.csproj" />
     </ItemGroup>
 
