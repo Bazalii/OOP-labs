@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Reports.DAL.Entities;
 using Reports.Server.Services;
 
@@ -52,6 +53,48 @@ namespace Reports.Server.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpGet]
+        [Route("/reports/load")]
+        public IActionResult Load()
+        {
+            _service.Load();
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("/reports/save")]
+        public IActionResult Save()
+        {
+            _service.Save();
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("/reports/deleteReport")]
+        public IActionResult DeleteReport([FromQuery] Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                Report result = _service.Delete(id);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+
+                return NotFound();
+            }
+
+            return StatusCode((int)HttpStatusCode.BadRequest);
+        }
+
+        [HttpPatch]
+        [Route("/reports/addTask")]
+        public IActionResult AddTasks([FromQuery] Guid reportId, [FromQuery] Guid taskId)
+        {
+            _service.FindById(reportId).AddTask(taskId);
+            return Ok();
         }
     }
 }

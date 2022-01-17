@@ -7,7 +7,7 @@ namespace Reports.DAL.Entities
     public class Report
     {
         [JsonProperty]
-        private List<Task> _tasks = new ();
+        private List<Guid> _tasks = new ();
 
         public Report(Guid id, Guid authorId, string commentary, ReportStatus status, DateTime timeOfCreation)
         {
@@ -28,9 +28,9 @@ namespace Reports.DAL.Entities
 
         public DateTime TimeOfCreation { get; }
 
-        public IReadOnlyList<Task> Tasks => _tasks;
+        public IReadOnlyList<Guid> Tasks => _tasks;
 
-        public void AddTask(Task task)
+        public void AddTask(Guid task)
         {
             _tasks.Add(task);
         }
