@@ -11,6 +11,8 @@ namespace Reports.DAL.Entities
 
         public Task(Guid id, string description, DateTime timeOfCreation, TaskStatus status)
         {
+            if (id == Guid.Empty) throw new ArgumentException("Id cannot be empty!", nameof(id));
+            if (string.IsNullOrWhiteSpace(description)) throw new ArgumentNullException(nameof(description), "Description is invalid!");
             Id = id;
             Description = description;
             TimeOfCreation = timeOfCreation;

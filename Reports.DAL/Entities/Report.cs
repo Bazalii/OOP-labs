@@ -11,6 +11,9 @@ namespace Reports.DAL.Entities
 
         public Report(Guid id, Guid authorId, string commentary, ReportStatus status, DateTime timeOfCreation)
         {
+            if (id == Guid.Empty) throw new ArgumentException("Id cannot be empty!", nameof(id));
+            if (authorId == Guid.Empty) throw new ArgumentException("Id cannot be empty!", nameof(authorId));
+            if (string.IsNullOrWhiteSpace(commentary)) throw new ArgumentNullException(nameof(commentary), "Commentary is invalid!");
             Id = id;
             AuthorId = authorId;
             Commentary = commentary;

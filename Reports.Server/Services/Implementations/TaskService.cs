@@ -7,7 +7,7 @@ namespace Reports.Server.Services.Implementations
 {
     public class TaskService : ITaskService
     {
-        private ITaskDataBase _dataBase = new TaskDataBase(new WindowsFileSystem());
+        private readonly ITaskDataBase _dataBase = new TaskDataBase(new WindowsFileSystem());
 
         public Task Create(string description)
         {

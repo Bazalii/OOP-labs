@@ -7,7 +7,7 @@ namespace Reports.Server.Services.Implementations
 {
     public class EmployeeService : IEmployeeService
     {
-        private IEmployeeDataBase _dataBase = new EmployeeDataBase(new WindowsFileSystem());
+        private readonly IEmployeeDataBase _dataBase = new EmployeeDataBase(new WindowsFileSystem());
 
         public Employee Create(string name)
         {

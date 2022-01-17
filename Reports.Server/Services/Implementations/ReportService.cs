@@ -7,7 +7,7 @@ namespace Reports.Server.Services.Implementations
 {
     public class ReportService : IReportService
     {
-        private IReportDataBase _dataBase = new ReportDataBase(new WindowsFileSystem());
+        private readonly IReportDataBase _dataBase = new ReportDataBase(new WindowsFileSystem());
 
         public Report Create(Guid authorId, string commentary)
         {

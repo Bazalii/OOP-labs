@@ -11,7 +11,7 @@ namespace Reports.Server.Services.Implementations
 {
     public class TaskDataBase : ITaskDataBase
     {
-        private IFileSystem _fileSystem = new WindowsFileSystem();
+        private readonly IFileSystem _fileSystem;
 
         [JsonProperty]
         private List<Task> _tasks = new ();
