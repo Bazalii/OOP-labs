@@ -19,5 +19,9 @@ namespace Reports.Server.Services
         void ChangeStatus(Guid id, TaskStatus status);
 
         List<Task> GetTasksForTheWeek();
+
+        public void Save();
+
+        public void Load();
     }
 }

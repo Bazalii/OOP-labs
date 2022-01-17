@@ -93,6 +93,22 @@ namespace Reports.Server.Controllers
             return NotFound();
         }
 
+        [HttpGet]
+        [Route("/tasks/load")]
+        public IActionResult Load()
+        {
+            _service.Load();
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("/tasks/save")]
+        public IActionResult Save()
+        {
+            _service.Save();
+            return Ok();
+        }
+
         [HttpPatch]
         [Route("/tasks/changeStatus")]
         public void ChangeStatus([FromQuery] Guid id, [FromQuery] string status)
@@ -117,8 +133,6 @@ namespace Reports.Server.Controllers
         public IActionResult AddCommentary([FromQuery] Guid id, [FromQuery] string description)
         {
             _service.FindById(id).Description = description;
-            Console.WriteLine("ss");
-            Console.WriteLine(_service.FindById(id).TimeOfCreation);
             return NoContent();
         }
     }
