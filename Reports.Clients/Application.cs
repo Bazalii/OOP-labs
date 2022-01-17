@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
@@ -41,11 +42,17 @@ namespace Reports.Clients
                     case "addSubordinate":
                         AddSubordinate(_console.AskForSupervisorId(), _console.AskForSubordinateId());
                         break;
+                    case "assignEmployee":
+                        AssignEmployee(_console.AskForEmployeeId(), _console.AskForTaskId());
+                        break;
                     case "getAllTasks":
                         GetAllTasks();
                         break;
-                    case "getTaskById":
-                        GetTaskById(_console.AskForTaskId());
+                    case "writeTaskById":
+                        WriteTaskById(_console.AskForTaskId());
+                        break;
+                    case "getLatestTask":
+                        GetLatestTask();
                         break;
                     case "getEmployeeTasks":
                         GetEmployeeTasks(_console.AskForEmployeeId());
@@ -72,7 +79,7 @@ namespace Reports.Clients
                         FindReportById(_console.AskForReportId());
                         break;
                     case "addTasksToReport":
-                        ChangeStatusOfTheTask(_console.AskForEmployeeId(), _console.AskForReportId());
+                        AddTasksToReport(_console.AskForReportId(), _console.AskForEmployeeId());
                         break;
                     case "getAllFinishedDailyReports":
                         GetAllFinishedDailyReports();
@@ -95,18 +102,20 @@ namespace Reports.Clients
 
         public void CreateEmployee(string name)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/employees/?name={name}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/employees?name={name}");
             request.Method = WebRequestMethods.Http.Post;
             var response = request.GetResponse();
             var responseStream = response.GetResponseStream();
             using var readStream = new StreamReader(responseStream, Encoding.UTF8);
             var responseString = readStream.ReadToEnd();
-            _console.WriteEmployee(JsonConvert.DeserializeObject<Employee>(responseString));
+            Employee employee = JsonConvert.DeserializeObject<Employee>(responseString);
+            List<Task> tasks = employee.Tasks.Select(taskId => GetTaskById(taskId.ToString())).ToList();
+            _console.WriteEmployee(employee, tasks);
         }
 
         public void WriteEmployeesTree(string name)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/employees/?name={name}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/employees?name={name}");
             request.Method = WebRequestMethods.Http.Get;
             var response = request.GetResponse();
             var responseStream = response.GetResponseStream();
@@ -117,7 +126,7 @@ namespace Reports.Clients
 
         public Employee FindEmployeeById(string id)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/employees/?id={id}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/employees?id={id}");
             request.Method = WebRequestMethods.Http.Get;
             try
             {
@@ -126,7 +135,8 @@ namespace Reports.Clients
                 using var readStream = new StreamReader(responseStream, Encoding.UTF8);
                 var responseString = readStream.ReadToEnd();
                 Employee employee = JsonConvert.DeserializeObject<Employee>(responseString);
-                _console.WriteEmployee(employee);
+                List<Task> tasks = employee.Tasks.Select(taskId => GetTaskById(taskId.ToString())).ToList();
+                _console.WriteEmployee(employee, tasks);
                 return employee;
             }
             catch (WebException e)
@@ -138,7 +148,7 @@ namespace Reports.Clients
 
         public Employee FindEmployeeByName(string name)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/employees/?name={name}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/employees?name={name}");
             request.Method = WebRequestMethods.Http.Get;
             try
             {
@@ -146,8 +156,10 @@ namespace Reports.Clients
                 var responseStream = response.GetResponseStream();
                 using var readStream = new StreamReader(responseStream, Encoding.UTF8);
                 var responseString = readStream.ReadToEnd();
-                _console.WriteEmployee(JsonConvert.DeserializeObject<Employee>(responseString));
-                return JsonConvert.DeserializeObject<Employee>(responseString);
+                Employee employee = JsonConvert.DeserializeObject<Employee>(responseString);
+                List<Task> tasks = employee.Tasks.Select(taskId => GetTaskById(taskId.ToString())).ToList();
+                _console.WriteEmployee(employee, tasks);
+                return employee;
             }
             catch (WebException e)
             {
@@ -158,17 +170,24 @@ namespace Reports.Clients
 
         public void DeleteEmployee(string id)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/employees/deleteEmployee/?id={id}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/employees/deleteEmployee?id={id}");
             request.Method = "DELETE";
             request.GetResponse();
         }
 
         public void AddSubordinate(string supervisorId, string subordinateId)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/employees/addSubordinate/?supervisorId={supervisorId}&subordinateId={subordinateId}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/employees/addSubordinate?supervisorId={supervisorId}&subordinateId={subordinateId}");
             request.Method = "PATCH";
             request.GetResponse();
             FindEmployeeById(supervisorId);
+        }
+
+        public void AssignEmployee(string employeeId, string taskId)
+        {
+            var request = HttpWebRequest.Create($"https://localhost:5001/employees/assignEmployee?employeeId={employeeId}&taskId={taskId}");
+            request.Method = "PATCH";
+            request.GetResponse();
         }
 
         public List<Task> GetAllTasks()
@@ -191,25 +210,10 @@ namespace Reports.Clients
             }
         }
 
-        public Task GetTaskById(string id)
+        public void WriteTaskById(string id)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/?id={id}");
-            request.Method = WebRequestMethods.Http.Get;
-            try
-            {
-                var response = request.GetResponse();
-                var responseStream = response.GetResponseStream();
-                using var readStream = new StreamReader(responseStream, Encoding.UTF8);
-                var responseString = readStream.ReadToEnd();
-                List<Task> taskToWrite = new () { JsonConvert.DeserializeObject<Task>(responseString) };
-                _console.WriteTasks(taskToWrite);
-                return taskToWrite[0];
-            }
-            catch (WebException e)
-            {
-                _console.WriteLine($"Task was not found: {e}");
-                return null;
-            }
+            List<Task> taskToWrite = new () { GetTaskById(id) };
+            _console.WriteTasks(taskToWrite);
         }
 
         public Task GetLatestTask()
@@ -233,9 +237,9 @@ namespace Reports.Clients
             }
         }
 
-        public IReadOnlyList<Task> GetEmployeeTasks(string id)
+        public IReadOnlyList<Guid> GetEmployeeTasks(string id)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/?id={id}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/tasks?id={id}");
             request.Method = WebRequestMethods.Http.Get;
             try
             {
@@ -244,7 +248,13 @@ namespace Reports.Clients
                 using var readStream = new StreamReader(responseStream, Encoding.UTF8);
                 var responseString = readStream.ReadToEnd();
                 Employee employee = JsonConvert.DeserializeObject<Employee>(responseString);
-                _console.WriteTasks(employee.Tasks);
+                List<Task> tasks = new ();
+                foreach (Guid taskId in employee.Tasks)
+                {
+                    tasks.Add(GetTaskById(taskId.ToString()));
+                }
+
+                _console.WriteTasks(tasks);
                 return employee.Tasks;
             }
             catch (WebException e)
@@ -256,7 +266,7 @@ namespace Reports.Clients
 
         public List<Task> GetTasksChangedByEmployee(string id)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/getTasksChangedByEmployee/?id={id}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/getTasksChangedByEmployee?id={id}");
             request.Method = WebRequestMethods.Http.Get;
             try
             {
@@ -277,7 +287,7 @@ namespace Reports.Clients
 
         public void CreateTask(string description)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/?description={description}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/tasks?description={description}");
             request.Method = WebRequestMethods.Http.Post;
             var response = request.GetResponse();
             var responseStream = response.GetResponseStream();
@@ -287,26 +297,23 @@ namespace Reports.Clients
             _console.WriteTasks(taskToWrite);
         }
 
-        /* dd*/
         public void ChangeStatusOfTheTask(string id, string status)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/changeStatus/?id={id}&status={status}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/changeStatus?id={id}&status={status}");
             request.Method = "PATCH";
             request.GetResponse();
         }
 
-        /* dd*/
         public void ChangeAssignedEmployee(string employeeId, string taskId)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/employees/changeAssignedEmployee/?employeeId={employeeId}&taskId={taskId}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/employees/changeAssignedEmployee?employeeId={employeeId}&taskId={taskId}");
             request.Method = "PATCH";
             request.GetResponse();
         }
 
-        /* dd*/
         public void AddTaskDescription(string id, string description)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/addDescription/?id={id}&commentary={description}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/tasks/addDescription?id={id}&description={description}");
             request.Method = "PATCH";
             request.GetResponse();
             _console.WriteLine("Commentary added!");
@@ -314,18 +321,25 @@ namespace Reports.Clients
 
         public void CreateReport(string authorId, string description)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/reports/?authorId={authorId}&description={description}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/reports?authorId={authorId}&description={description}");
             request.Method = WebRequestMethods.Http.Post;
             var response = request.GetResponse();
             var responseStream = response.GetResponseStream();
             using var readStream = new StreamReader(responseStream, Encoding.UTF8);
             var responseString = readStream.ReadToEnd();
-            _console.WriteReport(JsonConvert.DeserializeObject<Report>(responseString));
+            Report report = JsonConvert.DeserializeObject<Report>(responseString);
+            List<Task> tasks = new ();
+            foreach (Guid taskId in report.Tasks)
+            {
+                tasks.Add(GetTaskById(taskId.ToString()));
+            }
+
+            _console.WriteReport(report, tasks);
         }
 
         public Report FindReportById(string id)
         {
-            var request = HttpWebRequest.Create($"https://localhost:5001/reports/?id={id}");
+            var request = HttpWebRequest.Create($"https://localhost:5001/reports?id={id}");
             request.Method = WebRequestMethods.Http.Get;
             try
             {
@@ -343,14 +357,14 @@ namespace Reports.Clients
             }
         }
 
-        /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
         public void AddTasksToReport(string employeeId, string reportId)
         {
             Employee employee = FindEmployeeById(employeeId);
-            Report report = FindReportById(reportId);
-            foreach (Task task in employee.Tasks)
+            foreach (Guid taskId in employee.Tasks)
             {
-                report.AddTask(task);
+                var request = HttpWebRequest.Create($"https://localhost:5001/reports/addTask?reportId={reportId}&taskId={taskId}");
+                request.Method = "PUT";
+                request.GetResponse();
             }
         }
 
@@ -388,6 +402,52 @@ namespace Reports.Clients
             catch (WebException e)
             {
                 _console.WriteLine($"Report was not found: {e}");
+                return null;
+            }
+        }
+
+        public void Save()
+        {
+            var request = HttpWebRequest.Create("https://localhost:5001/employees/save");
+            request.Method = "PUT";
+            request.GetResponse();
+            request = HttpWebRequest.Create("https://localhost:5001/reports/save");
+            request.Method = "PUT";
+            request.GetResponse();
+            request = HttpWebRequest.Create("https://localhost:5001/tasks/save");
+            request.Method = "PUT";
+            request.GetResponse();
+        }
+
+        public void Load()
+        {
+            var request = HttpWebRequest.Create("https://localhost:5001/employees/load");
+            request.Method = WebRequestMethods.Http.Get;
+            request.GetResponse();
+            request = HttpWebRequest.Create("https://localhost:5001/reports/load");
+            request.Method = WebRequestMethods.Http.Get;
+            request.GetResponse();
+            request = HttpWebRequest.Create("https://localhost:5001/tasks/load");
+            request.Method = WebRequestMethods.Http.Get;
+            request.GetResponse();
+        }
+
+        private Task GetTaskById(string id)
+        {
+            var request = HttpWebRequest.Create($"https://localhost:5001/tasks?id={id}");
+            request.Method = WebRequestMethods.Http.Get;
+            try
+            {
+                var response = request.GetResponse();
+                var responseStream = response.GetResponseStream();
+                using var readStream = new StreamReader(responseStream, Encoding.UTF8);
+                var responseString = readStream.ReadToEnd();
+                List<Task> taskToWrite = new () { JsonConvert.DeserializeObject<Task>(responseString) };
+                return taskToWrite[0];
+            }
+            catch (WebException e)
+            {
+                _console.WriteLine($"Task was not found: {e}");
                 return null;
             }
         }
