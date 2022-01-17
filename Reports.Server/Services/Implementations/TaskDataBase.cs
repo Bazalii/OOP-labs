@@ -52,6 +52,13 @@ namespace Reports.Server.Services.Implementations
             return task;
         }
 
+        public Task ChangeTask(Guid employeeId, Guid taskId, string change)
+        {
+            Task task = FindById(taskId);
+            task.AddChange(new Change(employeeId, DateTime.Now, change));
+            return task;
+        }
+
         public List<Task> GetByEmployeeChanges(Guid id)
         {
             return _tasks.Where(task => task.Changes.FirstOrDefault(change => change.EmployeeId == id) != null).ToList();

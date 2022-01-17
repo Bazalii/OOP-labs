@@ -27,18 +27,14 @@ namespace Reports.Server.Controllers
         [HttpGet]
         public IActionResult Find([FromQuery] Guid id)
         {
-            if (id != Guid.Empty)
+            if (id == Guid.Empty) return StatusCode((int)HttpStatusCode.BadRequest);
+            Task result = _service.FindById(id);
+            if (result != null)
             {
-                Task result = _service.FindById(id);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-
-                return NotFound();
+                return Ok(result);
             }
 
-            return StatusCode((int)HttpStatusCode.BadRequest);
+            return NotFound();
         }
 
         [HttpGet]
@@ -84,6 +80,8 @@ namespace Reports.Server.Controllers
         [Route("/tasks/getTasksChangedByEmployee")]
         public IActionResult GetTasksChangedByEmployee([FromQuery] Guid id)
         {
+            if (id == Guid.Empty)
+                return StatusCode((int)HttpStatusCode.BadRequest);
             List<Task> result = _service.GetByEmployeeChanges(id);
             if (result != null)
             {
@@ -111,9 +109,9 @@ namespace Reports.Server.Controllers
 
         [HttpPatch]
         [Route("/tasks/changeStatus")]
-        public void ChangeStatus([FromQuery] Guid id, [FromQuery] string status)
+        public IActionResult ChangeStatus([FromQuery] Guid id, [FromQuery] string status)
         {
-            if (id == Guid.Empty || string.IsNullOrWhiteSpace(status)) return;
+            if (id == Guid.Empty || string.IsNullOrWhiteSpace(status)) return StatusCode((int)HttpStatusCode.BadRequest);
             switch (status)
             {
                 case "Open":
@@ -126,6 +124,23 @@ namespace Reports.Server.Controllers
                     _service.ChangeStatus(id, TaskStatus.Resolved);
                     break;
             }
+
+            return Ok();
+        }
+
+        [HttpPatch]
+        [Route("/tasks/changeTask")]
+        public IActionResult ChangeStatus([FromQuery] Guid employeeId, [FromQuery] Guid taskId, [FromQuery] string change)
+        {
+            if (employeeId == Guid.Empty || taskId == Guid.Empty || string.IsNullOrWhiteSpace(change))
+                return StatusCode((int)HttpStatusCode.BadRequest);
+            Task result = _service.ChangeTask(employeeId, taskId, change);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return NotFound();
         }
 
         [HttpPatch]

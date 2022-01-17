@@ -38,6 +38,11 @@ namespace Reports.Server.Services.Implementations
             return _dataBase.GetByEmployeeChanges(id);
         }
 
+        public Task ChangeTask(Guid employeeId, Guid taskId, string change)
+        {
+            return _dataBase.ChangeTask(employeeId, taskId, change);
+        }
+
         public void ChangeStatus(Guid id, TaskStatus status)
         {
             _dataBase.ChangeStatus(id, status);

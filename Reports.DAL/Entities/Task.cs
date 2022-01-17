@@ -23,7 +23,7 @@ namespace Reports.DAL.Entities
 
         public DateTime TimeOfCreation { get; }
 
-        public TaskStatus Status { get; set; }
+        public TaskStatus Status { get; private set; }
 
         public IReadOnlyList<Change> Changes => _changes;
 
