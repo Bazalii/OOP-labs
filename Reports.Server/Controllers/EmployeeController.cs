@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Reports.DAL.Entities;
 using Reports.Server.Services;
 
@@ -71,7 +73,7 @@ namespace Reports.Server.Controllers
         {
             if (id != Guid.Empty)
             {
-                IReadOnlyList<Task> result = _service.GetEmployeeTasks(id);
+                IReadOnlyList<Guid> result = _service.GetEmployeeTasks(id);
                 if (result != null)
                 {
                     return Ok(result);
@@ -107,7 +109,41 @@ namespace Reports.Server.Controllers
         {
             if (id != Guid.Empty)
             {
-                List<Task> result = _service.GetSubordinatesTasks(id);
+                List<Guid> result = _service.GetSubordinatesTasks(id);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+
+                return NotFound();
+            }
+
+            return StatusCode((int)HttpStatusCode.BadRequest);
+        }
+
+        [HttpGet]
+        [Route("/employees/load")]
+        public IActionResult Load()
+        {
+            _service.Load();
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("/employees/save")]
+        public IActionResult Save()
+        {
+            _service.Save();
+            return Ok();
+        }
+
+        [HttpPatch]
+        [Route("/employees/assignEmployee")]
+        public IActionResult AssignEmployee([FromQuery] Guid employeeId, [FromQuery] Guid taskId)
+        {
+            if (employeeId != Guid.Empty && taskId != Guid.Empty)
+            {
+                Employee result = _service.AssignEmployee(employeeId, taskId);
                 if (result != null)
                 {
                     return Ok(result);
